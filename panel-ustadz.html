@@ -240,6 +240,9 @@
           <button type="button" class="btn btn-secondary btn-sm" id="btnSetSemuaHadir" onclick="setSemuaAbsen('Hadir (Setor)')" style="height:38px;">
             ✓ Set Semua Hadir
           </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="resetPresensiSesiIni()" style="height:38px; color:var(--danger);" title="Hapus seluruh presensi sesi ini">
+            🗑️ Reset Sesi Ini
+          </button>
           <button type="button" class="btn btn-primary btn-sm" onclick="simpanPresensiHarian()" style="height:38px; font-weight:700;">
             💾 Simpan Presensi
           </button>
@@ -261,18 +264,22 @@
         <span class="badge badge-status-alpa" id="countAlpa">Alpa / Belum Absen: 0</span>
       </div>
 
+      <!-- Bulk Action Bar Presensi Ustadz -->
+      <div id="absensiBulkActionBar" class="bulk-action-bar" style="display:none;"></div>
+
       <!-- 4. UNIFIED ATTENDANCE & SETORAN TABLE -->
       <div class="table-responsive">
         <table class="data-table">
           <thead>
             <tr>
+              <th style="width:36px; text-align:center;"><input type="checkbox" id="checkAllAbsensi" onchange="toggleSelectAllAbsensi(this.checked)" title="Pilih Semua"></th>
               <th style="width:36px;">No</th>
               <th>Santri & NIS</th>
               <th>Program</th>
               <th style="min-width:240px;">Status Kehadiran Sesi Ini</th>
               <th style="min-width:230px;">Capaian Setoran Sesi Ini</th>
               <th>Catatan / Keterangan</th>
-              <th style="text-align:center; min-width:115px;">Aksi Setoran</th>
+              <th style="text-align:center; min-width:140px;">Aksi</th>
             </tr>
           </thead>
           <tbody id="tableAbsensiBody">
@@ -322,10 +329,14 @@
           </select>
         </div>
 
+        <!-- Bulk Action Bar Setoran Ustadz -->
+        <div id="setoranBulkActionBar" class="bulk-action-bar" style="display:none;"></div>
+
         <div class="table-responsive">
           <table class="data-table">
             <thead>
               <tr>
+                <th style="width:36px; text-align:center;"><input type="checkbox" id="checkAllSetoran" onchange="toggleSelectAllSetoran(this.checked)" title="Pilih Semua"></th>
                 <th>Tanggal & Sesi</th>
                 <th>Nama Santri</th>
                 <th>Program</th>

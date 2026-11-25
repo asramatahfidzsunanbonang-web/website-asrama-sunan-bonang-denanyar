@@ -123,17 +123,26 @@ function initStorage() {
     applyAppBackground(AppState.settings);
   }
 
-  // Santri: muat dari storage lokal dan bersihkan ID santri yang sudah dihapus
+  // Santri: muat dari storage lokal dan bersihkan ID santri contoh dummy serta yang sudah dihapus
+  const isDummySantriId = id => typeof id === 'string' && (id.startsWith('STR-BNZ-') || id.startsWith('STR-TFZ-') || id.startsWith('STR-PST-'));
+  const isDummySetoranId = id => typeof id === 'string' && id.startsWith('SET-10');
+  const isDummyAbsensiId = id => typeof id === 'string' && id.startsWith('ABS-20');
+  const isDummyUjianId = id => typeof id === 'string' && (id.startsWith('UJI-BNZ-') || id.startsWith('UJI-TFZ-'));
+  const isDummyPelanggaranId = id => typeof id === 'string' && id.startsWith('PLG-00');
+  const isDummyPerizinanId = id => typeof id === 'string' && id.startsWith('IZN-2024-');
+  const isDummyJamaahId = id => typeof id === 'string' && id.startsWith('UBD-00');
+  const isDummyEkskulId = id => typeof id === 'string' && id.startsWith('EKS-00');
+
   const savedSantri = localStorage.getItem(STORAGE_KEYS.SANTRI);
   const deletedSantriIds = (typeof getDeletedSantriIds === 'function') ? getDeletedSantriIds() : [];
   if (savedSantri !== null) {
     try {
-      AppState.santri = JSON.parse(savedSantri).filter(s => s && s.id && !deletedSantriIds.includes(s.id));
+      AppState.santri = JSON.parse(savedSantri).filter(s => s && s.id && !deletedSantriIds.includes(s.id) && !isDummySantriId(s.id));
     } catch (e) {
       AppState.santri = [];
     }
   } else {
-    AppState.santri = SAMPLE_SANTRI.filter(s => !deletedSantriIds.includes(s.id));
+    AppState.santri = (SAMPLE_SANTRI || []).filter(s => !deletedSantriIds.includes(s.id) && !isDummySantriId(s.id));
     localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(AppState.santri));
   }
 
@@ -155,18 +164,17 @@ function initStorage() {
   // Auto-migration: pastikan setiap santri memiliki data kelasSekolah
   AppState.santri.forEach(s => {
     if (s.kelasSekolah === undefined) {
-      const matchSample = SAMPLE_SANTRI.find(sample => sample.id === s.id || sample.nis === s.nis);
-      s.kelasSekolah = matchSample ? (matchSample.kelasSekolah || '') : '';
+      s.kelasSekolah = '';
     }
   });
 
   // Setoran
   const savedSetoran = localStorage.getItem(STORAGE_KEYS.SETORAN);
-  AppState.setoran = savedSetoran ? JSON.parse(savedSetoran) : [ ...SAMPLE_SETORAN ];
+  AppState.setoran = (savedSetoran ? JSON.parse(savedSetoran) : []).filter(s => s && s.id && !isDummySetoranId(s.id) && !isDummySantriId(s.santriId));
 
   // Absensi Santri
   const savedAbsensi = localStorage.getItem(STORAGE_KEYS.ABSENSI);
-  AppState.absensi = savedAbsensi ? JSON.parse(savedAbsensi) : [ ...SAMPLE_ABSENSI ];
+  AppState.absensi = (savedAbsensi ? JSON.parse(savedAbsensi) : []).filter(a => a && a.id && !isDummyAbsensiId(a.id) && !isDummySantriId(a.santriId));
 
   // Data Asatidz
   const savedUstadz = localStorage.getItem(STORAGE_KEYS.USTADZ);
@@ -178,21 +186,21 @@ function initStorage() {
 
   // Ujian Semester & Evaluasi Perombakan Kelas
   const savedUjianSemester = localStorage.getItem(STORAGE_KEYS.UJIAN_SEMESTER);
-  AppState.ujianSemester = savedUjianSemester ? JSON.parse(savedUjianSemester) : (typeof SAMPLE_UJIAN_SEMESTER !== 'undefined' ? [ ...SAMPLE_UJIAN_SEMESTER ] : []);
+  AppState.ujianSemester = (savedUjianSemester ? JSON.parse(savedUjianSemester) : []).filter(u => u && u.id && !isDummyUjianId(u.id) && !isDummySantriId(u.santriId));
 
   // Divisi Keamanan: Pelanggaran & Perizinan
   const savedPelanggaran = localStorage.getItem(STORAGE_KEYS.PELANGGARAN);
-  AppState.pelanggaran = savedPelanggaran ? JSON.parse(savedPelanggaran) : (typeof SAMPLE_PELANGGARAN !== 'undefined' ? [ ...SAMPLE_PELANGGARAN ] : []);
+  AppState.pelanggaran = (savedPelanggaran ? JSON.parse(savedPelanggaran) : []).filter(p => p && p.id && !isDummyPelanggaranId(p.id) && !isDummySantriId(p.santriId));
 
   const savedPerizinan = localStorage.getItem(STORAGE_KEYS.PERIZINAN);
-  AppState.perizinan = savedPerizinan ? JSON.parse(savedPerizinan) : (typeof SAMPLE_PERIZINAN !== 'undefined' ? [ ...SAMPLE_PERIZINAN ] : []);
+  AppState.perizinan = (savedPerizinan ? JSON.parse(savedPerizinan) : []).filter(p => p && p.id && !isDummyPerizinanId(p.id) && !isDummySantriId(p.santriId));
 
   // Divisi Ubudiyah: Shalat Jamaah & Ekskul
   const savedJamaah = localStorage.getItem(STORAGE_KEYS.UBUDIYAH_JAMAAH);
-  AppState.ubudiyahJamaah = savedJamaah ? JSON.parse(savedJamaah) : (typeof SAMPLE_UBUDIYAH_JAMAAH !== 'undefined' ? [ ...SAMPLE_UBUDIYAH_JAMAAH ] : []);
+  AppState.ubudiyahJamaah = (savedJamaah ? JSON.parse(savedJamaah) : []).filter(u => u && u.id && !isDummyJamaahId(u.id) && !isDummySantriId(u.santriId));
 
   const savedEkskul = localStorage.getItem(STORAGE_KEYS.UBUDIYAH_EKSKUL);
-  AppState.ubudiyahEkskul = savedEkskul ? JSON.parse(savedEkskul) : (typeof SAMPLE_UBUDIYAH_EKSKUL !== 'undefined' ? [ ...SAMPLE_UBUDIYAH_EKSKUL ] : []);
+  AppState.ubudiyahEkskul = (savedEkskul ? JSON.parse(savedEkskul) : []).filter(u => u && u.id && !isDummyEkskulId(u.id) && !isDummySantriId(u.santriId));
 
   saveToStorage();
 
@@ -807,12 +815,13 @@ function renderPresensiTable() {
   let countAlpa = 0;
 
   if (filteredSantri.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="empty-state" style="padding:28px 16px;">
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state" style="padding:28px 16px;">
       <div style="font-size:24px; margin-bottom:8px;">🔍</div>
       <div style="font-weight:600; color:#334155;">Tidak ada santri yang sesuai dengan filter atau Ustadz terpilih.</div>
       <div style="font-size:12px; color:#64748b; margin-top:4px;">Klik chip "👥 Semua Santri" di atas untuk melihat seluruh santri pondok.</div>
     </td></tr>`;
     updateAbsensiStats(0, 0, 0, 0, 0);
+    updateSelectedAbsensiUI();
     return;
   }
 
@@ -842,6 +851,7 @@ function renderPresensiTable() {
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
+      <td style="text-align:center;"><input type="checkbox" class="check-absensi-item" value="${santri.id}" onchange="updateSelectedAbsensiUI()"></td>
       <td>${idx + 1}</td>
       <td>
         <strong>${escapeHtml(santri.nama)}</strong>
@@ -877,9 +887,12 @@ function renderPresensiTable() {
           value="${escapeHtml(currentKet)}"
           onchange="updateSingleAbsensiKeterangan('${santri.id}', this.value)">
       </td>
-      <td style="text-align:center;">
+      <td style="text-align:center; white-space:nowrap;">
         <button class="btn btn-outline-primary btn-sm" onclick="quickSetorFromAbsen('${santri.id}')" title="Langsung Catat Hasil Setoran Harian Santri Ini">
           📖 Setor
+        </button>
+        <button class="btn btn-outline-danger btn-sm" onclick="hapusSingleAbsensi('${santri.id}')" title="Reset / Hapus Presensi Sesi Ini" style="margin-left:4px; padding:4px 8px; color:#ef4444; border-color:#fca5a5;">
+          🗑️
         </button>
       </td>
     `;
@@ -887,6 +900,7 @@ function renderPresensiTable() {
   });
 
   updateAbsensiStats(countHadirSetor, countHadirNoSetor, countIzin, countSakit, countAlpa);
+  updateSelectedAbsensiUI();
 }
 
 function quickSetAbsensi(santriId, status) {
@@ -1014,6 +1028,157 @@ function openModalAbsensiHariIni() {
 
 function quickSetorFromAbsen(santriId) {
   openModalSetoran(santriId);
+}
+
+// ================= FITUR MULTI-SELECT & RESET PRESENSI SANTRI =================
+function toggleSelectAllAbsensi(checked) {
+  document.querySelectorAll('.check-absensi-item').forEach(cb => {
+    cb.checked = checked;
+  });
+  updateSelectedAbsensiUI();
+}
+
+function updateSelectedAbsensiUI() {
+  const allBoxes = Array.from(document.querySelectorAll('.check-absensi-item'));
+  const checkedBoxes = allBoxes.filter(cb => cb.checked);
+  const count = checkedBoxes.length;
+
+  const checkAll = document.getElementById('checkAllAbsensi');
+  if (checkAll) {
+    checkAll.checked = allBoxes.length > 0 && count === allBoxes.length;
+    checkAll.indeterminate = count > 0 && count < allBoxes.length;
+  }
+
+  const bar = document.getElementById('absensiBulkActionBar');
+  if (!bar) return;
+
+  if (count === 0) {
+    bar.style.display = 'none';
+    bar.innerHTML = '';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  bar.innerHTML = `
+    <span class="bulk-count-badge">✓ Terpilih: <strong>${count}</strong> santri</span>
+    <button type="button" class="bulk-btn bulk-btn-success" onclick="bulkSetAbsensiStatus('Hadir (Setor)')">✓ Set Hadir & Setor</button>
+    <button type="button" class="bulk-btn bulk-btn-primary" onclick="bulkSetAbsensiStatus('Hadir (Tidak Setor)')">⚡ Hadir Belum Setor</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="bulkSetAbsensiStatus('Izin')">✉️ Set Izin</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="bulkSetAbsensiStatus('Sakit')">🏥 Set Sakit</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="bulkSetAbsensiStatus('Alpa')">✕ Set Alpa</button>
+    <button type="button" class="bulk-btn bulk-btn-danger" onclick="hapusAbsensiBulk()">🗑️ Reset Presensi</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="batalPilihAbsensi()">Batal</button>
+  `;
+}
+
+function batalPilihAbsensi() {
+  document.querySelectorAll('.check-absensi-item').forEach(cb => { cb.checked = false; });
+  const checkAll = document.getElementById('checkAllAbsensi');
+  if (checkAll) { checkAll.checked = false; checkAll.indeterminate = false; }
+  updateSelectedAbsensiUI();
+}
+
+function bulkSetAbsensiStatus(newStatus) {
+  const checkedBoxes = Array.from(document.querySelectorAll('.check-absensi-item:checked'));
+  const santriIds = checkedBoxes.map(cb => cb.value);
+  if (santriIds.length === 0) return;
+
+  const tanggalInput = document.getElementById('absensiTanggal');
+  const sesiSelect = document.getElementById('absensiSesi');
+  if (!tanggalInput || !sesiSelect) return;
+  const tanggal = tanggalInput.value || new Date().toISOString().split('T')[0];
+  const sesi = sesiSelect.value || (AppState.settings.sesiSetoran && AppState.settings.sesiSetoran[0]) || "Shubuh";
+
+  santriIds.forEach(santriId => {
+    const santri = AppState.santri.find(s => s.id === santriId);
+    if (!santri) return;
+    let record = AppState.absensi.find(a => a.tanggal === tanggal && a.sesi === sesi && a.santriId === santriId);
+    if (record) {
+      record.status = newStatus;
+    } else {
+      AppState.absensi.push({
+        id: "ABS-" + Date.now() + "-" + Math.floor(Math.random() * 10000),
+        tanggal: tanggal,
+        sesi: sesi,
+        santriId: santri.id,
+        santriNama: santri.nama,
+        program: santri.program,
+        halaqah: santri.halaqah,
+        status: newStatus,
+        keterangan: "",
+        dicatatOleh: AppState.selectedAbsensiUstadz || AppState.settings.kepalaTahfidz || "Ustadz Pembimbing"
+      });
+    }
+  });
+
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  renderPresensiTable();
+  showToast(`${santriIds.length} santri berhasil diubah status menjadi "${newStatus}".`, "success");
+}
+
+function hapusAbsensiBulk() {
+  const checkedBoxes = Array.from(document.querySelectorAll('.check-absensi-item:checked'));
+  const santriIds = checkedBoxes.map(cb => cb.value);
+  if (santriIds.length === 0) return;
+
+  const tanggalInput = document.getElementById('absensiTanggal');
+  const sesiSelect = document.getElementById('absensiSesi');
+  if (!tanggalInput || !sesiSelect) return;
+  const tanggal = tanggalInput.value || new Date().toISOString().split('T')[0];
+  const sesi = sesiSelect.value || (AppState.settings.sesiSetoran && AppState.settings.sesiSetoran[0]) || "Shubuh";
+
+  if (!confirm(`Hapus / reset catatan presensi ${santriIds.length} santri terpilih pada sesi ini? Catatan akan dikembalikan ke status awal.`)) return;
+
+  AppState.absensi = AppState.absensi.filter(a => !(a.tanggal === tanggal && a.sesi === sesi && santriIds.includes(a.santriId)));
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  renderPresensiTable();
+  showToast(`Presensi ${santriIds.length} santri berhasil di-reset.`, "info");
+}
+
+function hapusSingleAbsensi(santriId) {
+  const tanggalInput = document.getElementById('absensiTanggal');
+  const sesiSelect = document.getElementById('absensiSesi');
+  if (!tanggalInput || !sesiSelect) return;
+  const tanggal = tanggalInput.value || new Date().toISOString().split('T')[0];
+  const sesi = sesiSelect.value || (AppState.settings.sesiSetoran && AppState.settings.sesiSetoran[0]) || "Shubuh";
+
+  const santri = AppState.santri.find(s => s.id === santriId);
+  const nama = santri ? santri.nama : 'santri';
+
+  const idx = AppState.absensi.findIndex(a => a.tanggal === tanggal && a.sesi === sesi && a.santriId === santriId);
+  if (idx !== -1) {
+    AppState.absensi.splice(idx, 1);
+    saveToStorage();
+    if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+    renderPresensiTable();
+    showToast(`Presensi ${nama} pada sesi ${sesi} berhasil di-reset.`, "info");
+  } else {
+    showToast(`Santri ${nama} belum memiliki catatan presensi tersimpan di sesi ini.`, "warning");
+  }
+}
+
+function resetPresensiSesiIni() {
+  const tanggalInput = document.getElementById('absensiTanggal');
+  const sesiSelect = document.getElementById('absensiSesi');
+  if (!tanggalInput || !sesiSelect) return;
+  const tanggal = tanggalInput.value || new Date().toISOString().split('T')[0];
+  const sesi = sesiSelect.value || (AppState.settings.sesiSetoran && AppState.settings.sesiSetoran[0]) || "Shubuh";
+
+  const count = AppState.absensi.filter(a => a.tanggal === tanggal && a.sesi === sesi).length;
+  if (count === 0) {
+    alert(`Tidak ada rekaman presensi pada tanggal ${formatTanggalIndo(tanggal)} sesi ${sesi}.`);
+    return;
+  }
+
+  if (!confirm(`Reset seluruh rekaman presensi (${count} data) pada tanggal ${formatTanggalIndo(tanggal)} sesi ${sesi}? Data akan dikembalikan ke status awal (belum absen).`)) return;
+
+  AppState.absensi = AppState.absensi.filter(a => !(a.tanggal === tanggal && a.sesi === sesi));
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  renderPresensiTable();
+  showToast(`Presensi tanggal ${formatTanggalIndo(tanggal)} sesi ${sesi} berhasil di-reset.`, "info");
 }
 
 // ================= 2B. PRESENSI KEHADIRAN ASATIDZ (KHUSUS ADMIN) =================
@@ -1738,7 +1903,8 @@ function renderSetoranTable() {
   filtered.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" class="empty-state">Tidak ada rekaman setoran hafalan yang cocok.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" class="empty-state">Tidak ada rekaman setoran hafalan yang cocok.</td></tr>`;
+    updateSelectedSetoranUI();
     return;
   }
 
@@ -1751,6 +1917,7 @@ function renderSetoranTable() {
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
+      <td style="text-align:center;"><input type="checkbox" class="check-setoran-item" value="${item.id}" onchange="updateSelectedSetoranUI()"></td>
       <td>
         <strong>${formatTanggalIndo(item.tanggal)}</strong>
         <div style="font-size:11.5px; color:var(--dark-500);">${escapeHtml(item.sesi || '-')}</div>
@@ -1778,6 +1945,8 @@ function renderSetoranTable() {
     `;
     tbody.appendChild(tr);
   });
+
+  updateSelectedSetoranUI();
 }
 
 function openModalSetoran(preselectedSantriId = null) {
@@ -2233,6 +2402,64 @@ function hapusSetoran(id) {
   }
 }
 
+// ================= FITUR MULTI-SELECT SETORAN =================
+function toggleSelectAllSetoran(checked) {
+  document.querySelectorAll('.check-setoran-item').forEach(cb => {
+    cb.checked = checked;
+  });
+  updateSelectedSetoranUI();
+}
+
+function updateSelectedSetoranUI() {
+  const allBoxes = Array.from(document.querySelectorAll('.check-setoran-item'));
+  const checkedBoxes = allBoxes.filter(cb => cb.checked);
+  const count = checkedBoxes.length;
+
+  const checkAll = document.getElementById('checkAllSetoran');
+  if (checkAll) {
+    checkAll.checked = allBoxes.length > 0 && count === allBoxes.length;
+    checkAll.indeterminate = count > 0 && count < allBoxes.length;
+  }
+
+  const bar = document.getElementById('setoranBulkActionBar');
+  if (!bar) return;
+
+  if (count === 0) {
+    bar.style.display = 'none';
+    bar.innerHTML = '';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  bar.innerHTML = `
+    <span class="bulk-count-badge">✓ Terpilih: <strong>${count}</strong> data setoran</span>
+    <button type="button" class="bulk-btn bulk-btn-danger" onclick="hapusSetoranBulk()">🗑️ Hapus Setoran Terpilih</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="batalPilihSetoran()">Batal</button>
+  `;
+}
+
+function batalPilihSetoran() {
+  document.querySelectorAll('.check-setoran-item').forEach(cb => { cb.checked = false; });
+  const checkAll = document.getElementById('checkAllSetoran');
+  if (checkAll) { checkAll.checked = false; checkAll.indeterminate = false; }
+  updateSelectedSetoranUI();
+}
+
+function hapusSetoranBulk() {
+  const checkedBoxes = Array.from(document.querySelectorAll('.check-setoran-item:checked'));
+  const ids = checkedBoxes.map(cb => cb.value);
+  if (ids.length === 0) return;
+  if (!confirm(`Hapus ${ids.length} data riwayat setoran terpilih? Tindakan ini tidak dapat dibatalkan.`)) return;
+
+  AppState.setoran = AppState.setoran.filter(s => !ids.includes(s.id));
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
+  renderAll();
+  showToast(`${ids.length} data setoran berhasil dihapus.`, "info");
+}
+
 // ================= 4. DATA SANTRI =================
 function renderSantriTable() {
   const search = document.getElementById('santriSearch')?.value?.toLowerCase() || '';
@@ -2280,7 +2507,8 @@ function renderSantriTable() {
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">Tidak ada data santri yang cocok.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="empty-state">Tidak ada data santri yang cocok.</td></tr>`;
+    updateSelectedSantriUI();
     return;
   }
 
@@ -2404,6 +2632,7 @@ function renderSantriTable() {
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
+      <td style="text-align:center;"><input type="checkbox" class="check-santri-item" value="${s.id}" onchange="updateSelectedSantriUI()"></td>
       <td><strong>${escapeHtml(s.nis)}</strong></td>
       <td>
         <strong style="font-size:13.5px;">${escapeHtml(s.nama)}</strong>
@@ -2432,6 +2661,8 @@ function renderSantriTable() {
     `;
     tbody.appendChild(tr);
   });
+
+  updateSelectedSantriUI();
 }
 
 function openModalSantri(santriId = null) {
@@ -2713,6 +2944,140 @@ function hapusSantri(id) {
     renderAll();
     showToast(`Santri ${s.nama} telah dihapus.`, "info");
   }
+}
+
+// ================= FITUR MULTI-SELECT DATA SANTRI =================
+function toggleSelectAllSantri(checked) {
+  document.querySelectorAll('.check-santri-item').forEach(cb => {
+    cb.checked = checked;
+  });
+  updateSelectedSantriUI();
+}
+
+function updateSelectedSantriUI() {
+  const allBoxes = Array.from(document.querySelectorAll('.check-santri-item'));
+  const checkedBoxes = allBoxes.filter(cb => cb.checked);
+  const count = checkedBoxes.length;
+
+  const checkAll = document.getElementById('checkAllSantri');
+  if (checkAll) {
+    checkAll.checked = allBoxes.length > 0 && count === allBoxes.length;
+    checkAll.indeterminate = count > 0 && count < allBoxes.length;
+  }
+
+  const bar = document.getElementById('santriBulkActionBar');
+  if (!bar) return;
+
+  if (count === 0) {
+    bar.style.display = 'none';
+    bar.innerHTML = '';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  bar.innerHTML = `
+    <span class="bulk-count-badge">✓ Terpilih: <strong>${count}</strong> santri</span>
+    <button type="button" class="bulk-btn bulk-btn-primary" onclick="bukaModalPindahHalaqahBulk()">🔄 Pindah Halaqah</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="bukaModalUbahKelasBulk()">🏫 Ubah Kelas Sekolah</button>
+    <button type="button" class="bulk-btn bulk-btn-danger" onclick="hapusSantriBulk()">🗑️ Hapus Santri Terpilih</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="batalPilihSantri()">Batal</button>
+  `;
+}
+
+function batalPilihSantri() {
+  document.querySelectorAll('.check-santri-item').forEach(cb => { cb.checked = false; });
+  const checkAll = document.getElementById('checkAllSantri');
+  if (checkAll) { checkAll.checked = false; checkAll.indeterminate = false; }
+  updateSelectedSantriUI();
+}
+
+function hapusSantriBulk() {
+  const checkedBoxes = Array.from(document.querySelectorAll('.check-santri-item:checked'));
+  const ids = checkedBoxes.map(cb => cb.value);
+  if (ids.length === 0) return;
+  if (!confirm(`Yakin ingin menghapus ${ids.length} santri terpilih? Seluruh data santri yang dipilih akan dibersihkan dari sistem dan cloud.`)) return;
+
+  ids.forEach(id => {
+    if (typeof recordDeletedSantriId === 'function') {
+      recordDeletedSantriId(id);
+    } else {
+      try {
+        const list = JSON.parse(localStorage.getItem('sitahfidz_deleted_santri_ids') || '[]');
+        if (!list.includes(id)) {
+          list.push(id);
+          localStorage.setItem('sitahfidz_deleted_santri_ids', JSON.stringify(list));
+        }
+      } catch (e) {}
+    }
+  });
+
+  AppState.santri = AppState.santri.filter(s => !ids.includes(s.id));
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
+  renderAll();
+  showToast(`${ids.length} santri berhasil dihapus.`, "info");
+}
+
+function bukaModalPindahHalaqahBulk() {
+  const checkedBoxes = Array.from(document.querySelectorAll('.check-santri-item:checked'));
+  const ids = checkedBoxes.map(cb => cb.value);
+  if (ids.length === 0) return;
+
+  const halaqahList = AppState.settings.daftarHalaqah || [];
+  if (halaqahList.length === 0) {
+    alert("Daftar halaqah belum dikonfigurasi di Pengaturan.");
+    return;
+  }
+
+  const optionsPrompt = halaqahList.map((h, i) => `${i + 1}. ${h}`).join('\n');
+  const pilihan = prompt(`Pilih nomor atau ketik nama Kelas / Halaqah baru untuk ${ids.length} santri terpilih:\n\n${optionsPrompt}`);
+  if (!pilihan) return;
+
+  let targetHalaqah = '';
+  const num = parseInt(pilihan.trim(), 10);
+  if (!isNaN(num) && num >= 1 && num <= halaqahList.length) {
+    targetHalaqah = halaqahList[num - 1];
+  } else if (pilihan.trim()) {
+    targetHalaqah = pilihan.trim();
+  }
+
+  if (!targetHalaqah) return;
+
+  ids.forEach(id => {
+    const s = AppState.santri.find(item => item.id === id);
+    if (s) s.halaqah = targetHalaqah;
+  });
+
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
+  renderAll();
+  showToast(`${ids.length} santri berhasil dipindahkan ke: ${targetHalaqah}`, "success");
+}
+
+function bukaModalUbahKelasBulk() {
+  const checkedBoxes = Array.from(document.querySelectorAll('.check-santri-item:checked'));
+  const ids = checkedBoxes.map(cb => cb.value);
+  if (ids.length === 0) return;
+
+  const targetKelas = prompt(`Masukkan Kelas Sekolah baru untuk ${ids.length} santri terpilih:\n(Contoh: 7, 8, 9, 10, 11, 12, atau Kelas 7, dsb)`);
+  if (targetKelas === null) return;
+  const val = targetKelas.trim();
+
+  ids.forEach(id => {
+    const s = AppState.santri.find(item => item.id === id);
+    if (s) s.kelasSekolah = val;
+  });
+
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
+  renderAll();
+  showToast(`Kelas sekolah ${ids.length} santri berhasil diubah menjadi "${val}".`, "success");
 }
 
 // ================= KENAIKAN KELAS SEKOLAH (TAHUN AJARAN BARU) =================
@@ -2999,7 +3364,8 @@ function renderUjianBinnadzorTable() {
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="13" class="empty-state">Belum ada data nilai ujian semester Binnadzor yang sesuai filter.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="14" class="empty-state">Belum ada data nilai ujian semester Binnadzor yang sesuai filter.</td></tr>`;
+    updateSelectedUjianBinnadzorUI();
     return;
   }
 
@@ -3030,6 +3396,7 @@ function renderUjianBinnadzorTable() {
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
+      <td style="text-align:center;"><input type="checkbox" class="check-ujian-bnz-item" value="${u.id}" onchange="updateSelectedUjianBinnadzorUI()"></td>
       <td style="text-align:center;">${idx + 1}</td>
       <td><strong>${escapeHtml(u.santriNama)}</strong></td>
       <td><code>${escapeHtml(u.nis)}</code></td>
@@ -3058,11 +3425,16 @@ function renderUjianBinnadzorTable() {
           <button class="btn btn-primary btn-sm" onclick="terapkanSatuPerombakanKelas('${u.santriId}')" title="Pindahkan Santri ke Kelas Terpilih" style="padding:4px 8px;">
             🔄
           </button>
+          <button class="btn btn-secondary btn-sm" onclick="hapusUjianSemester('${u.id}')" title="Hapus Catatan Ujian" style="padding:4px 8px; color:var(--danger);">
+            🗑️
+          </button>
         </div>
       </td>
     `;
     tbody.appendChild(tr);
   });
+
+  updateSelectedUjianBinnadzorUI();
 }
 
 function renderUjianTahfidzTable() {
@@ -3101,7 +3473,8 @@ function renderUjianTahfidzTable() {
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="12" class="empty-state">Belum ada data nilai ujian tasmi' semester Tahfidz.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" class="empty-state">Belum ada data nilai ujian tasmi' semester Tahfidz.</td></tr>`;
+    updateSelectedUjianTahfidzUI();
     return;
   }
 
@@ -3113,6 +3486,7 @@ function renderUjianTahfidzTable() {
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
+      <td style="text-align:center;"><input type="checkbox" class="check-ujian-tfz-item" value="${u.id}" onchange="updateSelectedUjianTahfidzUI()"></td>
       <td style="text-align:center;">${idx + 1}</td>
       <td><strong>${escapeHtml(u.santriNama)}</strong></td>
       <td><code>${escapeHtml(u.nis)}</code></td>
@@ -3132,11 +3506,179 @@ function renderUjianTahfidzTable() {
           <button class="btn btn-primary btn-sm" onclick="cetakRaportUjianTahfidz('${u.id}')" title="Cetak Raport Tasmi' Semester" style="padding:4px 8px;">
             📜 Raport
           </button>
+          <button class="btn btn-secondary btn-sm" onclick="hapusUjianSemester('${u.id}')" title="Hapus Catatan Ujian" style="padding:4px 8px; color:var(--danger);">
+            🗑️
+          </button>
         </div>
       </td>
     `;
     tbody.appendChild(tr);
   });
+
+  updateSelectedUjianTahfidzUI();
+}
+
+// ================= FITUR MULTI-SELECT & AKSI MASSAL UJIAN SEMESTER =================
+function toggleSelectAllUjianBinnadzor(checked) {
+  document.querySelectorAll('.check-ujian-bnz-item').forEach(cb => { cb.checked = checked; });
+  updateSelectedUjianBinnadzorUI();
+}
+
+function updateSelectedUjianBinnadzorUI() {
+  const allBoxes = Array.from(document.querySelectorAll('.check-ujian-bnz-item'));
+  const checkedBoxes = allBoxes.filter(cb => cb.checked);
+  const count = checkedBoxes.length;
+
+  const checkAll = document.getElementById('checkAllUjianBinnadzor');
+  if (checkAll) {
+    checkAll.checked = allBoxes.length > 0 && count === allBoxes.length;
+    checkAll.indeterminate = count > 0 && count < allBoxes.length;
+  }
+
+  const bar = document.getElementById('ujianBinnadzorBulkActionBar');
+  if (!bar) return;
+
+  if (count === 0) {
+    bar.style.display = 'none';
+    bar.innerHTML = '';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  bar.innerHTML = `
+    <span class="bulk-count-badge">✓ Terpilih: <strong>${count}</strong> santri</span>
+    <button type="button" class="bulk-btn bulk-btn-success" onclick="terapkanPerombakanBulk()">🔄 Terapkan Perombakan Terpilih</button>
+    <button type="button" class="bulk-btn bulk-btn-danger" onclick="hapusUjianSemesterBulk('Binnadzor')">🗑️ Hapus Nilai Terpilih</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="batalPilihUjianBinnadzor()">Batal</button>
+  `;
+}
+
+function batalPilihUjianBinnadzor() {
+  document.querySelectorAll('.check-ujian-bnz-item').forEach(cb => { cb.checked = false; });
+  const checkAll = document.getElementById('checkAllUjianBinnadzor');
+  if (checkAll) { checkAll.checked = false; checkAll.indeterminate = false; }
+  updateSelectedUjianBinnadzorUI();
+}
+
+function toggleSelectAllUjianTahfidz(checked) {
+  document.querySelectorAll('.check-ujian-tfz-item').forEach(cb => { cb.checked = checked; });
+  updateSelectedUjianTahfidzUI();
+}
+
+function updateSelectedUjianTahfidzUI() {
+  const allBoxes = Array.from(document.querySelectorAll('.check-ujian-tfz-item'));
+  const checkedBoxes = allBoxes.filter(cb => cb.checked);
+  const count = checkedBoxes.length;
+
+  const checkAll = document.getElementById('checkAllUjianTahfidz');
+  if (checkAll) {
+    checkAll.checked = allBoxes.length > 0 && count === allBoxes.length;
+    checkAll.indeterminate = count > 0 && count < allBoxes.length;
+  }
+
+  const bar = document.getElementById('ujianTahfidzBulkActionBar');
+  if (!bar) return;
+
+  if (count === 0) {
+    bar.style.display = 'none';
+    bar.innerHTML = '';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  bar.innerHTML = `
+    <span class="bulk-count-badge">✓ Terpilih: <strong>${count}</strong> santri</span>
+    <button type="button" class="bulk-btn bulk-btn-danger" onclick="hapusUjianSemesterBulk('Tahfidz')">🗑️ Hapus Nilai Terpilih</button>
+    <button type="button" class="bulk-btn bulk-btn-secondary" onclick="batalPilihUjianTahfidz()">Batal</button>
+  `;
+}
+
+function batalPilihUjianTahfidz() {
+  document.querySelectorAll('.check-ujian-tfz-item').forEach(cb => { cb.checked = false; });
+  const checkAll = document.getElementById('checkAllUjianTahfidz');
+  if (checkAll) { checkAll.checked = false; checkAll.indeterminate = false; }
+  updateSelectedUjianTahfidzUI();
+}
+
+function hapusUjianSemester(examId) {
+  const exam = (AppState.ujianSemester || []).find(u => u.id === examId);
+  const nama = exam ? exam.santriNama : 'data ujian ini';
+  if (!confirm(`Hapus catatan nilai ujian semester untuk ${nama}?`)) return;
+
+  AppState.ujianSemester = (AppState.ujianSemester || []).filter(u => u.id !== examId);
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  renderUjianBinnadzorTable();
+  renderUjianTahfidzTable();
+  showToast(`Data nilai ujian semester ${nama} berhasil dihapus.`, "info");
+}
+
+function hapusUjianSemesterBulk(program) {
+  const cls = program === 'Binnadzor' ? 'check-ujian-bnz-item' : 'check-ujian-tfz-item';
+  const checkedBoxes = Array.from(document.querySelectorAll(`.${cls}:checked`));
+  const ids = checkedBoxes.map(cb => cb.value);
+  if (ids.length === 0) return;
+  if (!confirm(`Hapus ${ids.length} data nilai ujian semester terpilih?`)) return;
+
+  AppState.ujianSemester = (AppState.ujianSemester || []).filter(u => !ids.includes(u.id));
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  if (program === 'Binnadzor') {
+    renderUjianBinnadzorTable();
+  } else {
+    renderUjianTahfidzTable();
+  }
+  showToast(`${ids.length} data nilai ujian berhasil dihapus.`, "info");
+}
+
+function terapkanPerombakanBulk() {
+  const checkedBoxes = Array.from(document.querySelectorAll('.check-ujian-bnz-item:checked'));
+  const examIds = checkedBoxes.map(cb => cb.value);
+  if (examIds.length === 0) return;
+
+  const exams = (AppState.ujianSemester || []).filter(u => examIds.includes(u.id));
+  if (exams.length === 0) return;
+
+  if (!confirm(`Terapkan perombakan kelas untuk ${exams.length} santri Binnadzor terpilih sesuai pilihan dropdown masing-masing?`)) return;
+
+  let appliedCount = 0;
+  exams.forEach(exam => {
+    const santri = AppState.santri.find(s => s.id === exam.santriId);
+    if (!santri) return;
+    const selectEl = document.getElementById(`pilihanKelasBaru_${exam.santriId}`);
+    const targetKelas = selectEl ? selectEl.value : (exam.rekomendasiKelas || 'Kelas A1');
+    const kelasLama = santri.halaqah;
+
+    if (targetKelas === 'Program Maqbul') {
+      santri.program = 'Program Maqbul';
+      if (!santri.binnadzorProgress) santri.binnadzorProgress = {};
+      santri.binnadzorProgress.statusTesMaqbul = 'Lolos Tes Maqbul';
+      santri.binnadzorProgress.tanggalTesMaqbul = new Date().toISOString().split('T')[0];
+      santri.binnadzorProgress.nilaiTesMaqbul = 'Mumtaz (A)';
+      santri.binnadzorProgress.statusWisuda = 'Siap Wisuda';
+    } else {
+      santri.program = 'Binnadzor';
+      santri.halaqah = targetKelas;
+    }
+
+    santri.riwayatPerombakanKelas = santri.riwayatPerombakanKelas || [];
+    santri.riwayatPerombakanKelas.push({
+      tanggal: new Date().toISOString().split('T')[0],
+      semester: document.getElementById('ujianBinnadzorFilterSemester')?.value || 'Semester Ganjil',
+      tahunAjaran: document.getElementById('ujianBinnadzorFilterTahun')?.value || '2024/2025',
+      kelasLama: kelasLama,
+      kelasBaru: targetKelas,
+      diterapkanOleh: 'Admin Tahfidz (Bulk)'
+    });
+
+    exam.statusPerombakan = 'Sudah Diterapkan';
+    appliedCount++;
+  });
+
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  renderAll();
+  showToast(`🎉 Berhasil menerapkan perombakan kelas untuk ${appliedCount} santri!`, "success");
 }
 
 function terapkanSatuPerombakanKelas(santriId) {

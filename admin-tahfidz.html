@@ -384,6 +384,9 @@
               <button class="btn btn-secondary btn-sm" id="btnSetSemuaHadir" onclick="setSemuaAbsen('Hadir (Setor)')">
                 ✓ Set Semua Hadir & Setor
               </button>
+              <button class="btn btn-secondary btn-sm" onclick="resetPresensiSesiIni()" title="Hapus seluruh catatan presensi pada tanggal dan sesi ini" style="color:var(--danger);">
+                🗑️ Reset Presensi Sesi Ini
+              </button>
               <button class="btn btn-primary btn-sm" onclick="simpanPresensiHarian()">
                 💾 Simpan Presensi
               </button>
@@ -453,18 +456,22 @@
               <span class="badge badge-status-alpa" id="countAlpa">Alpa / Belum Absen: 0</span>
             </div>
 
+            <!-- Bulk Action Bar Presensi -->
+            <div id="absensiBulkActionBar" class="bulk-action-bar" style="display:none;"></div>
+
             <!-- Attendance Table -->
             <div class="table-responsive">
               <table class="data-table">
                 <thead>
                   <tr>
+                    <th style="width:36px; text-align:center;"><input type="checkbox" id="checkAllAbsensi" onchange="toggleSelectAllAbsensi(this.checked)" title="Pilih Semua"></th>
                     <th style="width:40px;">No</th>
                     <th>Santri & NIS</th>
                     <th>Program</th>
                     <th>Kelas / Ustadz</th>
                     <th style="min-width:260px;">Status Presensi Sesi Ini</th>
                     <th>Keterangan / Catatan</th>
-                    <th style="text-align:center;">Aksi Cepat</th>
+                    <th style="text-align:center; min-width:120px;">Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="tableAbsensiBody">
@@ -544,11 +551,15 @@
               </select>
             </div>
 
+            <!-- Bulk Action Bar Setoran -->
+            <div id="setoranBulkActionBar" class="bulk-action-bar" style="display:none;"></div>
+
             <!-- Setoran Table -->
             <div class="table-responsive">
               <table class="data-table">
                 <thead>
                   <tr>
+                    <th style="width:36px; text-align:center;"><input type="checkbox" id="checkAllSetoran" onchange="toggleSelectAllSetoran(this.checked)" title="Pilih Semua"></th>
                     <th>Tanggal & Sesi</th>
                     <th>Nama Santri</th>
                     <th>Program</th>
@@ -828,11 +839,15 @@
               </select>
             </div>
 
+            <!-- Bulk Action Bar Santri -->
+            <div id="santriBulkActionBar" class="bulk-action-bar" style="display:none;"></div>
+
             <!-- Santri Table -->
             <div class="table-responsive">
               <table class="data-table">
                 <thead>
                   <tr>
+                    <th style="width:36px; text-align:center;"><input type="checkbox" id="checkAllSantri" onchange="toggleSelectAllSantri(this.checked)" title="Pilih Semua"></th>
                     <th>NIS</th>
                     <th>Nama Santri</th>
                     <th>L/P</th>
@@ -933,11 +948,15 @@
                 </select>
               </div>
 
+              <!-- Bulk Action Bar Ujian Binnadzor -->
+              <div id="ujianBinnadzorBulkActionBar" class="bulk-action-bar" style="display:none;"></div>
+
               <!-- Tabel Hasil Ujian & Perombakan Kelas -->
               <div class="table-responsive">
                 <table class="table-modern">
                   <thead>
                     <tr>
+                      <th style="width:36px; text-align:center;"><input type="checkbox" id="checkAllUjianBinnadzor" onchange="toggleSelectAllUjianBinnadzor(this.checked)" title="Pilih Semua"></th>
                       <th style="width:30px;">No</th>
                       <th>Nama Santri</th>
                       <th>NIS</th>
@@ -950,7 +969,7 @@
                       <th>Predikat</th>
                       <th>Rekomendasi Baru</th>
                       <th style="min-width:200px;">Pilihan Kelas Perombakan</th>
-                      <th style="text-align:center;">Aksi</th>
+                      <th style="text-align:center; min-width:110px;">Aksi</th>
                     </tr>
                   </thead>
                   <tbody id="tableUjianBinnadzorBody">
@@ -987,11 +1006,15 @@
                 </select>
               </div>
 
+              <!-- Bulk Action Bar Ujian Tahfidz -->
+              <div id="ujianTahfidzBulkActionBar" class="bulk-action-bar" style="display:none;"></div>
+
               <!-- Tabel Hasil Ujian Tahfidz -->
               <div class="table-responsive">
                 <table class="table-modern">
                   <thead>
                     <tr>
+                      <th style="width:36px; text-align:center;"><input type="checkbox" id="checkAllUjianTahfidz" onchange="toggleSelectAllUjianTahfidz(this.checked)" title="Pilih Semua"></th>
                       <th style="width:30px;">No</th>
                       <th>Nama Santri</th>
                       <th>NIS</th>
@@ -1003,7 +1026,7 @@
                       <th style="text-align:center;">Nilai Akhir</th>
                       <th>Predikat</th>
                       <th>Catatan Penguji</th>
-                      <th style="text-align:center;">Aksi</th>
+                      <th style="text-align:center; min-width:110px;">Aksi</th>
                     </tr>
                   </thead>
                   <tbody id="tableUjianTahfidzBody">

@@ -338,9 +338,9 @@
       imageSrc: options.imageSrc,
       aspectRatio: options.aspectRatio || '16:9',
       title: options.title || 'Sesuaikan & Potong Foto',
-      maxWidth: options.maxWidth || 1600,
-      maxHeight: options.maxHeight || 1200,
-      quality: typeof options.quality === 'number' ? options.quality : 0.85,
+      maxWidth: options.maxWidth || 960,
+      maxHeight: options.maxHeight || 960,
+      quality: typeof options.quality === 'number' ? options.quality : 0.75,
       onSave: options.onSave || function () {},
       onCancel: options.onCancel || function () {}
     };
@@ -420,19 +420,23 @@
   window.confirmImageCrop = function () {
     if (!activeImage || !currentConfig) return;
 
-    // Tentukan ukuran output hasil crop
-    let outW = 1280;
-    let outH = 720;
+    // Tentukan ukuran output hasil crop (dioptimalkan agar tajam namun sangat ringan < 50 KB)
+    let outW = 960;
+    let outH = 540;
 
     if (activeRatio === '4:3') {
-      outW = 1000;
-      outH = 750;
-    } else if (activeRatio === '1:1') {
       outW = 800;
-      outH = 800;
+      outH = 600;
+    } else if (activeRatio === '1:1') {
+      outW = 600;
+      outH = 600;
     } else if (activeRatio === 'free') {
-      outW = Math.min(1400, Math.round(cropBox.width * 2));
+      outW = Math.min(960, Math.round(cropBox.width * 1.5));
       outH = Math.round(outW * (cropBox.height / cropBox.width));
+      if (outH > 960) {
+        outW = Math.round(outW * (960 / outH));
+        outH = 960;
+      }
     }
 
     const outCanvas = document.createElement('canvas');
@@ -456,12 +460,11 @@
     );
     outCtx.restore();
 
-    // Deteksi apakah format output harus PNG agar transparansi tetap terjaga
+    // Deteksi apakah format output harus PNG agar transparansi tetap terjaga (hanya untuk logo eksplisit)
     const isPng = (
       currentConfig.format === 'image/png' ||
       currentConfig.outputFormat === 'image/png' ||
-      (currentConfig.title && currentConfig.title.toLowerCase().includes('logo')) ||
-      (currentConfig.imageSrc && (currentConfig.imageSrc.startsWith('data:image/png') || currentConfig.imageSrc.startsWith('data:image/webp')))
+      (currentConfig.title && currentConfig.title.toLowerCase().includes('logo'))
     );
 
     // Jika format PNG (logo), periksa apakah ada latar hitam di sudut luar untuk dihilangkan
@@ -481,7 +484,7 @@
 
     const resultDataUrl = isPng
       ? outCanvas.toDataURL('image/png')
-      : outCanvas.toDataURL(currentConfig.format || 'image/jpeg', currentConfig.quality || 0.85);
+      : outCanvas.toDataURL(currentConfig.format || 'image/jpeg', currentConfig.quality || 0.75);
 
     const onSave = currentConfig.onSave;
     const modal = document.getElementById('modalImageCropper');
@@ -572,9 +575,9 @@
   window.applyFullOriginalImage = function () {
     if (!activeImage || !currentConfig) return;
 
-    // Kompres foto original langsung tanpa crop
-    const maxW = currentConfig.maxWidth || 1600;
-    const maxH = currentConfig.maxHeight || 1200;
+    // Kompres foto original langsung tanpa crop (maksimal 960px agar hemat memori)
+    const maxW = Math.min(currentConfig.maxWidth || 960, 960);
+    const maxH = Math.min(currentConfig.maxHeight || 960, 960);
 
     let w = activeImage.naturalWidth;
     let h = activeImage.naturalHeight;
@@ -599,8 +602,7 @@
     const isPng = (
       currentConfig.format === 'image/png' ||
       currentConfig.outputFormat === 'image/png' ||
-      (currentConfig.title && currentConfig.title.toLowerCase().includes('logo')) ||
-      (currentConfig.imageSrc && (currentConfig.imageSrc.startsWith('data:image/png') || currentConfig.imageSrc.startsWith('data:image/webp')))
+      (currentConfig.title && currentConfig.title.toLowerCase().includes('logo'))
     );
 
     if (isPng) {
@@ -619,7 +621,7 @@
 
     const resultDataUrl = isPng
       ? outCanvas.toDataURL('image/png')
-      : outCanvas.toDataURL(currentConfig.format || 'image/jpeg', currentConfig.quality || 0.85);
+      : outCanvas.toDataURL(currentConfig.format || 'image/jpeg', currentConfig.quality || 0.75);
 
     const onSave = currentConfig.onSave;
     const modal = document.getElementById('modalImageCropper');

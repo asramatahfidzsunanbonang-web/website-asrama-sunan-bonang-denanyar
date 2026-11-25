@@ -102,6 +102,24 @@ function initFirebaseSync() {
     }, (error) => {
       console.warn('Firestore media snapshot notice:', error);
     });
+
+    // Real-Time Listener untuk Media Sekolah Formal (Foto Gedung & Brosur)
+    cloudDb.collection(CLOUD_COLLECTION).doc('media_sekolah').onSnapshot((doc) => {
+      if (doc.exists) {
+        applySekolahMediaToLocal(doc.data());
+      }
+    }, (error) => {
+      console.warn('Firestore media_sekolah snapshot notice:', error);
+    });
+
+    // Real-Time Listener untuk Media Fasilitas
+    cloudDb.collection(CLOUD_COLLECTION).doc('media_fasilitas').onSnapshot((doc) => {
+      if (doc.exists) {
+        applyFasilitasMediaToLocal(doc.data());
+      }
+    }, (error) => {
+      console.warn('Firestore media_fasilitas snapshot notice:', error);
+    });
   } catch (err) {
     console.error('Firebase init error:', err);
     updateSyncStatusBadge('offline', 'Gagal Inisialisasi Cloud');
@@ -178,6 +196,82 @@ function applyMediaToLocal(media) {
     }
   } catch (e) {
     console.warn('Error applying media to local:', e);
+  }
+}
+
+function applySekolahMediaToLocal(data) {
+  if (!data || !Array.isArray(data.sekolahMedia)) return;
+  try {
+    const raw = localStorage.getItem('sitahfidz_sekolah_formal');
+    let schools = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(schools) || schools.length === 0) {
+      if (typeof DEFAULT_FORMAL_SCHOOLS !== 'undefined') {
+        schools = JSON.parse(JSON.stringify(DEFAULT_FORMAL_SCHOOLS));
+      } else {
+        return;
+      }
+    }
+
+    let changed = false;
+    data.sekolahMedia.forEach((m) => {
+      if (!m) return;
+      const sch = schools.find((s, idx) => (m.id && s.id === m.id) || (m.name && s.name === m.name) || idx === m.index);
+      if (sch) {
+        if (m.image !== undefined && sch.image !== m.image) {
+          sch.image = m.image;
+          changed = true;
+        }
+        if (m.brosurImage !== undefined && sch.brosurImage !== m.brosurImage) {
+          sch.brosurImage = m.brosurImage;
+          changed = true;
+        }
+      }
+    });
+
+    if (changed) {
+      localStorage.setItem('sitahfidz_sekolah_formal', JSON.stringify(schools));
+      if (typeof renderAdminFormalSchools === 'function') renderAdminFormalSchools();
+      if (typeof renderFormalSchools === 'function') renderFormalSchools();
+      if (typeof renderDynamicWebContent === 'function') renderDynamicWebContent();
+    }
+  } catch (e) {
+    console.warn('Error applying sekolah media to local:', e);
+  }
+}
+
+function applyFasilitasMediaToLocal(data) {
+  if (!data || !Array.isArray(data.fasilitasMedia)) return;
+  try {
+    const raw = localStorage.getItem('sitahfidz_web_facilities');
+    let facilities = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(facilities) || facilities.length === 0) {
+      if (typeof DEFAULT_WEB_FACILITIES !== 'undefined') {
+        facilities = JSON.parse(JSON.stringify(DEFAULT_WEB_FACILITIES));
+      } else {
+        return;
+      }
+    }
+
+    let changed = false;
+    data.fasilitasMedia.forEach((m) => {
+      if (!m) return;
+      const fac = facilities.find((f, idx) => (m.id && f.id === m.id) || (m.title && f.title === m.title) || idx === m.index);
+      if (fac) {
+        if (m.image !== undefined && fac.image !== m.image) {
+          fac.image = m.image;
+          changed = true;
+        }
+      }
+    });
+
+    if (changed) {
+      localStorage.setItem('sitahfidz_web_facilities', JSON.stringify(facilities));
+      if (typeof renderWebFacilitiesAdmin === 'function') renderWebFacilitiesAdmin();
+      if (typeof renderWebsiteFacilities === 'function') renderWebsiteFacilities();
+      if (typeof renderDynamicWebContent === 'function') renderDynamicWebContent();
+    }
+  } catch (e) {
+    console.warn('Error applying fasilitas media to local:', e);
   }
 }
 
@@ -270,6 +364,33 @@ function applyCloudDataToLocal(cloudData) {
           } catch (e) {}
         }
 
+        // Pertahankan foto/brosur sekolah formal lokal jika di incoming cloud kosong (karena tersimpan di doc media_sekolah)
+        if (cloudKey === 'sekolahFormal' && Array.isArray(incomingData)) {
+          try {
+            const localSchools = localRaw ? JSON.parse(localRaw) : [];
+            incomingData.forEach((s, idx) => {
+              const localS = localSchools.find((ls, lidx) => (ls && s.id && ls.id === s.id) || (ls && s.name && ls.name === s.name) || lidx === idx);
+              if (localS) {
+                if (!s.image && localS.image) s.image = localS.image;
+                if (!s.brosurImage && localS.brosurImage) s.brosurImage = localS.brosurImage;
+              }
+            });
+          } catch (e) {}
+        }
+
+        // Pertahankan foto fasilitas lokal jika di incoming cloud kosong (karena tersimpan di doc media_fasilitas)
+        if (cloudKey === 'webFacilities' && Array.isArray(incomingData)) {
+          try {
+            const localFacs = localRaw ? JSON.parse(localRaw) : [];
+            incomingData.forEach((f, idx) => {
+              const localF = localFacs.find((lf, lidx) => (lf && f.id && lf.id === f.id) || (lf && f.title && lf.title === f.title) || lidx === idx);
+              if (localF) {
+                if (!f.image && localF.image) f.image = localF.image;
+              }
+            });
+          } catch (e) {}
+        }
+
         const cloudRaw = JSON.stringify(incomingData);
         if (localRaw !== cloudRaw) {
           // Jangan menimpa data default lokal dengan array/object kosong dari cloud baru
@@ -359,9 +480,11 @@ function pushLocalToCloud(force = false) {
 
     const rawSettings = parseOr('sitahfidz_settings', {});
     const rawWebsiteContent = parseOr('sitahfidz_website_content', {});
+    const rawSekolahFormal = parseOr('sitahfidz_sekolah_formal', []);
+    const rawWebFacilities = parseOr('sitahfidz_web_facilities', []);
 
-    // Pisahkan foto/media besar ke dokumen 'media' agar dokumen 'main' selalu sangat ringan (< 150 KB)
-    // dan tidak pernah mentok batas 1 MB Firestore!
+    // Pisahkan foto/media besar ke dokumen terpisah ('media', 'media_sekolah', 'media_fasilitas')
+    // agar dokumen utama 'main' selalu sangat ringan (< 50 KB) dan bebas dari batas 1 MB Firestore!
     const mediaPayload = {};
     const lightSettings = { ...rawSettings };
     const lightWebsiteContent = { ...rawWebsiteContent };
@@ -377,6 +500,34 @@ function pushLocalToCloud(force = false) {
       mediaPayload.fotoProfilPesantren = rawWebsiteContent.fotoProfilPesantren;
       lightWebsiteContent.fotoProfilPesantren = '';
     }
+
+    // Pisahkan foto gedung & brosur sekolah formal ke media_sekolah
+    const lightSekolahFormal = rawSekolahFormal.map(s => ({
+      ...s,
+      image: (s.image && s.image.startsWith('data:')) ? '' : (s.image || ''),
+      brosurImage: (s.brosurImage && s.brosurImage.startsWith('data:')) ? '' : (s.brosurImage || '')
+    }));
+    const sekolahMediaList = rawSekolahFormal.map((s, idx) => ({
+      id: s.id || `sch_${idx}`,
+      name: s.name || '',
+      index: idx,
+      image: s.image || '',
+      brosurImage: s.brosurImage || ''
+    }));
+    const hasSekolahMedia = sekolahMediaList.some(s => s.image || s.brosurImage);
+
+    // Pisahkan foto fasilitas ke media_fasilitas
+    const lightWebFacilities = rawWebFacilities.map(f => ({
+      ...f,
+      image: (f.image && f.image.startsWith('data:')) ? '' : (f.image || '')
+    }));
+    const fasilitasMediaList = rawWebFacilities.map((f, idx) => ({
+      id: f.id || `fac_${idx}`,
+      title: f.title || '',
+      index: idx,
+      image: f.image || ''
+    }));
+    const hasFasilitasMedia = fasilitasMediaList.some(f => f.image && f.image.startsWith('data:'));
 
     const currentDeletedSantriIds = getDeletedSantriIds();
     const cleanSantriList = parseOr('sitahfidz_santri', []).filter(s => s && s.id && !currentDeletedSantriIds.includes(s.id));
@@ -395,8 +546,8 @@ function pushLocalToCloud(force = false) {
       ubudiyahJamaah: parseOr('sitahfidz_ubudiyah_jamaah', []),
       ubudiyahEkskul: parseOr('sitahfidz_ubudiyah_ekskul', []),
       websiteContent: lightWebsiteContent,
-      webFacilities: parseOr('sitahfidz_web_facilities', []),
-      sekolahFormal: parseOr('sitahfidz_sekolah_formal', []),
+      webFacilities: lightWebFacilities,
+      sekolahFormal: lightSekolahFormal,
       ekstrakurikuler: parseOr('sitahfidz_ekstrakurikuler', []),
       biaya: parseOr('sitahfidz_web_biaya', []),
       rekening: parseOr('sitahfidz_web_rekening', []),
@@ -414,6 +565,24 @@ function pushLocalToCloud(force = false) {
     if (Object.keys(mediaPayload).length > 0) {
       promises.push(
         cloudDb.collection(CLOUD_COLLECTION).doc('media').set(mediaPayload, { merge: true })
+      );
+    }
+
+    if (hasSekolahMedia || rawSekolahFormal.length > 0) {
+      promises.push(
+        cloudDb.collection(CLOUD_COLLECTION).doc('media_sekolah').set({
+          sekolahMedia: sekolahMediaList,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true })
+      );
+    }
+
+    if (hasFasilitasMedia || rawWebFacilities.length > 0) {
+      promises.push(
+        cloudDb.collection(CLOUD_COLLECTION).doc('media_fasilitas').set({
+          fasilitasMedia: fasilitasMediaList,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true })
       );
     }
 

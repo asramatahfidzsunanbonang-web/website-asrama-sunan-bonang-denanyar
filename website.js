@@ -509,6 +509,11 @@ function initStorage() {
       }
     });
   }
+
+  // Auto-optimize foto sekolah formal jika ada data lama berukuran besar
+  if (typeof optimizeStoredSchoolImages === 'function') {
+    setTimeout(optimizeStoredSchoolImages, 2000);
+  }
 }
 
 function cleanBlackBackgroundFromLogo(imageSrc, callback) {
@@ -1011,6 +1016,87 @@ function getActiveFormalSchools() {
     }
   });
   return list;
+}
+
+function compressDataUrl(dataUrl, maxW, maxH, quality, callback) {
+  if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image')) {
+    if (callback) callback(dataUrl);
+    return;
+  }
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function () {
+    let w = img.naturalWidth || img.width;
+    let h = img.naturalHeight || img.height;
+    if (w > maxW || h > maxH) {
+      if (w / maxW > h / maxH) {
+        h = Math.round((h * maxW) / w);
+        w = maxW;
+      } else {
+        w = Math.round((w * maxH) / h);
+        h = maxH;
+      }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    const result = canvas.toDataURL('image/jpeg', quality || 0.75);
+    if (callback) callback(result);
+  };
+  img.onerror = function () {
+    if (callback) callback(dataUrl);
+  };
+  img.src = dataUrl;
+}
+
+function optimizeStoredSchoolImages() {
+  try {
+    const raw = localStorage.getItem('sitahfidz_sekolah_formal');
+    if (!raw) return;
+    const schools = JSON.parse(raw);
+    if (!Array.isArray(schools)) return;
+
+    let needsRecompression = false;
+    schools.forEach(s => {
+      if ((s.image && s.image.length > 90000) || (s.brosurImage && s.brosurImage.length > 90000)) {
+        needsRecompression = true;
+      }
+    });
+
+    if (!needsRecompression) return;
+
+    let pending = 0;
+    schools.forEach((s, idx) => {
+      if (s.image && s.image.length > 90000) {
+        pending++;
+        compressDataUrl(s.image, 960, 540, 0.75, (compressed) => {
+          schools[idx].image = compressed;
+          pending--;
+          if (pending === 0) {
+            localStorage.setItem('sitahfidz_sekolah_formal', JSON.stringify(schools));
+            if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+            if (typeof renderFormalSchools === 'function') renderFormalSchools();
+          }
+        });
+      }
+      if (s.brosurImage && s.brosurImage.length > 90000) {
+        pending++;
+        compressDataUrl(s.brosurImage, 900, 1200, 0.75, (compressed) => {
+          schools[idx].brosurImage = compressed;
+          pending--;
+          if (pending === 0) {
+            localStorage.setItem('sitahfidz_sekolah_formal', JSON.stringify(schools));
+            if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+            if (typeof renderFormalSchools === 'function') renderFormalSchools();
+          }
+        });
+      }
+    });
+  } catch (e) {
+    console.warn('optimizeStoredSchoolImages notice:', e);
+  }
 }
 
 function renderFormalSchools(filterCategory = currentSchoolFilter) {

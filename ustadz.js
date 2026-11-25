@@ -53,20 +53,39 @@ function initUstadzStorage() {
     UstadzState.settings.daftarHariLiburKondisional = [...(DEFAULT_SETTINGS.daftarHariLiburKondisional || [])];
   }
 
+  // Pastikan daftarHalaqah gabungan selalu sinkron dengan 3 kelompok utama Pengaturan
+  UstadzState.settings.daftarHalaqah = [
+    ...(UstadzState.settings.daftarKelasBinnadzor || []),
+    ...(UstadzState.settings.daftarHalaqahTahfidz || []),
+    ...(UstadzState.settings.daftarHalaqahPascaTahfidz || [])
+  ];
+
   const savedSantri = localStorage.getItem(STORAGE_KEYS.SANTRI);
-  if (savedSantri) {
+  const deletedSantriIds = (typeof getDeletedSantriIds === 'function') ? getDeletedSantriIds() : [];
+  if (savedSantri !== null) {
     try {
-      UstadzState.santri = JSON.parse(savedSantri);
-      SAMPLE_SANTRI.forEach(s => {
-        if (!UstadzState.santri.some(item => item.id === s.id)) {
-          UstadzState.santri.push(s);
-        }
-      });
+      UstadzState.santri = JSON.parse(savedSantri).filter(s => s && s.id && !deletedSantriIds.includes(s.id));
     } catch (e) {
-      UstadzState.santri = [ ...SAMPLE_SANTRI ];
+      UstadzState.santri = [];
     }
   } else {
-    UstadzState.santri = [ ...SAMPLE_SANTRI ];
+    UstadzState.santri = SAMPLE_SANTRI.filter(s => !deletedSantriIds.includes(s.id));
+    localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(UstadzState.santri));
+  }
+
+  // Auto-clean orphan halaqah: jika halaqah santri sudah dihapus dari Pengaturan Pondok, bersihkan halaqah santri tersebut
+  const validHalaqahUst = new Set((UstadzState.settings.daftarHalaqah || []).map(h => (h || '').trim().toLowerCase()));
+  if (validHalaqahUst.size > 0) {
+    let ustCleaned = false;
+    UstadzState.santri.forEach(s => {
+      if (s.halaqah && !validHalaqahUst.has(s.halaqah.trim().toLowerCase())) {
+        s.halaqah = '';
+        ustCleaned = true;
+      }
+    });
+    if (ustCleaned) {
+      localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(UstadzState.santri));
+    }
   }
 
   // Auto-migration: pastikan kelasSekolah tersedia
@@ -270,27 +289,39 @@ function initInteractiveCardClicks() {
 
 // ================= LIST OF USTADZ & CLASSES =================
 function getDaftarUstadzHalaqah() {
-  const map = new Map();
-  (UstadzState.santri || []).forEach(s => {
-    const h = (s.halaqah || '').trim();
-    if (h) {
-      map.set(h, (map.get(h) || 0) + 1);
-    }
-  });
-
-  const fromSettings = [
+  // Hanya ambil halaqah resmi yang masih terdaftar di Pengaturan Pondok
+  const rawList = [
+    ...(UstadzState.settings.daftarKelasBinnadzor || []),
     ...(UstadzState.settings.daftarHalaqahTahfidz || []),
-    ...(UstadzState.settings.daftarHalaqahPascaTahfidz || []),
-    ...(UstadzState.settings.daftarHalaqah || [])
+    ...(UstadzState.settings.daftarHalaqahPascaTahfidz || [])
   ];
-  fromSettings.forEach(h => {
-    const trimmed = (h || '').trim();
-    if (trimmed && !map.has(trimmed)) {
-      map.set(trimmed, 0);
+
+  const uniqueOfficial = [];
+  const seen = new Set();
+  rawList.forEach(item => {
+    const trimmed = (item || '').trim();
+    if (trimmed && !seen.has(trimmed.toLowerCase())) {
+      seen.add(trimmed.toLowerCase());
+      uniqueOfficial.push(trimmed);
     }
   });
 
-  return Array.from(map.entries()).map(([name, count]) => ({ name, count }));
+  const counts = {};
+  uniqueOfficial.forEach(name => {
+    counts[name.toLowerCase()] = 0;
+  });
+
+  (UstadzState.santri || []).forEach(s => {
+    const h = (s.halaqah || '').trim().toLowerCase();
+    if (h && counts.hasOwnProperty(h)) {
+      counts[h]++;
+    }
+  });
+
+  return uniqueOfficial.map(name => ({
+    name,
+    count: counts[name.toLowerCase()] || 0
+  }));
 }
 
 // ================= TAB 1: PRESENSI HARIAN =================
@@ -301,6 +332,10 @@ function renderAbsensiUstadzChips() {
   if (!container) return;
 
   const list = getDaftarUstadzHalaqah();
+  if (UstadzState.selectedUstadz && !list.some(l => l.name === UstadzState.selectedUstadz)) {
+    UstadzState.selectedUstadz = '';
+    localStorage.removeItem('sitahfidz_my_ustadz');
+  }
   const current = UstadzState.selectedUstadz || '';
   const totalSantri = UstadzState.santri.length;
 
@@ -675,6 +710,9 @@ function renderSetoranUstadzChips() {
   if (!container) return;
 
   const list = getDaftarUstadzHalaqah();
+  if (UstadzState.selectedSetoranUstadz && !list.some(l => l.name === UstadzState.selectedSetoranUstadz)) {
+    UstadzState.selectedSetoranUstadz = '';
+  }
   const current = UstadzState.selectedSetoranUstadz || '';
   const totalSetoran = UstadzState.setoran.length;
 
@@ -697,7 +735,7 @@ function renderSetoranUstadzChips() {
     </button>
   `;
 
-  const activeChips = list.filter(item => item.count > 0 || item.name === current);
+  const activeChips = list;
   activeChips.forEach(item => {
     const isActive = item.name === current;
     const isPutri = item.name.toLowerCase().includes('putri') || item.name.toLowerCase().includes('ustdzh');

@@ -17,6 +17,45 @@ const FIREBASE_CONFIG = {
 const CLOUD_COLLECTION = 'sitahfidz_data';
 const CLOUD_DOC_ID = 'main';
 
+// ================= PENGELOLAAN ID SANTRI TERHAPUS (TOMBSTONE) =================
+function getDeletedSantriIds() {
+  try {
+    const raw = localStorage.getItem('sitahfidz_deleted_santri_ids');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function recordDeletedSantriId(id) {
+  if (!id) return;
+  try {
+    const list = getDeletedSantriIds();
+    if (!list.includes(id)) {
+      list.push(id);
+      localStorage.setItem('sitahfidz_deleted_santri_ids', JSON.stringify(list));
+    }
+  } catch (e) {}
+}
+
+function unrecordDeletedSantriId(id) {
+  if (!id) return;
+  try {
+    const list = getDeletedSantriIds();
+    const idx = list.indexOf(id);
+    if (idx !== -1) {
+      list.splice(idx, 1);
+      localStorage.setItem('sitahfidz_deleted_santri_ids', JSON.stringify(list));
+    }
+  } catch (e) {}
+}
+
+if (typeof window !== 'undefined') {
+  window.getDeletedSantriIds = getDeletedSantriIds;
+  window.recordDeletedSantriId = recordDeletedSantriId;
+  window.unrecordDeletedSantriId = unrecordDeletedSantriId;
+}
+
 let cloudDb = null;
 let isFirebaseInitialized = false;
 let isSyncingToCloud = false;
@@ -149,6 +188,13 @@ function applyCloudDataToLocal(cloudData) {
   try {
     let hasChanges = false;
 
+    // 0. Sinkronisasi daftar ID santri yang sudah dihapus secara permanen (tombstone)
+    if (Array.isArray(cloudData.deletedSantriIds)) {
+      const currentDeleted = getDeletedSantriIds();
+      const merged = Array.from(new Set([...currentDeleted, ...cloudData.deletedSantriIds]));
+      localStorage.setItem('sitahfidz_deleted_santri_ids', JSON.stringify(merged));
+    }
+
     const syncMap = {
       settings: 'sitahfidz_settings',
       santri: 'sitahfidz_santri',
@@ -176,6 +222,33 @@ function applyCloudDataToLocal(cloudData) {
       if (cloudData[cloudKey] !== undefined) {
         let incomingData = cloudData[cloudKey];
         const localRaw = localStorage.getItem(localKey);
+
+        // Jika data santri, filter keluar santri yang telah dihapus permanen
+        if (cloudKey === 'santri') {
+          const deletedIds = getDeletedSantriIds();
+          if (deletedIds.length > 0) {
+            if (Array.isArray(incomingData)) {
+              const beforeCount = incomingData.length;
+              incomingData = incomingData.filter(s => s && s.id && !deletedIds.includes(s.id));
+              if (incomingData.length < beforeCount) {
+                console.log(`[CloudSync] Memfilter ${beforeCount - incomingData.length} santri yang telah dihapus.`);
+                setTimeout(() => { pushLocalToCloud(true); }, 1500);
+              }
+            }
+            if (localRaw) {
+              try {
+                const localArr = JSON.parse(localRaw);
+                if (Array.isArray(localArr)) {
+                  const cleanedLocal = localArr.filter(s => s && s.id && !deletedIds.includes(s.id));
+                  if (cleanedLocal.length < localArr.length) {
+                    localStorage.setItem(localKey, JSON.stringify(cleanedLocal));
+                    hasChanges = true;
+                  }
+                }
+              } catch (e) {}
+            }
+          }
+        }
 
         // Pertahankan foto/logo lokal jika di incoming cloud kosong (karena tersimpan di doc media)
         if (cloudKey === 'settings' && incomingData && typeof incomingData === 'object') {
@@ -206,9 +279,9 @@ function applyCloudDataToLocal(cloudData) {
             continue;
           }
 
-          // Proteksi cerdas untuk daftar data (biaya, rekening, santri):
+          // Proteksi cerdas untuk daftar data (biaya, rekening):
           // Jika lokal memiliki data yang lebih banyak/lengkap dari Cloud, pertahankan lokal dan perbarui Cloud!
-          if (Array.isArray(incomingData) && hasLocalPopulated) {
+          if (Array.isArray(incomingData) && hasLocalPopulated && cloudKey !== 'santri') {
             try {
               const localArr = JSON.parse(localRaw);
               if (Array.isArray(localArr) && localArr.length > incomingData.length) {
@@ -305,9 +378,13 @@ function pushLocalToCloud(force = false) {
       lightWebsiteContent.fotoProfilPesantren = '';
     }
 
+    const currentDeletedSantriIds = getDeletedSantriIds();
+    const cleanSantriList = parseOr('sitahfidz_santri', []).filter(s => s && s.id && !currentDeletedSantriIds.includes(s.id));
+
     const payload = {
       settings: lightSettings,
-      santri: parseOr('sitahfidz_santri', []),
+      santri: cleanSantriList,
+      deletedSantriIds: currentDeletedSantriIds,
       setoran: parseOr('sitahfidz_setoran', []),
       absensi: parseOr('sitahfidz_absensi', []),
       ustadz: parseOr('sitahfidz_ustadz', []),

@@ -112,25 +112,44 @@ function initStorage() {
   if (!AppState.settings.customBackground) {
     AppState.settings.customBackground = DEFAULT_SETTINGS.customBackground || '';
   }
+  // Pastikan daftarHalaqah gabungan selalu sinkron dengan 3 kelompok utama Pengaturan
+  AppState.settings.daftarHalaqah = [
+    ...(AppState.settings.daftarKelasBinnadzor || []),
+    ...(AppState.settings.daftarHalaqahTahfidz || []),
+    ...(AppState.settings.daftarHalaqahPascaTahfidz || [])
+  ];
+
   if (typeof applyAppBackground === 'function') {
     applyAppBackground(AppState.settings);
   }
 
-  // Santri: merge sample santri if missing
+  // Santri: muat dari storage lokal dan bersihkan ID santri yang sudah dihapus
   const savedSantri = localStorage.getItem(STORAGE_KEYS.SANTRI);
-  if (savedSantri) {
+  const deletedSantriIds = (typeof getDeletedSantriIds === 'function') ? getDeletedSantriIds() : [];
+  if (savedSantri !== null) {
     try {
-      AppState.santri = JSON.parse(savedSantri);
-      SAMPLE_SANTRI.forEach(s => {
-        if (!AppState.santri.some(item => item.id === s.id)) {
-          AppState.santri.push(s);
-        }
-      });
+      AppState.santri = JSON.parse(savedSantri).filter(s => s && s.id && !deletedSantriIds.includes(s.id));
     } catch (e) {
-      AppState.santri = [ ...SAMPLE_SANTRI ];
+      AppState.santri = [];
     }
   } else {
-    AppState.santri = [ ...SAMPLE_SANTRI ];
+    AppState.santri = SAMPLE_SANTRI.filter(s => !deletedSantriIds.includes(s.id));
+    localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(AppState.santri));
+  }
+
+  // Auto-clean orphan halaqah: jika halaqah santri sudah dihapus dari Pengaturan Pondok, bersihkan halaqah santri tersebut
+  const validHalaqahOnLoad = new Set((AppState.settings.daftarHalaqah || []).map(h => (h || '').trim().toLowerCase()));
+  if (validHalaqahOnLoad.size > 0) {
+    let santriCleaned = false;
+    AppState.santri.forEach(s => {
+      if (s.halaqah && !validHalaqahOnLoad.has(s.halaqah.trim().toLowerCase())) {
+        s.halaqah = '';
+        santriCleaned = true;
+      }
+    });
+    if (santriCleaned) {
+      localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(AppState.santri));
+    }
   }
 
   // Auto-migration: pastikan setiap santri memiliki data kelasSekolah
@@ -625,27 +644,39 @@ function renderDashboard() {
 
 // ================= 2. PRESENSI HARIAN =================
 function getDaftarUstadzHalaqah() {
-  const map = new Map();
-  (AppState.santri || []).forEach(s => {
-    const h = (s.halaqah || '').trim();
-    if (h) {
-      map.set(h, (map.get(h) || 0) + 1);
-    }
-  });
-
-  const fromSettings = [
+  // Hanya ambil halaqah resmi yang masih terdaftar di Pengaturan Pondok
+  const rawList = [
+    ...(AppState.settings.daftarKelasBinnadzor || []),
     ...(AppState.settings.daftarHalaqahTahfidz || []),
-    ...(AppState.settings.daftarHalaqahPascaTahfidz || []),
-    ...(AppState.settings.daftarHalaqah || [])
+    ...(AppState.settings.daftarHalaqahPascaTahfidz || [])
   ];
-  fromSettings.forEach(h => {
-    const trimmed = (h || '').trim();
-    if (trimmed && !map.has(trimmed)) {
-      map.set(trimmed, 0);
+
+  const uniqueOfficial = [];
+  const seen = new Set();
+  rawList.forEach(item => {
+    const trimmed = (item || '').trim();
+    if (trimmed && !seen.has(trimmed.toLowerCase())) {
+      seen.add(trimmed.toLowerCase());
+      uniqueOfficial.push(trimmed);
     }
   });
 
-  return Array.from(map.entries()).map(([name, count]) => ({ name, count }));
+  const counts = {};
+  uniqueOfficial.forEach(name => {
+    counts[name.toLowerCase()] = 0;
+  });
+
+  (AppState.santri || []).forEach(s => {
+    const h = (s.halaqah || '').trim().toLowerCase();
+    if (h && counts.hasOwnProperty(h)) {
+      counts[h]++;
+    }
+  });
+
+  return uniqueOfficial.map(name => ({
+    name,
+    count: counts[name.toLowerCase()] || 0
+  }));
 }
 
 function renderAbsensiUstadzChips() {
@@ -656,6 +687,9 @@ function renderAbsensiUstadzChips() {
   if (!container) return;
 
   const list = getDaftarUstadzHalaqah();
+  if (AppState.selectedAbsensiUstadz && !list.some(l => l.name === AppState.selectedAbsensiUstadz)) {
+    AppState.selectedAbsensiUstadz = '';
+  }
   const totalSantri = AppState.santri.length;
   const current = AppState.selectedAbsensiUstadz || '';
 
@@ -1619,6 +1653,9 @@ function renderSetoranUstadzChips() {
   if (!container) return;
 
   const list = getDaftarUstadzHalaqah();
+  if (AppState.selectedSetoranUstadz && !list.some(l => l.name === AppState.selectedSetoranUstadz)) {
+    AppState.selectedSetoranUstadz = '';
+  }
   const current = AppState.selectedSetoranUstadz || '';
   const totalSetoran = AppState.setoran.length;
 
@@ -2188,6 +2225,9 @@ function hapusSetoran(id) {
   if (confirm("Apakah Anda yakin ingin menghapus data setoran ini?")) {
     AppState.setoran = AppState.setoran.filter(s => s.id !== id);
     saveToStorage();
+    if (typeof pushLocalToCloud === 'function') {
+      pushLocalToCloud(true);
+    }
     renderAll();
     showToast("Data setoran berhasil dihapus.", "info");
   }
@@ -2636,6 +2676,10 @@ function simpanFormSantri(e) {
     AppState.santri.push(newSantri);
   }
 
+  if (typeof unrecordDeletedSantriId === 'function') {
+    unrecordDeletedSantriId(id || (targetSantri ? targetSantri.id : null));
+  }
+
   saveToStorage();
   closeModalSantri();
   renderAll();
@@ -2650,8 +2694,22 @@ function hapusSantri(id) {
   const s = AppState.santri.find(item => item.id === id);
   if (!s) return;
   if (confirm(`Yakin ingin menghapus santri ${s.nama}? Seluruh riwayat setoran terkait akan tetap tersimpan di arsip.`)) {
+    if (typeof recordDeletedSantriId === 'function') {
+      recordDeletedSantriId(id);
+    } else {
+      try {
+        const list = JSON.parse(localStorage.getItem('sitahfidz_deleted_santri_ids') || '[]');
+        if (!list.includes(id)) {
+          list.push(id);
+          localStorage.setItem('sitahfidz_deleted_santri_ids', JSON.stringify(list));
+        }
+      } catch (e) {}
+    }
     AppState.santri = AppState.santri.filter(item => item.id !== id);
     saveToStorage();
+    if (typeof pushLocalToCloud === 'function') {
+      pushLocalToCloud(true);
+    }
     renderAll();
     showToast(`Santri ${s.nama} telah dihapus.`, "info");
   }
@@ -8350,6 +8408,19 @@ function simpanPengaturan() {
     ...(AppState.settings.daftarHalaqahTahfidz || []),
     ...(AppState.settings.daftarHalaqahPascaTahfidz || [])
   ];
+
+  // Bersihkan santri yang berada di halaqah yang sudah dihapus dari Pengaturan
+  const validHalaqahSet = new Set(AppState.settings.daftarHalaqah.map(h => h.trim().toLowerCase()));
+  let santriCleaned = false;
+  (AppState.santri || []).forEach(s => {
+    if (s.halaqah && !validHalaqahSet.has(s.halaqah.trim().toLowerCase())) {
+      s.halaqah = '';
+      santriCleaned = true;
+    }
+  });
+  if (santriCleaned) {
+    localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(AppState.santri));
+  }
 
   // Sesi lines
   const sesiText = document.getElementById('settingSesiList').value;

@@ -293,7 +293,8 @@
       if (!portalSettings.hariLiburRutin) portalSettings.hariLiburRutin = ["Kamis", "Jumat"];
       if (!portalSettings.daftarHariLiburKondisional) portalSettings.daftarHariLiburKondisional = DEFAULT_SETTINGS.daftarHariLiburKondisional || [];
 
-      portalSantri = JSON.parse(localStorage.getItem('sitahfidz_santri') || 'null') || SAMPLE_SANTRI;
+      const deletedSantriIds = (typeof getDeletedSantriIds === 'function') ? getDeletedSantriIds() : [];
+      portalSantri = (JSON.parse(localStorage.getItem('sitahfidz_santri') || 'null') || SAMPLE_SANTRI).filter(s => s && s.id && !deletedSantriIds.includes(s.id));
       portalSetoran = JSON.parse(localStorage.getItem('sitahfidz_setoran') || 'null') || SAMPLE_SETORAN;
       portalAbsensi = JSON.parse(localStorage.getItem('sitahfidz_absensi') || 'null') || SAMPLE_ABSENSI;
       portalPelanggaran = JSON.parse(localStorage.getItem('sitahfidz_pelanggaran') || 'null') || (typeof SAMPLE_PELANGGARAN !== 'undefined' ? SAMPLE_PELANGGARAN : []);

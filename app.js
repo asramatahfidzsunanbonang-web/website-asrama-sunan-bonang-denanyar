@@ -9670,16 +9670,16 @@ function updateAdminBiayaTotalSummary(list) {
 
   if (totalBulanan > 0 && totalSekaliBayar > 0) {
     totalNominalEl.textContent = formatRupiah(totalSemua);
-    if (totalSubEl) totalSubEl.textContent = 'Biaya Masuk Sekali Bayar + Syahriah Bulan Pertama';
-    if (totalDetailEl) totalDetailEl.textContent = `(Biaya Masuk: ${formatRupiah(totalSekaliBayar)} + Syahriah: ${formatRupiah(totalBulanan)}/bln)`;
+    if (totalSubEl) totalSubEl.textContent = 'Biaya Masuk Pondok Sekali Bayar + Syahriah Bulan Pertama';
+    if (totalDetailEl) totalDetailEl.textContent = `(Biaya Masuk Pondok: ${formatRupiah(totalSekaliBayar)} + Syahriah: ${formatRupiah(totalBulanan)}/bln)`;
   } else if (totalBulanan > 0 && totalSekaliBayar === 0) {
     totalNominalEl.innerHTML = `${formatRupiah(totalBulanan)}<span style="font-size:12px; font-weight:normal;">/bln</span>`;
-    if (totalSubEl) totalSubEl.textContent = 'Total Iuran Syahriah Bulanan Santri';
+    if (totalSubEl) totalSubEl.textContent = 'Total Iuran Syahriah Bulanan Santri Pondok';
     if (totalDetailEl) totalDetailEl.textContent = 'Iuran rutin bulanan asrama, makan & tahfidz';
   } else {
     totalNominalEl.textContent = formatRupiah(totalSemua);
-    if (totalSubEl) totalSubEl.textContent = 'Total Seluruh Biaya Pendaftaran & Sarana';
-    if (totalDetailEl) totalDetailEl.textContent = 'Total biaya masuk awal santri baru';
+    if (totalSubEl) totalSubEl.textContent = 'Total Biaya Pendaftaran & Sarana Pondok';
+    if (totalDetailEl) totalDetailEl.textContent = 'Total biaya masuk awal santri baru pondok';
   }
 }
 

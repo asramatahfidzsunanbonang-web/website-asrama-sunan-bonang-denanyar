@@ -1791,16 +1791,16 @@ function renderWebsitePembayaran() {
         totalContainer.style.display = 'flex';
         if (totalBulanan > 0 && totalSekaliBayar > 0) {
           if (totalNominalEl) totalNominalEl.textContent = formatRupiah(totalSemua);
-          if (totalSubEl) totalSubEl.textContent = 'Biaya Masuk Sekali Bayar + Syahriah Bulan Pertama';
-          if (totalDetailEl) totalDetailEl.textContent = `(Biaya Masuk: ${formatRupiah(totalSekaliBayar)} + Syahriah: ${formatRupiah(totalBulanan)}/bln)`;
+          if (totalSubEl) totalSubEl.textContent = 'Biaya Masuk Pondok Sekali Bayar + Syahriah Bulan Pertama';
+          if (totalDetailEl) totalDetailEl.textContent = `(Biaya Masuk Pondok: ${formatRupiah(totalSekaliBayar)} + Syahriah: ${formatRupiah(totalBulanan)}/bln)`;
         } else if (totalBulanan > 0 && totalSekaliBayar === 0) {
           if (totalNominalEl) totalNominalEl.innerHTML = `${formatRupiah(totalBulanan)}<span style="font-size:11px; font-weight:normal;">/bln</span>`;
-          if (totalSubEl) totalSubEl.textContent = 'Total Iuran Syahriah Bulanan Santri';
+          if (totalSubEl) totalSubEl.textContent = 'Total Iuran Syahriah Bulanan Santri Pondok';
           if (totalDetailEl) totalDetailEl.textContent = 'Iuran rutin bulanan asrama, makan & tahfidz';
         } else {
           if (totalNominalEl) totalNominalEl.textContent = formatRupiah(totalSemua);
-          if (totalSubEl) totalSubEl.textContent = 'Total Seluruh Biaya Pendaftaran & Sarana';
-          if (totalDetailEl) totalDetailEl.textContent = 'Total biaya masuk awal santri baru';
+          if (totalSubEl) totalSubEl.textContent = 'Total Biaya Pendaftaran & Sarana Pondok';
+          if (totalDetailEl) totalDetailEl.textContent = 'Total biaya masuk awal santri baru pondok';
         }
       }
     }
@@ -1820,13 +1820,17 @@ function renderWebsitePembayaran() {
 
       rekeningContainer.innerHTML = `
         <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:16px; margin-top:16px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:6px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
             <h4 style="font-size:13.5px; font-weight:800; color:#0f172a; margin:0; display:flex; align-items:center; gap:6px;">
-              <span>💳</span> Info Rekening Resmi Pembayaran &amp; Infaq
+              <span>💳</span> Info Rekening Resmi Pembayaran &amp; Infaq Pondok
             </h4>
             <span style="font-size:10.5px; background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; padding:2px 8px; border-radius:999px; font-weight:700;">
               Transfer Resmi Pondok
             </span>
+          </div>
+
+          <div style="font-size:11px; color:#1e40af; background:#eff6ff; padding:8px 12px; border-radius:8px; border:1px solid #bfdbfe; margin-bottom:12px; line-height:1.45;">
+            ℹ️ <strong>Keterangan:</strong> Seluruh rekening di bawah ini khusus untuk transfer infaq pendaftaran &amp; biaya pendidikan <strong>Pondok Pesantren</strong> (belum termasuk biaya pendaftaran sekolah formal mitra).
           </div>
 
           <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:10px;">
@@ -1887,8 +1891,11 @@ function renderWebsitePembayaran() {
 
     const totalHtml = brosurTotalSemua > 0 ? `
       <div style="display:flex; justify-content:space-between; padding:8px 0 4px 0; margin-top:4px; border-top:2px solid #059669; font-weight:800;">
-        <span style="color:#065f46;">TOTAL ESTIMASI BIAYA:</span>
+        <span style="color:#065f46;">TOTAL ESTIMASI BIAYA PONDOK:</span>
         <span style="color:#059669; font-size:13px;">${formatRupiah(brosurTotalSemua)}</span>
+      </div>
+      <div style="font-size:10px; color:#1e40af; background:#eff6ff; border-radius:6px; padding:6px 10px; margin-top:6px; line-height:1.45; border:1px solid #bfdbfe;">
+        ℹ️ Seluruh rincian di atas adalah <strong>biaya pendaftaran &amp; pendidikan pondok pesantren</strong>, belum termasuk biaya pendaftaran sekolah formal.
       </div>
     ` : '';
 
@@ -1924,7 +1931,7 @@ function renderWebsitePembayaran() {
       buktiContainer.innerHTML = `
         <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-top:12px; text-align:left;">
           <strong style="font-size:12px; color:#0f172a; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-            <span>💳</span> Rekening Transfer Infaq Pendaftaran:
+            <span>💳</span> Rekening Transfer Infaq Pendaftaran Pondok:
           </strong>
           ${rekeningList.map(r => `
             <div style="font-size:11.5px; color:#334155; margin-bottom:4px; padding:4px 8px; background:#ffffff; border-radius:6px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
@@ -1937,6 +1944,9 @@ function renderWebsitePembayaran() {
               </button>
             </div>
           `).join('')}
+          <div style="margin-top:8px; font-size:10.5px; color:#1e40af; background:#eff6ff; padding:6px 10px; border-radius:6px; border:1px solid #bfdbfe; line-height:1.4;">
+            ℹ️ <strong>Catatan:</strong> Pembayaran ini khusus untuk infaq pendaftaran pondok pesantren, belum termasuk biaya pendaftaran sekolah formal.
+          </div>
         </div>
       `;
     } else {

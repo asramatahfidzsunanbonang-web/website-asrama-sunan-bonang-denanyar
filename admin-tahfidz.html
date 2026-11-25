@@ -2863,17 +2863,20 @@
         <div class="panel-box" style="margin-top:24px;">
           <div class="panel-header">
             <div>
-              <h3 class="panel-title"><span>🏫</span> Kelola Pilihan Sekolah Formal &amp; Upload Brosur Sekolah</h3>
+              <h3 class="panel-title"><span>🏫</span> Kelola Pilihan Sekolah Formal Terpadu</h3>
               <p style="font-size:12px; color:var(--dark-500); margin-top:2px;">
-                Atur informasi 6 pilihan sekolah formal (MTsN 4 Denanyar, MTs MM, MAN 4 Denanyar, MAMM, SMP MM, SMK Bisri Syansuri) dan upload foto/gambar brosur resmi masing-masing sekolah.
+                Edit informasi lengkap lembaga sekolah mitra (nama, tingkat, ikon, profil kurikulum, keunggulan, syarat PPDB, &amp; kontak WA). Anda juga dapat menambah atau menghapus sekolah secara bebas.
               </p>
             </div>
-            <div style="display:flex; gap:8px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
               <button class="btn btn-secondary btn-sm" onclick="resetAdminFormalSchools()">
                 🔄 Kembalikan ke Standar
               </button>
+              <button class="btn btn-gold btn-sm" onclick="tambahAdminFormalSchool()" style="font-weight:700;">
+                ➕ Tambah Sekolah Baru
+              </button>
               <button class="btn btn-primary btn-sm" onclick="simpanAdminFormalSchools()">
-                💾 Simpan Sekolah &amp; Brosur
+                💾 Simpan Seluruh Sekolah
               </button>
             </div>
           </div>
@@ -2881,17 +2884,20 @@
             <!-- Alert Info -->
             <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:12px 16px; margin-bottom:20px; font-size:12.5px; color:#1e40af; display:flex; align-items:center; gap:8px;">
               <span>💡</span>
-              <span>Setiap sekolah formal kini dapat dilengkapi <strong>Foto Gedung / Suasana Sekolah</strong> (rasio 16:9 seperti fasilitas pondok) serta <strong>Foto / Brosur Resmi PPDB</strong>. Fitur pemotong gambar (cropper) siap membantu memotong, memutar, atau menggunakan foto penuh.</span>
+              <span>Seluruh info sekolah formal dapat diedit langsung pada masing-masing kartu di bawah. Format berbasis teks murni tanpa upload gambar sehingga sistem berjalan sangat cepat, ringan, bebas error, dan hemat kuota database.</span>
             </div>
 
-            <!-- List of 6 School Cards Container -->
+            <!-- List of School Cards Container -->
             <div id="adminFormalSchoolsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px;">
               <!-- Dynamic populated by renderAdminFormalSchools() -->
             </div>
 
-            <div style="margin-top:24px; text-align:right;">
+            <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <button class="btn btn-gold" onclick="tambahAdminFormalSchool()" style="font-weight:700;">
+                ➕ Tambah Sekolah Baru
+              </button>
               <button class="btn btn-primary" onclick="simpanAdminFormalSchools()">
-                💾 Simpan Pengaturan Sekolah Formal
+                💾 Simpan Seluruh Sekolah Formal
               </button>
             </div>
           </div>

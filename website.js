@@ -509,11 +509,6 @@ function initStorage() {
       }
     });
   }
-
-  // Auto-optimize foto sekolah formal jika ada data lama berukuran besar
-  if (typeof optimizeStoredSchoolImages === 'function') {
-    setTimeout(optimizeStoredSchoolImages, 2000);
-  }
 }
 
 function cleanBlackBackgroundFromLogo(imageSrc, callback) {
@@ -971,24 +966,8 @@ function getActiveFormalSchools() {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         parsed.forEach(s => {
-          s.badge = '';
-          s.image = s.image || '';
-          s.brosurImage = s.brosurImage || '';
-          if (s.desc) {
-            s.desc = s.desc.replace(/penyelenggara resmi MAN Program Keagamaan \(MAN PK\) dan riset/gi, 'rujukan nasional dan riset')
-                           .replace(/MAN Program Keagamaan \(MAN PK\)/gi, 'Program Keagamaan')
-                           .replace(/Madrasah Aliyah Negeri rujukan/gi, 'Madrasah Aliyah rujukan')
-                           .replace(/Madrasah Tsanawiyah Negeri rujukan/gi, 'Madrasah Tsanawiyah rujukan');
-          }
-          if (Array.isArray(s.highlights)) {
-            s.highlights = s.highlights.map(h => {
-              let clean = stripAkreditasi(h);
-              clean = clean.replace(/Penyelenggara Resmi MAN Program Keagamaan \(MAN PK\) Nasional/gi, 'Program Peminatan Sains, Riset & Keagamaan Unggulan')
-                           .replace(/Jadwal belajar pagi selaras dengan halaqah setoran pondok/gi, 'Pengembangan Minat Riset, Sains & Teknologi Digital')
-                           .replace(/Sinkronisasi waktu kepulangan sekolah & waktu ashar pondok/gi, 'Pembiasaan Karakter Disiplin & Kemandirian Santri');
-              return clean;
-            });
-          }
+          s.image = '';
+          s.brosurImage = '';
         });
         return parsed;
       }
@@ -996,107 +975,10 @@ function getActiveFormalSchools() {
   } catch (e) {}
   const list = (typeof DEFAULT_FORMAL_SCHOOLS !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_FORMAL_SCHOOLS)) : [];
   list.forEach(s => {
-    s.badge = '';
-    s.image = s.image || '';
-    s.brosurImage = s.brosurImage || '';
-    if (s.desc) {
-      s.desc = s.desc.replace(/penyelenggara resmi MAN Program Keagamaan \(MAN PK\) dan riset/gi, 'rujukan nasional dan riset')
-                     .replace(/MAN Program Keagamaan \(MAN PK\)/gi, 'Program Keagamaan')
-                     .replace(/Madrasah Aliyah Negeri rujukan/gi, 'Madrasah Aliyah rujukan')
-                     .replace(/Madrasah Tsanawiyah Negeri rujukan/gi, 'Madrasah Tsanawiyah rujukan');
-    }
-    if (Array.isArray(s.highlights)) {
-      s.highlights = s.highlights.map(h => {
-        let clean = stripAkreditasi(h);
-        clean = clean.replace(/Penyelenggara Resmi MAN Program Keagamaan \(MAN PK\) Nasional/gi, 'Program Peminatan Sains, Riset & Keagamaan Unggulan')
-                     .replace(/Jadwal belajar pagi selaras dengan halaqah setoran pondok/gi, 'Pengembangan Minat Riset, Sains & Teknologi Digital')
-                     .replace(/Sinkronisasi waktu kepulangan sekolah & waktu ashar pondok/gi, 'Pembiasaan Karakter Disiplin & Kemandirian Santri');
-        return clean;
-      });
-    }
+    s.image = '';
+    s.brosurImage = '';
   });
   return list;
-}
-
-function compressDataUrl(dataUrl, maxW, maxH, quality, callback) {
-  if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image')) {
-    if (callback) callback(dataUrl);
-    return;
-  }
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = function () {
-    let w = img.naturalWidth || img.width;
-    let h = img.naturalHeight || img.height;
-    if (w > maxW || h > maxH) {
-      if (w / maxW > h / maxH) {
-        h = Math.round((h * maxW) / w);
-        w = maxW;
-      } else {
-        w = Math.round((w * maxH) / h);
-        h = maxH;
-      }
-    }
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, w, h);
-    const result = canvas.toDataURL('image/jpeg', quality || 0.75);
-    if (callback) callback(result);
-  };
-  img.onerror = function () {
-    if (callback) callback(dataUrl);
-  };
-  img.src = dataUrl;
-}
-
-function optimizeStoredSchoolImages() {
-  try {
-    const raw = localStorage.getItem('sitahfidz_sekolah_formal');
-    if (!raw) return;
-    const schools = JSON.parse(raw);
-    if (!Array.isArray(schools)) return;
-
-    let needsRecompression = false;
-    schools.forEach(s => {
-      if ((s.image && s.image.length > 90000) || (s.brosurImage && s.brosurImage.length > 90000)) {
-        needsRecompression = true;
-      }
-    });
-
-    if (!needsRecompression) return;
-
-    let pending = 0;
-    schools.forEach((s, idx) => {
-      if (s.image && s.image.length > 90000) {
-        pending++;
-        compressDataUrl(s.image, 960, 540, 0.75, (compressed) => {
-          schools[idx].image = compressed;
-          pending--;
-          if (pending === 0) {
-            localStorage.setItem('sitahfidz_sekolah_formal', JSON.stringify(schools));
-            if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
-            if (typeof renderFormalSchools === 'function') renderFormalSchools();
-          }
-        });
-      }
-      if (s.brosurImage && s.brosurImage.length > 90000) {
-        pending++;
-        compressDataUrl(s.brosurImage, 900, 1200, 0.75, (compressed) => {
-          schools[idx].brosurImage = compressed;
-          pending--;
-          if (pending === 0) {
-            localStorage.setItem('sitahfidz_sekolah_formal', JSON.stringify(schools));
-            if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
-            if (typeof renderFormalSchools === 'function') renderFormalSchools();
-          }
-        });
-      }
-    });
-  } catch (e) {
-    console.warn('optimizeStoredSchoolImages notice:', e);
-  }
 }
 
 function renderFormalSchools(filterCategory = currentSchoolFilter) {
@@ -1121,13 +1003,9 @@ function renderFormalSchools(filterCategory = currentSchoolFilter) {
   }
 
   grid.innerHTML = filtered.map(item => {
-    // Find index in original array
     const originalIndex = allSchools.findIndex(s => s.id === item.id);
     const idx = originalIndex >= 0 ? originalIndex : 0;
     const delayClass = `reveal-delay-${(idx % 6) + 1}`;
-    const hasGedungImg = !!(item.image && item.image.trim() !== '');
-    const hasBrosurImg = !!(item.brosurImage && item.brosurImage.trim() !== '');
-    const bannerPhoto = item.image || item.brosurImage || '';
 
     const highlightsHtml = (item.highlights || []).map(hl => `
       <li class="school-highlight-item">
@@ -1136,25 +1014,15 @@ function renderFormalSchools(filterCategory = currentSchoolFilter) {
       </li>
     `).join('');
 
-    const bannerBgStyle = bannerPhoto
-      ? `background-image: linear-gradient(135deg, rgba(6, 78, 59, 0.72) 0%, rgba(4, 120, 87, 0.85) 100%), url('${bannerPhoto}'); background-size: cover; background-position: center;`
-      : `background: ${item.gradient || 'linear-gradient(135deg,#065f46,#047857)'};`;
-
-    let statusBrosurHtml = '<span class="school-brosur-badge no-img">📋 Brosur Digital Terpadu</span>';
-    if (hasGedungImg && hasBrosurImg) {
-      statusBrosurHtml = '<span class="school-brosur-badge has-img">📸 Foto &amp; 📄 Brosur Siap</span>';
-    } else if (hasBrosurImg) {
-      statusBrosurHtml = '<span class="school-brosur-badge has-img">📄 Brosur Resmi Siap</span>';
-    } else if (hasGedungImg) {
-      statusBrosurHtml = '<span class="school-brosur-badge has-img">📸 Foto Gedung Siap</span>';
-    }
+    const bannerBgStyle = `background: ${item.gradient || 'linear-gradient(135deg, #065f46 0%, #047857 100%)'};`;
 
     return `
-      <div class="school-card reveal-on-scroll reveal-up ${delayClass}" onclick="openModalBrosurSekolah(${idx})" title="Klik untuk lihat foto, brosur & profil ${escapeHtml(item.name)}">
-        <div class="school-card-banner" style="${bannerBgStyle}">
-          <div class="school-icon-box">${escapeHtml(item.icon || '🏛️')}</div>
+      <div class="school-card reveal-on-scroll reveal-up ${delayClass}" onclick="openModalBrosurSekolah(${idx})" title="Klik untuk lihat informasi profil lengkap ${escapeHtml(item.name)}">
+        <div class="school-card-banner" style="${bannerBgStyle}; display:flex; align-items:center; justify-content:center; height:105px; position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; opacity:0.08; background-image:radial-gradient(#fff 2px, transparent 2px); background-size:16px 16px;"></div>
+          <div class="school-icon-box" style="font-size:34px; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.25));">${escapeHtml(item.icon || '🏛️')}</div>
         </div>
-        <div class="school-card-body">
+        <div class="school-card-body" style="display:flex; flex-direction:column; flex:1;">
           <h3 class="school-name">${escapeHtml(item.name)}</h3>
           <span class="school-level-tag">
             <span>🏷️</span> <span>${escapeHtml(item.level || '')}</span>
@@ -1165,13 +1033,9 @@ function renderFormalSchools(filterCategory = currentSchoolFilter) {
             ${highlightsHtml}
           </ul>
 
-          <div class="school-card-footer">
-            <div class="school-brosur-status">
-              <span>Status:</span>
-              ${statusBrosurHtml}
-            </div>
+          <div class="school-card-footer" style="margin-top:auto; padding-top:14px; border-top:1px solid #f1f5f9;">
             <button type="button" class="btn btn-gold btn-sm" onclick="event.stopPropagation(); openModalBrosurSekolah(${idx})" style="width:100%; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(245,158,11,0.25);">
-              <span>📥</span> Lihat Brosur &amp; Profil
+              <span>📋</span> Lihat Profil &amp; Syarat PPDB
             </button>
           </div>
         </div>
@@ -1201,7 +1065,6 @@ function openModalBrosurSekolah(index) {
   const modal = document.getElementById('modalBrosurSekolah');
   if (!modal) return;
 
-  // Header Elements
   const header = document.getElementById('modalBrosurSekolahHeader');
   const iconEl = document.getElementById('modalBrosurSekolahIcon');
   const badgeEl = document.getElementById('modalBrosurSekolahBadge');
@@ -1219,114 +1082,57 @@ function openModalBrosurSekolah(index) {
 
   // WhatsApp Button
   if (btnWa) {
-    const cleanWa = (WebState.settings.noKontakPondok || '0812-3456-7890').replace(/[^0-9]/g, '');
+    const targetPhone = school.kontak || WebState.settings.noKontakPondok || '0812-3456-7890';
+    const cleanWa = targetPhone.replace(/[^0-9]/g, '');
     const waPhone = cleanWa.startsWith('0') ? '62' + cleanWa.slice(1) : cleanWa;
-    const msg = encodeURIComponent(`Assalamu'alaikum, saya ingin bertanya dan konsultasi mengenai pendaftaran santri baru terpadu dengan sekolah formal: ${school.fullName || school.name}. Mohon informasi dan brosur lengkapnya. Terima kasih.`);
+    const msg = encodeURIComponent(`Assalamu'alaikum, saya ingin bertanya dan konsultasi mengenai pendaftaran santri baru terpadu dengan sekolah formal: ${school.fullName || school.name}. Mohon informasi pendaftaran lengkapnya. Terima kasih.`);
     btnWa.href = `https://wa.me/${waPhone}?text=${msg}`;
   }
 
-  // Render Body: Photo Gedung AND/OR Photo Brosur AND/OR Digital Detailed Pamphlet
-  const hasGedungImg = !!(school.image && school.image.trim() !== '');
-  const hasBrosurImg = !!(school.brosurImage && school.brosurImage.trim() !== '');
-
-  let contentHtml = '';
-
-  // 1. Foto Gedung / Lingkungan Sekolah jika ada
-  if (hasGedungImg) {
-    contentHtml += `
-      <div style="background:#0f172a; border-radius:14px; overflow:hidden; margin-bottom:18px; border:1px solid #cbd5e1; box-shadow:0 8px 24px rgba(0,0,0,0.12); position:relative;">
-        <img src="${school.image}" alt="Foto Kampus & Suasana ${escapeHtml(school.name)}" style="width:100%; max-height:360px; object-fit:cover; display:block; cursor:zoom-in;" onclick="zoomBrosurSekolah('${school.image}', 'Foto Gedung & Suasana ${escapeHtml(school.name)}')">
-        <div style="padding:10px 16px; background:linear-gradient(to top, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.65) 100%); color:#fff; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-          <span style="font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:6px;">
-            <span>📸</span> Foto Gedung &amp; Lingkungan ${escapeHtml(school.name)}
-          </span>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="zoomBrosurSekolah('${school.image}', 'Foto Gedung & Suasana ${escapeHtml(school.name)}')" style="font-size:11px; padding:4px 12px; color:#fff; border-color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.15);">
-            <span>🔍</span> Perbesar Foto
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  // 2. Brosur Resmi PPDB jika ada
-  if (hasBrosurImg) {
-    contentHtml += `
-      <div style="background:#0f172a; border-radius:14px; padding:12px; margin-bottom:18px; text-align:center; position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.25);">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:4px 8px 10px 8px; border-bottom:1px solid rgba(255,255,255,0.15); margin-bottom:10px;">
-          <span style="color:#fde047; font-size:12.5px; font-weight:800; display:flex; align-items:center; gap:6px;">
-            <span>📄</span> Brosur Resmi Penerimaan Peserta Didik Baru
-          </span>
-          <span style="background:rgba(255,255,255,0.15); color:#fff; font-size:10.5px; padding:2px 8px; border-radius:999px;">
-            Resolusi Penuh
-          </span>
-        </div>
-        <img src="${school.brosurImage}" alt="Brosur ${escapeHtml(school.name)}" style="max-height:480px; width:100%; object-fit:contain; border-radius:8px; cursor:zoom-in;" onclick="zoomBrosurSekolah('${school.brosurImage}', '${escapeHtml(school.name)}')">
-        
-        <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:12px;">
-          <button type="button" class="btn btn-gold btn-sm" onclick="zoomBrosurSekolah('${school.brosurImage}', '${escapeHtml(school.name)}')" style="font-weight:800; font-size:12px; padding:6px 14px;">
-            <span>🔍</span> Perbesar Brosur Layar Penuh (Zoom)
-          </button>
-          <a href="${school.brosurImage}" download="Brosur-${escapeHtml(school.id)}.png" class="btn btn-secondary btn-sm" style="font-size:12px; padding:6px 14px; color:#fff; border-color:#475569; background:rgba(255,255,255,0.15);">
-            <span>📥</span> Unduh Brosur
-          </a>
-        </div>
-      </div>
-    `;
-  }
-
-  // 3. Informative Card Breakdown
   const highlightsList = (school.highlights || []).map(hl => `
-    <li style="display:flex; align-items:flex-start; gap:8px; font-size:13px; color:#334155; margin-bottom:6px;">
+    <li style="display:flex; align-items:flex-start; gap:8px; font-size:13px; color:#334155; margin-bottom:7px;">
       <span style="color:#059669; font-weight:800;">✓</span>
-      <span>${escapeHtml(hl)}</span>
+      <span>${escapeHtml(stripAkreditasi(hl))}</span>
     </li>
   `).join('');
 
-  contentHtml += `
-    <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:20px; margin-bottom:16px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-        <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;">
-          ${escapeHtml(school.fullName || school.name)}
-        </h4>
-        <span style="background:#ecfdf5; color:#047857; font-size:11.5px; font-weight:800; padding:3px 10px; border-radius:999px;">
-          ${escapeHtml(school.level)}
+  const contentHtml = `
+    <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
+        <div>
+          <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;">
+            ${escapeHtml(school.fullName || school.name)}
+          </h4>
+          <span style="font-size:12px; color:#64748b; margin-top:2px; display:inline-block;">Lembaga Pendidikan Formal Mitra Pesantren</span>
+        </div>
+        <span style="background:#ecfdf5; color:#047857; font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:999px;">
+          ${escapeHtml(school.level || '')}
         </span>
       </div>
+
       <p style="font-size:13px; color:#475569; line-height:1.6; margin:0 0 16px 0;">
-        ${escapeHtml(school.desc || '')}
+        ${escapeHtml(school.desc || 'Sekolah formal terpadu di kawasan Denanyar yang terintegrasi dengan jadwal mengaji dan setoran hafalan pondok pesantren.')}
       </p>
 
-      <h5 style="font-size:13.5px; font-weight:700; color:#065f46; margin:0 0 8px 0;">
-        ✨ Program Unggulan &amp; Keunggulan Kurikulum Terpadu:
+      <h5 style="font-size:13.5px; font-weight:700; color:#065f46; margin:0 0 10px 0; display:flex; align-items:center; gap:6px;">
+        <span>✨</span> Program &amp; Poin Keunggulan Lembaga:
       </h5>
-      <ul style="list-style:none; padding:0; margin:0 0 16px 0;">
+      <ul style="list-style:none; padding:0; margin:0 0 18px 0;">
         ${highlightsList}
       </ul>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:14px; padding-top:14px; border-top:1px dashed #e2e8f0;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; padding:14px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;">
         <div>
-          <span style="font-size:11.5px; font-weight:700; color:#64748b; display:block; margin-bottom:2px;">📋 Syarat Pendaftaran:</span>
-          <p style="font-size:12.5px; color:#334155; margin:0;">${escapeHtml(school.syarat || 'FC Ijazah/SKL, FC Akta Kelahiran & KK, Pas Foto 3x4.')}</p>
+          <span style="font-size:11.5px; font-weight:700; color:#64748b; display:block; margin-bottom:3px;">📋 Syarat Pendaftaran PPDB:</span>
+          <p style="font-size:12.5px; color:#334155; margin:0; font-weight:600;">${escapeHtml(school.syarat || 'Lulusan SD/MI/SMP sederajat, FC Ijazah/SKL, FC Akta & KK, Pas Foto 3x4.')}</p>
         </div>
         <div>
-          <span style="font-size:11.5px; font-weight:700; color:#64748b; display:block; margin-bottom:2px;">📞 Kontak Sekretariat PPDB:</span>
-          <p style="font-size:12.5px; color:#334155; margin:0;">${escapeHtml(school.kontak || WebState.settings.noKontakPondok || '0812-3456-7890')}</p>
+          <span style="font-size:11.5px; font-weight:700; color:#64748b; display:block; margin-bottom:3px;">📞 Kontak Sekretariat PPDB:</span>
+          <p style="font-size:12.5px; color:#059669; margin:0; font-weight:700;">${escapeHtml(school.kontak || WebState.settings.noKontakPondok || '0812-3456-7890')}</p>
         </div>
       </div>
     </div>
   `;
-
-  if (!hasBrosurImg) {
-    contentHtml += `
-      <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:12px 16px; font-size:12px; color:#1e40af; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:18px;">ℹ️</span>
-        <div>
-          <strong>Brosur Cetak / Foto Resmi Belum Diunggah:</strong>
-          <span> Foto brosur cetak resmi untuk ${escapeHtml(school.name)} dapat diunggah sewaktu-waktu oleh pengurus melalui menu <em>Web Pondok</em> di Panel Admin.</span>
-        </div>
-      </div>
-    `;
-  }
 
   if (bodyEl) bodyEl.innerHTML = contentHtml;
 

@@ -1817,28 +1817,67 @@ function renderWebsitePembayaran() {
         </div>
       `;
     } else {
+      let totalSemua = 0;
+      let totalSekaliBayar = 0;
+      let totalBulanan = 0;
+
       biayaContainer.innerHTML = biayaList.map((item, idx) => {
         const isBulanan = item.isBulanan || /bulan|\/bln/i.test(item.nama) || /bulan|\/bln/i.test(item.nominal);
-        const bgStyle = isBulanan
-          ? 'background:#ecfdf5; border:1.5px solid #10b981;'
-          : 'background:#ffffff; border:1px solid #e2e8f0;';
-        const nominalStyle = isBulanan
-          ? 'font-weight:800; color:#047857; font-size:15px;'
-          : 'font-weight:800; color:#065f46; font-size:13.5px;';
-        const bulananSuffix = (isBulanan && !item.nominal.includes('/')) ? '<span style="font-size:11px; font-weight:normal;">/bln</span>' : '';
+        const nominalDigits = (item.nominal || '').replace(/[^\d]/g, '');
+        const nominalNum = parseInt(nominalDigits, 10) || 0;
+        totalSemua += nominalNum;
+        if (isBulanan) {
+          totalBulanan += nominalNum;
+        } else {
+          totalSekaliBayar += nominalNum;
+        }
 
+        const bulananBadge = isBulanan
+          ? `<span style="background:#ecfdf5; color:#047857; font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; border:1px solid #a7f3d0;">Iuran Bulanan</span>`
+          : '';
+        const bulananSuffix = (isBulanan && !item.nominal.includes('/')) ? '<span style="font-size:11px; font-weight:normal; color:#64748b;">/bln</span>' : '';
+
+        // Warna kotak disamakan: bersih, rapi, dan konsisten (background putih, border halus)
         return `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border-radius:8px; gap:12px; ${bgStyle}">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; border-radius:8px; gap:12px; background:#ffffff; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
             <div>
-              <strong style="color:#0f172a; font-size:12.8px; display:block;">${escapeHtml(item.nama)}</strong>
+              <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+                <strong style="color:#0f172a; font-size:12.8px;">${escapeHtml(item.nama)}</strong>
+                ${bulananBadge}
+              </div>
               ${item.keterangan ? `<div style="font-size:11px; color:#64748b; margin-top:2px;">${escapeHtml(item.keterangan)}</div>` : ''}
             </div>
-            <div style="${nominalStyle} text-align:right; white-space:nowrap;">
+            <div style="font-weight:800; color:#065f46; font-size:14px; text-align:right; white-space:nowrap;">
               ${escapeHtml(item.nominal)}${bulananSuffix}
             </div>
           </div>
         `;
       }).join('');
+
+      // Update Total Box di bawah rincian biaya
+      const totalContainer = document.getElementById('webBiayaTotalContainer');
+      const totalNominalEl = document.getElementById('webBiayaTotalNominal');
+      const totalDetailEl = document.getElementById('webBiayaTotalDetail');
+      const totalSubEl = document.getElementById('webBiayaTotalSub');
+
+      const formatRupiah = (num) => 'Rp ' + num.toLocaleString('id-ID');
+
+      if (totalContainer) {
+        totalContainer.style.display = 'flex';
+        if (totalBulanan > 0 && totalSekaliBayar > 0) {
+          if (totalNominalEl) totalNominalEl.textContent = formatRupiah(totalSemua);
+          if (totalSubEl) totalSubEl.textContent = 'Biaya Masuk Sekali Bayar + Syahriah Bulan Pertama';
+          if (totalDetailEl) totalDetailEl.textContent = `(Biaya Masuk: ${formatRupiah(totalSekaliBayar)} + Syahriah: ${formatRupiah(totalBulanan)}/bln)`;
+        } else if (totalBulanan > 0 && totalSekaliBayar === 0) {
+          if (totalNominalEl) totalNominalEl.innerHTML = `${formatRupiah(totalBulanan)}<span style="font-size:11px; font-weight:normal;">/bln</span>`;
+          if (totalSubEl) totalSubEl.textContent = 'Total Iuran Syahriah Bulanan Santri';
+          if (totalDetailEl) totalDetailEl.textContent = 'Iuran rutin bulanan asrama, makan & tahfidz';
+        } else {
+          if (totalNominalEl) totalNominalEl.textContent = formatRupiah(totalSemua);
+          if (totalSubEl) totalSubEl.textContent = 'Total Seluruh Biaya Pendaftaran & Sarana';
+          if (totalDetailEl) totalDetailEl.textContent = 'Total biaya masuk awal santri baru';
+        }
+      }
     }
   }
 
@@ -1903,9 +1942,16 @@ function renderWebsitePembayaran() {
   // 3. Render in Modal Brosur PSB (#brosurBiayaList & #brosurRekeningList)
   const brosurBiayaEl = document.getElementById('brosurBiayaList');
   if (brosurBiayaEl) {
-    brosurBiayaEl.innerHTML = biayaList.map((item, idx) => {
+    let brosurTotalSemua = 0;
+    const formatRupiah = (num) => 'Rp ' + num.toLocaleString('id-ID');
+
+    const itemsHtml = biayaList.map((item, idx) => {
       const isBulanan = item.isBulanan || /bulan|\/bln/i.test(item.nama) || /bulan|\/bln/i.test(item.nominal);
       const bulananSuffix = (isBulanan && !item.nominal.includes('/')) ? ' / bln' : '';
+      const nominalDigits = (item.nominal || '').replace(/[^\d]/g, '');
+      const nominalNum = parseInt(nominalDigits, 10) || 0;
+      brosurTotalSemua += nominalNum;
+
       return `
         <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #cbd5e1;">
           <span>${escapeHtml(item.nama)}</span>
@@ -1913,6 +1959,15 @@ function renderWebsitePembayaran() {
         </div>
       `;
     }).join('');
+
+    const totalHtml = brosurTotalSemua > 0 ? `
+      <div style="display:flex; justify-content:space-between; padding:8px 0 4px 0; margin-top:4px; border-top:2px solid #059669; font-weight:800;">
+        <span style="color:#065f46;">TOTAL ESTIMASI BIAYA:</span>
+        <span style="color:#059669; font-size:13px;">${formatRupiah(brosurTotalSemua)}</span>
+      </div>
+    ` : '';
+
+    brosurBiayaEl.innerHTML = itemsHtml + totalHtml;
   }
 
   const brosurRekeningEl = document.getElementById('brosurRekeningList');

@@ -1167,13 +1167,36 @@
                 </div>
               </div>
 
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#ecfdf5; border-radius:8px; border:1.5px solid #10b981;">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#ffffff; border-radius:8px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
                 <div>
-                  <strong style="color:#065f46; font-size:13px;">5. Iuran Bulanan / Syahriah (All-In)</strong>
-                  <div style="font-size:11px; color:#15803d;">Asrama, makan bergizi 3x sehari, bimbingan tahfidz &amp; laundry</div>
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <strong style="color:#0f172a; font-size:12.8px;">5. Iuran Bulanan / Syahriah (All-In)</strong>
+                    <span style="background:#ecfdf5; color:#047857; font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; border:1px solid #a7f3d0;">Iuran Bulanan</span>
+                  </div>
+                  <div style="font-size:11px; color:#64748b; margin-top:2px;">Asrama, makan bergizi 3x sehari, bimbingan tahfidz &amp; laundry</div>
                 </div>
-                <div style="font-weight:800; color:#047857; font-size:15px;" id="webBiayaBulanan">
-                  Rp 750.000<span style="font-size:11px; font-weight:normal;">/bln</span>
+                <div style="font-weight:800; color:#065f46; font-size:14px; text-align:right;" id="webBiayaBulanan">
+                  Rp 750.000<span style="font-size:11px; font-weight:normal; color:#64748b;">/bln</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Pembayaran Card (Dihitung Dinamis dari Admin) -->
+            <div id="webBiayaTotalContainer" style="margin-top:12px; background:linear-gradient(135deg, #064e3b 0%, #047857 100%); color:#ffffff; border-radius:10px; padding:13px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 3px 10px rgba(6,78,59,0.12);">
+              <div>
+                <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:#a7f3d0; font-weight:800; display:flex; align-items:center; gap:6px;">
+                  <span>📊</span> Total Estimasi Pembayaran
+                </div>
+                <div id="webBiayaTotalSub" style="font-size:11.5px; color:#e2e8f0; margin-top:2px;">
+                  Biaya Masuk Sekali Bayar + Syahriah Bulan Pertama
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div id="webBiayaTotalNominal" style="font-size:19px; font-weight:900; color:#fde047; letter-spacing:0.5px;">
+                  Rp 4.400.000
+                </div>
+                <div id="webBiayaTotalDetail" style="font-size:10px; color:#a7f3d0;">
+                  (Biaya Masuk: Rp 3.650.000 + Bulan Pertama: Rp 750.000)
                 </div>
               </div>
             </div>

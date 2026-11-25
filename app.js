@@ -8993,6 +8993,7 @@ function renderAdminBiayaList() {
         Belum ada komponen biaya. Klik tombol "➕ Tambah Komponen Biaya Baru" di bawah untuk menambahkan.
       </div>
     `;
+    updateAdminBiayaTotalSummary(list);
     return;
   }
 
@@ -9023,6 +9024,48 @@ function renderAdminBiayaList() {
       </div>
     </div>
   `).join('');
+
+  updateAdminBiayaTotalSummary(list);
+}
+
+function updateAdminBiayaTotalSummary(list) {
+  const totalNominalEl = document.getElementById('adminBiayaTotalNominal');
+  const totalSubEl = document.getElementById('adminBiayaTotalSub');
+  const totalDetailEl = document.getElementById('adminBiayaTotalDetail');
+  if (!totalNominalEl) return;
+
+  const items = list || getStoredBiayaAdmin();
+  let totalSemua = 0;
+  let totalSekaliBayar = 0;
+  let totalBulanan = 0;
+
+  items.forEach(item => {
+    const isBulanan = item.isBulanan || /bulan|\/bln/i.test(item.nama) || /bulan|\/bln/i.test(item.nominal);
+    const nominalDigits = (item.nominal || '').replace(/[^\d]/g, '');
+    const nominalNum = parseInt(nominalDigits, 10) || 0;
+    totalSemua += nominalNum;
+    if (isBulanan) {
+      totalBulanan += nominalNum;
+    } else {
+      totalSekaliBayar += nominalNum;
+    }
+  });
+
+  const formatRupiah = (num) => 'Rp ' + num.toLocaleString('id-ID');
+
+  if (totalBulanan > 0 && totalSekaliBayar > 0) {
+    totalNominalEl.textContent = formatRupiah(totalSemua);
+    if (totalSubEl) totalSubEl.textContent = 'Biaya Masuk Sekali Bayar + Syahriah Bulan Pertama';
+    if (totalDetailEl) totalDetailEl.textContent = `(Biaya Masuk: ${formatRupiah(totalSekaliBayar)} + Syahriah: ${formatRupiah(totalBulanan)}/bln)`;
+  } else if (totalBulanan > 0 && totalSekaliBayar === 0) {
+    totalNominalEl.innerHTML = `${formatRupiah(totalBulanan)}<span style="font-size:12px; font-weight:normal;">/bln</span>`;
+    if (totalSubEl) totalSubEl.textContent = 'Total Iuran Syahriah Bulanan Santri';
+    if (totalDetailEl) totalDetailEl.textContent = 'Iuran rutin bulanan asrama, makan & tahfidz';
+  } else {
+    totalNominalEl.textContent = formatRupiah(totalSemua);
+    if (totalSubEl) totalSubEl.textContent = 'Total Seluruh Biaya Pendaftaran & Sarana';
+    if (totalDetailEl) totalDetailEl.textContent = 'Total biaya masuk awal santri baru';
+  }
 }
 
 function tambahBiayaAdmin() {
@@ -9087,6 +9130,7 @@ function syncBiayaInputsToArray() {
     if (bulananEl) list[i].isBulanan = bulananEl.checked;
   }
   saveStoredBiayaAdmin(list);
+  updateAdminBiayaTotalSummary(list);
 }
 
 function simpanBiayaDanRekeningLangsung() {

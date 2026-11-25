@@ -2705,8 +2705,28 @@
                 </div>
 
                 <!-- Container Komponen Biaya Dinamis -->
-                <div id="adminBiayaList" style="display:flex; flex-direction:column; gap:12px; margin-bottom:18px;">
+                <div id="adminBiayaList" style="display:flex; flex-direction:column; gap:12px; margin-bottom:14px;">
                   <!-- Dynamic populated by renderAdminBiayaList() -->
+                </div>
+
+                <!-- Live Total Estimasi Pembayaran di Admin -->
+                <div id="adminBiayaTotalCard" style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; padding:12px 18px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+                  <div>
+                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.7px; color:#15803d; font-weight:800; display:flex; align-items:center; gap:6px;">
+                      <span>📊</span> Total Estimasi Biaya (Otomatis Dihitung)
+                    </div>
+                    <div id="adminBiayaTotalSub" style="font-size:12px; color:#166534; margin-top:2px;">
+                      Biaya Masuk Sekali Bayar + Syahriah Bulan Pertama
+                    </div>
+                  </div>
+                  <div style="text-align:right;">
+                    <div id="adminBiayaTotalNominal" style="font-size:19px; font-weight:900; color:#047857; letter-spacing:0.5px;">
+                      Rp 0
+                    </div>
+                    <div id="adminBiayaTotalDetail" style="font-size:11px; color:#15803d;">
+                      -
+                    </div>
+                  </div>
                 </div>
 
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:24px;">

@@ -1,0 +1,18 @@
+# Konfigurasi Build & Hosting Netlify untuk SiTahfidz Pondok
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin-tahfidz.html"
+  status = 200
+
+[[redirects]]
+  from = "/ustadz"
+  to = "/panel-ustadz.html"
+  status = 200
+
+[[redirects]]
+  from = "/wali"
+  to = "/portal-wali.html"
+  status = 200

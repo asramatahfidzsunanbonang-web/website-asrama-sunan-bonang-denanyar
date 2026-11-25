@@ -1,0 +1,4 @@
+# Netlify Redirects & Clean URLs untuk Sistem SiTahfidz Pondok
+/admin      /admin-tahfidz.html   200
+/ustadz     /panel-ustadz.html    200
+/wali       /portal-wali.html     200

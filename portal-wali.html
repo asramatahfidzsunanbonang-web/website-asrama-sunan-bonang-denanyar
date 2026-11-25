@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Wali Santri - Cek Perkembangan Hafalan & Absensi</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+  <style>
+    body {
+      background: #f1f5f9;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .portal-header {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 60%, #047857 100%);
+      color: #fff;
+      padding: 30px 20px 45px 20px;
+      text-align: center;
+      position: relative;
+      border-bottom: 3px solid #d97706;
+    }
+    .portal-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid #f59e0b;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .portal-container {
+      max-width: 860px;
+      width: 100%;
+      margin: -25px auto 40px auto;
+      padding: 0 16px;
+      flex: 1;
+    }
+    .search-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+    .result-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+      display: none;
+    }
+    .quick-sample-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      font-size: 12px;
+    }
+    .sample-chip {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 9999px;
+      padding: 4px 12px;
+      cursor: pointer;
+      color: #334155;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .sample-chip:hover {
+      background: #e0f2fe;
+      border-color: #7dd3fc;
+      color: #0369a1;
+    }
+    .month-filter-wrap {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin: 20px 0 16px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .rekap-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .rekap-stat-box {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .rekap-stat-box:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 20px -3px rgba(15, 23, 42, 0.12);
+    }
+    .rekap-stat-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rekap-stat-val {
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .rekap-stat-sub {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    @media (max-width: 640px) {
+      .portal-header { padding: 24px 16px 36px 16px; }
+      .search-card { padding: 18px; }
+      .result-card { padding: 18px; }
+      .rekap-stat-grid { grid-template-columns: 1fr; }
+    }
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 10.5pt !important;
+      }
+      .portal-header, .search-card, .quick-sample-chips, #notFoundAlert, #multipleMatchesCard, .btn-no-print, footer, .month-filter-wrap button, .no-print {
+        display: none !important;
+      }
+      .portal-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      .result-card {
+        display: block !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .data-table th, .data-table td {
+        border: 1px solid #cbd5e1 !important;
+        padding: 6px 8px !important;
+        font-size: 9.5pt !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= PORTAL HEADER ================= -->
+  <header class="portal-header">
+    <div style="position:absolute; top:16px; right:16px; display:flex; gap:8px;">
+      <a href="index.html" class="btn btn-secondary btn-sm" style="text-decoration:none; font-size:12px; background:rgba(255,255,255,0.9);">
+        🏠 Website Utama
+      </a>
+    </div>
+    <div class="portal-logo" id="portalLogoWrap">🕌</div>
+    <h1 style="font-size:22px; font-weight:800; letter-spacing:-0.5px;" id="portalPondokName">
+      Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah
+    </h1>
+    <p style="font-size:13.5px; color:rgba(255,255,255,0.85); margin-top:4px;">
+      Portal Resmi Wali Santri: Pantauan Harian Setoran Hafalan & Kehadiran Ananda
+    </p>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="portal-container">
+    
+    <!-- SEARCH FORM CARD (VERIFIKASI AKSES WALI SANTRI) -->
+    <div class="search-card" id="loginWaliCard">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+        <span style="font-size:24px;">🔐</span>
+        <h2 style="font-size:17px; font-weight:800; color:#0f172a; margin:0;">
+          Akses Khusus Wali Santri Resmi
+        </h2>
+      </div>
+      <p style="font-size:12.5px; color:#64748b; margin-bottom:18px; line-height:1.5;">
+        Demi menjaga privasi dan keamanan data santri, akses kehadiran dan capaian hafalan <strong>hanya dapat dibuka oleh Wali Santri resmi</strong>. Publik atau pihak luar tidak diizinkan mengakses data ini.
+      </p>
+
+      <form id="formCariSantri" onsubmit="handleCariSantri(event)">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:14px;">
+          <div>
+            <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:4px;">
+              1. Nomor Induk Santri (NIS) <span style="color:#dc2626;">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="inputNis" 
+              class="form-control" 
+              style="font-size:14px; padding:10px 14px; width:100%; box-sizing:border-box;" 
+              placeholder="Contoh: 20240101" 
+              required>
+          </div>
+          <div>
+            <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:4px;">
+              2. No. WhatsApp / HP Wali Terdaftar <span style="color:#dc2626;">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="inputWa" 
+              class="form-control" 
+              style="font-size:14px; padding:10px 14px; width:100%; box-sizing:border-box;" 
+              placeholder="Nomor WA yang didaftarkan ke pondok..." 
+              required>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <small style="color:#64748b; font-size:11.5px;">
+            ℹ️ Masukkan NIS ananda dan No. WA yang terdaftar saat pendaftaran santri.
+          </small>
+          <button type="submit" class="btn btn-primary" style="padding:10px 22px; font-size:13.5px; font-weight:700;">
+            <span>Verifikasi & Buka Data Ananda</span> →
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- NOT FOUND / ACCESS DENIED ALERT -->
+    <div id="notFoundAlert" style="display:none; background:#fef2f2; border:1.5px solid #fecaca; border-radius:14px; padding:18px 20px; color:#991b1b; font-size:13px; margin-bottom:24px; line-height:1.6;">
+      <div style="font-weight:800; font-size:14px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+        <span>🔒</span> Akses Ditolak / Data Tidak Cocok
+      </div>
+      <div>
+        Kombinasi <strong>NIS</strong> dan <strong>Nomor WhatsApp Wali</strong> tidak ditemukan di database resmi pesantren.
+        <br>
+        Demi perlindungan data santri, kehadiran dan capaian hafalan tidak dapat diakses oleh publik. Silakan periksa kembali NIS dan No. WhatsApp Anda, atau hubungi Sekretariat Pondok Pesantren bila nomor Anda telah berganti.
+      </div>
+    </div>
+
+    <!-- VERIFIED ACTIVE BAR -->
+    <div id="verifiedBar" style="display:none; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:12px 18px; margin-bottom:18px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:#065f46;">
+        <span style="font-size:18px;">🛡️</span>
+        <span>Akses Privat Terverifikasi untuk Wali dari: <strong id="verifiedSantriNama">-</strong> (NIS: <span id="verifiedSantriNis">-</span>)</span>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="logoutWali()" style="font-size:12px; padding:5px 12px;">
+        🚪 Keluar / Ganti Ananda
+      </button>
+    </div>
+
+    <!-- RESULT REPORT CARD -->
+    <div id="resultCard" class="result-card">
+      <!-- Injected dynamically -->
+    </div>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer style="text-align:center; padding:24px; font-size:12px; color:#64748b; border-top:1px solid #e2e8f0; background:#fff; margin-top:auto;">
+    <div id="footerPondokName" style="font-weight:600; color:#1e293b; margin-bottom:4px;">Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah</div>
+    <div>Sistem Informasi & Pemantauan Tahfidz Santri © 2024</div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="quran-data.js"></script>
+  <script src="sample-data.js"></script>
+  <!-- Firebase SDK (Compat v10.12.0) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-sync.js"></script>
+  <script>
+    let portalSettings, portalSantri, portalSetoran, portalAbsensi, portalPelanggaran, portalPerizinan, portalJamaah, portalEkskul;
+
+    function initPortalSettings() {
+      portalSettings = JSON.parse(localStorage.getItem('sitahfidz_settings') || 'null') || DEFAULT_SETTINGS;
+      if (!portalSettings.hariAktifSetoran) portalSettings.hariAktifSetoran = ["Sabtu", "Ahad", "Senin", "Selasa", "Rabu"];
+      if (!portalSettings.hariLiburRutin) portalSettings.hariLiburRutin = ["Kamis", "Jumat"];
+      if (!portalSettings.daftarHariLiburKondisional) portalSettings.daftarHariLiburKondisional = DEFAULT_SETTINGS.daftarHariLiburKondisional || [];
+
+      portalSantri = JSON.parse(localStorage.getItem('sitahfidz_santri') || 'null') || SAMPLE_SANTRI;
+      portalSetoran = JSON.parse(localStorage.getItem('sitahfidz_setoran') || 'null') || SAMPLE_SETORAN;
+      portalAbsensi = JSON.parse(localStorage.getItem('sitahfidz_absensi') || 'null') || SAMPLE_ABSENSI;
+      portalPelanggaran = JSON.parse(localStorage.getItem('sitahfidz_pelanggaran') || 'null') || (typeof SAMPLE_PELANGGARAN !== 'undefined' ? SAMPLE_PELANGGARAN : []);
+      portalPerizinan = JSON.parse(localStorage.getItem('sitahfidz_perizinan') || 'null') || (typeof SAMPLE_PERIZINAN !== 'undefined' ? SAMPLE_PERIZINAN : []);
+      portalJamaah = JSON.parse(localStorage.getItem('sitahfidz_ubudiyah_jamaah') || 'null') || (typeof SAMPLE_UBUDIYAH_JAMAAH !== 'undefined' ? SAMPLE_UBUDIYAH_JAMAAH : []);
+      portalEkskul = JSON.parse(localStorage.getItem('sitahfidz_ubudiyah_ekskul') || 'null') || (typeof SAMPLE_UBUDIYAH_EKSKUL !== 'undefined' ? SAMPLE_UBUDIYAH_EKSKUL : []);
+
+      const nameEl = document.getElementById('portalPondokName');
+      if (nameEl) nameEl.textContent = portalSettings.namaPondok || DEFAULT_SETTINGS.namaPondok;
+      const footEl = document.getElementById('footerPondokName');
+      if (footEl) footEl.textContent = portalSettings.namaPondok || DEFAULT_SETTINGS.namaPondok;
+    }
+
+    initPortalSettings();
+
+    let currentSantri = null;
+    const nowInit = new Date();
+    let currentMonth = nowInit.getMonth() + 1;
+    let currentYear = nowInit.getFullYear();
+
+    const NAMA_BULAN = [
+      "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+
+    function getDayInfo(dateStr) {
+      if (!dateStr) return { namaHari: '', dayIndex: -1 };
+      const parts = dateStr.split('-');
+      if (parts.length < 3) return { namaHari: '', dayIndex: -1 };
+      const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      const days = ['Ahad', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const dayIdx = d.getDay();
+      return { namaHari: days[dayIdx] || '', dayIndex: dayIdx };
+    }
+
+    function cekStatusHari(dateStr, settings) {
+      if (!dateStr) return { isLibur: false, jenis: 'aktif', hari: '', keterangan: 'Hari Aktif' };
+      const dayInfo = getDayInfo(dateStr);
+      const dayIdx = dayInfo.dayIndex;
+      const namaHari = dayInfo.namaHari;
+
+      // 1. Libur Rutin Mingguan: Kamis (4) & Jumat (5)
+      if (dayIdx === 4) {
+        return { isLibur: true, jenis: 'rutin', hari: 'Kamis', keterangan: 'Libur Rutin Mingguan (Hari Kamis)' };
+      }
+      if (dayIdx === 5) {
+        return { isLibur: true, jenis: 'rutin', hari: 'Jumat', keterangan: 'Libur Rutin Mingguan (Hari Jumat)' };
+      }
+
+      // 2. Libur Kondisional / Event
+      const liburList = (settings && settings.daftarHariLiburKondisional) || [];
+      const found = liburList.find(item => item.tanggal === dateStr);
+      if (found) {
+        return { isLibur: true, jenis: 'kondisional', hari: namaHari, keterangan: found.keterangan || 'Libur Event Pondok' };
+      }
+
+      return { isLibur: false, jenis: 'aktif', hari: namaHari, keterangan: 'Hari Aktif Setoran' };
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Header settings
+      const nameEl = document.getElementById('portalPondokName');
+      const footerEl = document.getElementById('footerPondokName');
+      if (nameEl) nameEl.textContent = portalSettings.namaPondok || DEFAULT_SETTINGS.namaPondok;
+      if (footerEl) footerEl.textContent = portalSettings.namaPondok || DEFAULT_SETTINGS.namaPondok;
+
+      if (portalSettings.logoPondok) {
+        document.getElementById('portalLogoWrap').innerHTML = `<img src="${portalSettings.logoPondok}" alt="Logo" style="width:100%; height:100%; object-fit:contain; border-radius:10px; background:transparent;">`;
+      }
+
+      // Check session
+      const savedNis = sessionStorage.getItem('sitahfidz_wali_nis');
+      if (savedNis) {
+        const santri = portalSantri.find(s => s.nis === savedNis);
+        if (santri) {
+          showSantriData(santri);
+        }
+      }
+    });
+
+    function animateCounter(el, target, duration = 900, suffix = '') {
+      if (!el) return;
+      const targetNum = parseInt(target, 10);
+      if (isNaN(targetNum)) {
+        el.innerHTML = target + suffix;
+        return;
+      }
+      const startTime = performance.now();
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+        const currentVal = Math.round(easeOutCubic * targetNum);
+        el.innerHTML = currentVal + suffix;
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.innerHTML = targetNum + suffix;
+        }
+      }
+      requestAnimationFrame(update);
+    }
+
+    function handleCariSantri(e) {
+      e.preventDefault();
+      const inputNis = document.getElementById('inputNis').value.trim();
+      const inputWa = document.getElementById('inputWa').value.trim();
+      verifikasiAksesWali(inputNis, inputWa);
+    }
+
+    function verifikasiAksesWali(nis, wa) {
+      const cleanNis = nis.replace(/\D/g, '');
+      const cleanWa = wa.replace(/\D/g, '');
+
+      const notFoundAlert = document.getElementById('notFoundAlert');
+      const resultCard = document.getElementById('resultCard');
+      const verifiedBar = document.getElementById('verifiedBar');
+
+      notFoundAlert.style.display = 'none';
+
+      if (!cleanNis || !cleanWa) {
+        notFoundAlert.style.display = 'block';
+        return;
+      }
+
+      // Match student by exact NIS AND registered WhatsApp number
+      const matched = portalSantri.find(s => {
+        const sNis = (s.nis || '').replace(/\D/g, '');
+        const sWa = (s.noHpWali || '').replace(/\D/g, '');
+        if (sNis !== cleanNis) return false;
+        
+        // WA match: full match, ends with, or input ends with
+        const waMatch = sWa === cleanWa || sWa.endsWith(cleanWa) || cleanWa.endsWith(sWa);
+        return waMatch;
+      });
+
+      if (!matched) {
+        resultCard.style.display = 'none';
+        verifiedBar.style.display = 'none';
+        notFoundAlert.style.display = 'block';
+        return;
+      }
+
+      // Save session
+      sessionStorage.setItem('sitahfidz_wali_nis', matched.nis);
+      showSantriData(matched);
+    }
+
+    function showSantriData(santri) {
+      const resultCard = document.getElementById('resultCard');
+      const verifiedBar = document.getElementById('verifiedBar');
+      const notFoundAlert = document.getElementById('notFoundAlert');
+      const loginCard = document.getElementById('loginWaliCard');
+
+      notFoundAlert.style.display = 'none';
+      if (verifiedBar) verifiedBar.style.display = 'flex';
+      const elNama = document.getElementById('verifiedSantriNama');
+      const elNis = document.getElementById('verifiedSantriNis');
+      if (elNama) elNama.textContent = santri.nama;
+      if (elNis) elNis.textContent = santri.nis;
+
+      if (loginCard) loginCard.style.display = 'none';
+
+      renderRaporSantri(santri);
+      resultCard.style.display = 'block';
+      resultCard.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function logoutWali() {
+      sessionStorage.removeItem('sitahfidz_wali_nis');
+      document.getElementById('resultCard').style.display = 'none';
+      const verifiedBar = document.getElementById('verifiedBar');
+      if (verifiedBar) verifiedBar.style.display = 'none';
+      const notFoundAlert = document.getElementById('notFoundAlert');
+      if (notFoundAlert) notFoundAlert.style.display = 'none';
+      const loginCard = document.getElementById('loginWaliCard');
+      if (loginCard) {
+        loginCard.style.display = 'block';
+        document.getElementById('inputNis').value = '';
+        document.getElementById('inputWa').value = '';
+      }
+    }
+
+    function renderRaporSantri(s) {
+      currentSantri = s;
+      const card = document.getElementById('resultCard');
+      if (!card || !s) return;
+
+      // Program specifics badge
+      let progBadge = '';
+      if (s.program === 'Program Maqbul') {
+        progBadge = `<span class="badge" style="background:#fef3c7; color:#b45309; font-size:13px; padding:4px 12px; font-weight:700;">🌟 Program Maqbul (Persiapan Tahfidz)</span>`;
+      } else if (s.program === 'Binnadzor') {
+        progBadge = `<span class="badge badge-binnadzor" style="font-size:13px; padding:4px 12px;">📖 Program Binnadzor</span>`;
+      } else if (s.program === 'Pasca Tahfidz') {
+        progBadge = `<span class="badge" style="background:#fef3c7; color:#92400e; font-size:13px; padding:4px 12px; font-weight:800; border:1px solid #f59e0b;">👑 Kelas Pasca Tahfidz (30 Juz)</span>`;
+      } else {
+        progBadge = `<span class="badge badge-tahfidz" style="font-size:13px; padding:4px 12px;">🕌 Program Tahfidz (30 Juz)</span>`;
+      }
+
+      // Status Wisuda format sesuai permintaan resmi pondok
+      let statusWisudaHtml = '';
+      if (s.program === 'Binnadzor') {
+        statusWisudaHtml = `<span class="badge" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; font-weight:600;">Belum Wisuda Binnadzor</span>`;
+      } else if (s.program === 'Program Maqbul') {
+        statusWisudaHtml = `<span class="badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:700;">Persiapan Wisuda Binnadzor</span>`;
+      } else if (s.program === 'Tahfidz') {
+        const tglWis = s.binnadzorProgress?.tanggalWisuda || s.tanggalWisuda || '2023-12-20';
+        statusWisudaHtml = `
+          <div>
+            <span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; font-weight:700;">Telah Wisuda Binnadzor</span>
+            <div style="font-size:11px; color:#64748b; margin-top:2px;">Tanggal: <strong>${tglWis}</strong></div>
+          </div>
+        `;
+      } else if (s.program === 'Pasca Tahfidz') {
+        const tglWis = s.tahfidzProgress?.tanggalWisudaTahfidz || s.tanggalWisuda || '2024-03-25';
+        statusWisudaHtml = `
+          <div>
+            <span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #f59e0b; font-weight:800;">Telah Wisuda Tahfidz</span>
+            <div style="font-size:11px; color:#64748b; margin-top:2px;">Tanggal: <strong>${tglWis}</strong></div>
+          </div>
+        `;
+      }
+
+      // Kurikulum Progres Global
+      let progressHtml = '';
+      if (s.program === 'Binnadzor' || s.program === 'Program Maqbul') {
+        const bp = s.binnadzorProgress || {};
+        const sp = bp.hafalanSuratPilihan || {};
+        const avg = Math.round(((bp.hafalanJuz30 || 0) + (bp.hafalanJuz29 || 0) + (bp.hafalanJuz28 || 0)) / 3);
+        progressHtml = `
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px; margin:20px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="color:#166534; font-size:13.5px;">Capaian Kurikulum Binnadzor:</strong>
+              <span style="font-size:12px; font-weight:700; color:#15803d;">${avg}% Tuntas</span>
+            </div>
+            <div style="font-size:13px; color:#1e293b; line-height:1.7;">
+              <div>• <strong>Kelancaran Bacaan:</strong> ${bp.terakhirBacaan || 'Juz 1'}</div>
+              <div>• <strong>Hafalan Juz 30 ('Amma):</strong> ${bp.hafalanJuz30 || 0}%</div>
+              <div>• <strong>Hafalan Juz 29 (Tabarak):</strong> ${bp.hafalanJuz29 || 0}%</div>
+              <div>• <strong>Hafalan Juz 28 (Qadd Sami'):</strong> ${bp.hafalanJuz28 || 0}%</div>
+              <div>• <strong>Hafalan Surat Pilihan / Penting:</strong>
+                <span style="color:${(sp.yasin || 0) >= 100 ? '#15803d' : '#64748b'};">QS. Yasin (${(sp.yasin || 0)}%)</span>, 
+                <span style="color:${(sp.arRahman || 0) >= 100 ? '#15803d' : '#64748b'};">QS. Ar-Rahman (${(sp.arRahman || 0)}%)</span>, 
+                <span style="color:${(sp.alWaqiah || 0) >= 100 ? '#15803d' : '#64748b'};">QS. Al-Waqi'ah (${(sp.alWaqiah || 0)}%)</span>, 
+                <span style="color:${(sp.alMulk || 0) >= 100 ? '#15803d' : '#64748b'};">QS. Al-Mulk (${(sp.alMulk || 0)}%)</span>
+              </div>
+            </div>
+
+            <div style="margin-top:12px; padding-top:10px; border-top:1px dashed #bbf7d0; font-size:12.5px; line-height:1.6;">
+              <div>• <strong>Evaluasi 3 Bulanan (Tes Maqbul):</strong> 
+                ${bp.statusTesMaqbul === 'Lolos Tes Maqbul' 
+                  ? `<span style="color:#166534; font-weight:700;">✅ LOLOS TES MAQBUL (Masuk Program Maqbul)</span>` 
+                  : (bp.statusTesMaqbul === 'Layak Tes Maqbul' || avg >= 90 ? `<span style="color:#b45309; font-weight:700;">⏳ Layak Mengikuti Tes Maqbul Triwulanan</span>` : `<span style="color:#64748b;">Sedang Proses Pembinaan</span>`)}
+              </div>
+              <div>• <strong>Status Wisuda:</strong> 
+                <strong>${s.program === 'Program Maqbul' || bp.statusWisuda === 'Siap Wisuda' ? '🎓 LULUS (Siap Wisuda Binnadzor & Promosi ke Tahfidz)' : (bp.statusWisuda === 'Sudah Wisuda' ? '✓ Sudah Wisuda' : 'Pra-Wisuda (Sedang Menempuh)')}</strong>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (s.program === 'Pasca Tahfidz') {
+        const pst = s.pascaTahfidzProgress || {};
+        const tp = s.tahfidzProgress || {};
+        progressHtml = `
+          <div style="background:#fffbeb; border:1px solid #fcd34d; border-radius:12px; padding:18px; margin:20px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <strong style="color:#92400e; font-size:15px; display:flex; align-items:center; gap:6px;">
+                <span>👑</span> Capaian Pasca Tahfidz & Progres Tasmi':
+              </strong>
+              <span style="font-size:12.5px; font-weight:800; color:#b45309; background:#fef3c7; border:1px solid #fde68a; padding:3px 10px; border-radius:999px;">
+                Khatam 30 Juz Mutqin ✓
+              </span>
+            </div>
+            <div style="font-size:13px; color:#1e293b; line-height:1.7;">
+              <div>• <strong>Ustadz Pengampu Bimbingan:</strong> ${s.halaqah || '-'}</div>
+              <div>• <strong>Ijazah Kelulusan Tahfidz:</strong> <code>${tp.noIjazahTahfidz || 'WIS-THF-2024-001'}</code> (Predikat: ${tp.predikatWisudaTahfidz || 'Mumtaz Syaraf'})</div>
+              <div>• <strong>Status Bimbingan Sanad:</strong> <span style="color:#047857; font-weight:600;">${pst.statusSanad || 'Bimbingan Sanad Al-Qur\'an & Matan Tajwid'}</span></div>
+              <div>• <strong>Capaian Terakhir Tasmi':</strong> ${pst.terakhirTasmi || 'Khotmil Qur\'an 30 Juz Bil-Ghaib'}</div>
+            </div>
+
+            <!-- Milestone Tasmi' Sekali Duduk -->
+            <div style="margin-top:14px; padding-top:12px; border-top:1px dashed #fcd34d;">
+              <div style="font-size:12.5px; font-weight:700; color:#78350f; margin-bottom:8px;">
+                🎯 Milestone Ujian Tasmi' Bil-Ghaib Sekali Duduk:
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px;">
+                <div style="background:#fff; border:1px solid ${pst.tasmi5Juz ? '#86efac' : '#cbd5e1'}; border-radius:8px; padding:8px; text-align:center;">
+                  <div style="font-size:11px; font-weight:700; color:${pst.tasmi5Juz ? '#15803d' : '#64748b'};">Tasmi' 5 Juz</div>
+                  <div style="font-size:11.5px; margin-top:2px;">${pst.tasmi5Juz ? '✅ Lulus (' + (pst.nilaiTasmi5Juz || 'Mumtaz') + ')' : '⏳ Target'}</div>
+                </div>
+                <div style="background:#fff; border:1px solid ${pst.tasmi10Juz ? '#86efac' : '#cbd5e1'}; border-radius:8px; padding:8px; text-align:center;">
+                  <div style="font-size:11px; font-weight:700; color:${pst.tasmi10Juz ? '#15803d' : '#64748b'};">Tasmi' 10 Juz</div>
+                  <div style="font-size:11.5px; margin-top:2px;">${pst.tasmi10Juz ? '✅ Lulus (' + (pst.nilaiTasmi10Juz || 'Mumtaz') + ')' : '⏳ Target'}</div>
+                </div>
+                <div style="background:#fff; border:1px solid ${pst.tasmi15Juz ? '#86efac' : '#cbd5e1'}; border-radius:8px; padding:8px; text-align:center;">
+                  <div style="font-size:11px; font-weight:700; color:${pst.tasmi15Juz ? '#15803d' : '#64748b'};">Tasmi' 15 Juz</div>
+                  <div style="font-size:11.5px; margin-top:2px;">${pst.tasmi15Juz ? '✅ Lulus (' + (pst.nilaiTasmi15Juz || 'Mumtaz') + ')' : '⏳ Target'}</div>
+                </div>
+                <div style="background:#fff; border:1px solid ${pst.tasmi20Juz ? '#86efac' : '#cbd5e1'}; border-radius:8px; padding:8px; text-align:center;">
+                  <div style="font-size:11px; font-weight:700; color:${pst.tasmi20Juz ? '#15803d' : '#64748b'};">Tasmi' 20 Juz</div>
+                  <div style="font-size:11.5px; margin-top:2px;">${pst.tasmi20Juz ? '✅ Lulus' : '⏳ Target'}</div>
+                </div>
+                <div style="background:#fff; border:1px solid ${pst.tasmi30JuzSekaliDuduk ? '#f59e0b' : '#cbd5e1'}; border-radius:8px; padding:8px; text-align:center;">
+                  <div style="font-size:11px; font-weight:700; color:${pst.tasmi30JuzSekaliDuduk ? '#b45309' : '#64748b'};">Tasmi' 30 Juz</div>
+                  <div style="font-size:11.5px; margin-top:2px;">${pst.tasmi30JuzSekaliDuduk ? '👑 Lulus Kubro' : '⏳ Target Kubro'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        const tp = s.tahfidzProgress || {};
+        const totalJuz = tp.totalJuzHafal || (tp.juzZiyadahList ? tp.juzZiyadahList.length : 3);
+        progressHtml = `
+          <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:16px; margin:20px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="color:#065f46; font-size:14px;">Capaian Hafalan Al-Qur'an:</strong>
+              <strong style="font-size:16px; color:#047857;">${totalJuz} / 30 Juz</strong>
+            </div>
+            <div style="font-size:13px; color:#1e293b; line-height:1.6;">
+              <div>• <strong>Juz Mutqin (Sangat Lancar):</strong> ${tp.juzMutqinList?.length || 0} Juz</div>
+              <div>• <strong>Juz Ziyadah (Hafal Baru):</strong> ${tp.juzZiyadahList?.length || 0} Juz</div>
+              <div>• <strong>Terakhir Disetor:</strong> ${tp.terakhirSetor || '-'}</div>
+              <div>• <strong>Alumni Wisuda Binnadzor:</strong> ${s.binnadzorProgress?.tanggalWisuda || 'Lulus'} (No: ${s.binnadzorProgress?.noIjazah || '-'})</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Generate 30 Juz Visual Grid
+      let gridHtml = '<div class="juz-grid-container" style="margin:16px 0;">';
+      const mutqinList = s.tahfidzProgress?.juzMutqinList || [];
+      const ziyadahList = s.tahfidzProgress?.juzZiyadahList || [];
+      const bnzJuz = [28, 29, 30];
+
+      for (let j = 1; j <= 30; j++) {
+        let cls = '';
+        let txt = 'Belum';
+        if (s.program === 'Binnadzor') {
+          if (bnzJuz.includes(j)) {
+            cls = 'status-binnadzor-target ';
+            const p = s.binnadzorProgress || {};
+            const pct = j === 30 ? p.hafalanJuz30 : (j === 29 ? p.hafalanJuz29 : p.hafalanJuz28);
+            if (pct >= 100) { cls += 'status-mutqin'; txt = 'Lulus'; }
+            else if (pct > 0) { cls += 'status-proses'; txt = pct + '%'; }
+            else { txt = 'Target'; }
+          }
+        } else if (s.program === 'Pasca Tahfidz') {
+          cls = 'status-mutqin';
+          txt = 'Mutqin ✓';
+        } else {
+          if (mutqinList.includes(j)) { cls = 'status-mutqin'; txt = 'Mutqin ✓'; }
+          else if (ziyadahList.includes(j)) { cls = 'status-ziyadah'; txt = 'Ziyadah'; }
+        }
+        gridHtml += `
+          <div class="juz-box ${cls}">
+            <div class="juz-box-no">Juz ${j}</div>
+            <div class="juz-box-status">${txt}</div>
+          </div>
+        `;
+      }
+      gridHtml += '</div>';
+
+      // Dropdown options for Month & Year
+      let monthOpts = '';
+      for (let m = 1; m <= 12; m++) {
+        const sel = m === currentMonth ? 'selected' : '';
+        monthOpts += `<option value="${m}" ${sel}>${NAMA_BULAN[m]}</option>`;
+      }
+
+      let yearOpts = '';
+      for (let y = 2023; y <= 2026; y++) {
+        const sel = y === currentYear ? 'selected' : '';
+        yearOpts += `<option value="${y}" ${sel}>${y}</option>`;
+      }
+
+      card.innerHTML = `
+        <!-- Header Informasi -->
+        <div style="text-align:center; border-bottom:2px dashed #cbd5e1; padding-bottom:16px; margin-bottom:20px;">
+          <div style="font-size:18px; font-weight:800; color:#064e3b; text-transform:uppercase;">
+            ${portalSettings.namaPondok || DEFAULT_SETTINGS.namaPondok}
+          </div>
+          <p style="font-size:12px; color:#64748b;">${portalSettings.alamatPondok || ''}</p>
+          <h3 style="font-size:15px; font-weight:700; color:#b45309; margin-top:8px; letter-spacing:0.5px;">
+            INFORMASI PERKEMBANGAN TAHFIDZ & ABSENSI SANTRI
+          </h3>
+          <p style="font-size:11.5px; color:#64748b; margin-top:2px;">
+            Pantauan Harian & Rekapitulasi Bulanan Setoran Hafalan Al-Qur'an Ananda
+          </p>
+        </div>
+
+        <!-- Profil Santri -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:18px; margin-bottom:20px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h2 style="font-size:20px; font-weight:800; color:#0f172a;">${s.nama}</h2>
+              ${progBadge}
+            </div>
+            <div style="font-size:13px; color:#475569; margin-top:6px; line-height:1.7;">
+              <div>• NIS: <strong>${s.nis}</strong> • Kamar: <strong>${s.asrama || '-'}</strong></div>
+              <div>• Kelas / Ustadz: <strong>${s.halaqah || '-'}</strong> ${s.kelasSekolah ? `• Kelas Sekolah: <strong style="color:#0284c7;">Kelas ${s.kelasSekolah}</strong>` : ''}</div>
+              <div>• Orang Tua / Wali: <strong>${s.namaWali || '-'}</strong> (${s.noHpWali || '-'})</div>
+            </div>
+          </div>
+
+          <!-- Status Wisuda -->
+          <div style="text-align:right;">
+            <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b; margin-bottom:4px;">Status Wisuda:</div>
+            ${statusWisudaHtml}
+          </div>
+        </div>
+
+        <!-- 3 PILAR UTAMA INFORMASI SANTRI (TAB NAVIGASI WALI SANTRI) -->
+        <div style="display:flex; gap:8px; border-bottom:2px solid #e2e8f0; margin:24px 0 16px 0; padding-bottom:8px; flex-wrap:wrap;">
+          <button type="button" id="tabBtnWaliPendidikan" class="btn btn-sm btn-primary" onclick="switchTabWali('pendidikan')">
+            📚 1. Pendidikan & Capaian Ngaji
+          </button>
+          <button type="button" id="tabBtnWaliKeamanan" class="btn btn-sm btn-secondary" onclick="switchTabWali('keamanan')">
+            🛡️ 2. Keamanan & Kedisiplinan
+          </button>
+          <button type="button" id="tabBtnWaliUbudiyah" class="btn btn-sm btn-secondary" onclick="switchTabWali('ubudiyah')">
+            🕌 3. Ubudiyah & Ibadah
+          </button>
+        </div>
+
+        <!-- ================= 1. TAB PENDIDIKAN & TAHFIDZ ================= -->
+        <div id="waliTabContentPendidikan">
+          <!-- BAR PEMILIH BULAN & TAHUN (WALI SANTRI SELECTOR) -->
+          <div class="month-filter-wrap">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:22px;">📅</span>
+              <div>
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748b;">Pilih Periode Bulan:</div>
+                <div style="font-size:14.5px; font-weight:800; color:#065f46;" id="displayPeriodeNama">
+                  Periode ${NAMA_BULAN[currentMonth]} ${currentYear}
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="navigasiBulan(-1)" title="Bulan Sebelumnya">◀</button>
+              <select id="portalFilterBulan" class="form-control" style="width:auto; font-size:13px; padding:6px 12px; font-weight:600;" onchange="gantiPeriodeBulan()">
+                ${monthOpts}
+              </select>
+              <select id="portalFilterTahun" class="form-control" style="width:auto; font-size:13px; padding:6px 12px; font-weight:600;" onchange="gantiPeriodeBulan()">
+                ${yearOpts}
+              </select>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="navigasiBulan(1)" title="Bulan Berikutnya">▶</button>
+              <button type="button" class="btn btn-gold btn-sm" onclick="setPeriodeBulanIni()">Bulan Sekarang</button>
+            </div>
+          </div>
+
+          <!-- CONTAINER REKAP BULANAN & TABEL SETORAN BULANAN (DINAMIS) -->
+          <div id="portalRekapBulananContent">
+            <!-- Injected dynamically by updateRekapBulanan() -->
+          </div>
+
+          <!-- Capaian Kurikulum Global Santri -->
+          <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-top:28px; margin-bottom:4px;">
+            🎯 Status Kurikulum & Tahapan Pendidikan
+          </h4>
+          ${progressHtml}
+
+          <!-- 30 Juz Visual Grid -->
+          <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-top:22px; margin-bottom:4px;">
+            🗺️ Peta Hafalan 30 Juz Al-Qur'an (Akumulasi Menyeluruh)
+          </h4>
+          <div style="font-size:11.5px; color:#64748b; margin-bottom:10px;">
+            Indikator pencapaian seluruh juz yang telah disetorkan kepada ustadz pembimbing:
+          </div>
+          ${gridHtml}
+
+          <div class="juz-legend" style="margin-bottom:24px;">
+            <div class="legend-item"><span class="legend-swatch" style="background:#047857;"></span><span>Mutqin (Lancar)</span></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:#10b981;"></span><span>Ziyadah (Baru)</span></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:#fff; border:2px solid #d97706;"></span><span>Target Binnadzor (Juz 28-30)</span></div>
+            <div class="legend-item"><span class="legend-swatch" style="background:#f1f5f9; border:1px solid #cbd5e1;"></span><span>Belum</span></div>
+          </div>
+        </div>
+
+        <!-- ================= 2. TAB KEAMANAN & KEDISIPLINAN ================= -->
+        <div id="waliTabContentKeamanan" style="display:none;">
+          ${renderWaliKeamananTab(s)}
+        </div>
+
+        <!-- ================= 3. TAB UBUDIYAH & IBADAH ================= -->
+        <div id="waliTabContentUbudiyah" style="display:none;">
+          ${renderWaliUbudiyahTab(s)}
+        </div>
+
+        <!-- WIDGET DOKUMENTASI & SUASANA KEHIDUPAN ANANDA DI PONDOK -->
+        <div class="photo-showcase-widget" style="margin-top:28px;">
+          <div class="photo-showcase-header">
+            <div class="photo-showcase-title-wrap">
+              <span class="photo-showcase-badge"><span class="live-dot"></span> Dokumentasi Pondok</span>
+              <div>
+                <h3 class="photo-showcase-title">📸 Suasana Halaqah & Kehidupan Santri</h3>
+                <p class="photo-showcase-subtitle">Momen ananda dan rekan santri dalam kegiatan setoran Al-Qur'an dan ibadah harian</p>
+              </div>
+            </div>
+            <div style="font-size:12px; color:#a7f3d0;">
+              💡 <em>Geser / swipe foto atau klik untuk perbesar</em>
+            </div>
+          </div>
+          <div id="waliPhotoSliderContainer">
+            <!-- Injected by createInteractivePhotoSlider -->
+          </div>
+        </div>
+
+        <!-- Tombol Aksi Hubungi Ustadz -->
+        <div style="margin-top:28px; text-align:center; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-md" onclick="hubungiUstadz('${s.nama}', '${s.halaqah}')" style="padding:10px 24px; font-size:14px;">
+            💬 Hubungi Ustadz Pembimbing
+          </button>
+        </div>
+      `;
+
+      // Render monthly calculations immediately
+      updateRekapBulanan();
+
+      setTimeout(() => {
+        const waliSliderWrap = document.getElementById('waliPhotoSliderContainer');
+        if (waliSliderWrap && (!waliSliderWrap.dataset.initialized || waliSliderWrap.innerHTML.trim() === '')) {
+          waliSliderWrap.dataset.initialized = 'true';
+          const photos = typeof getGalleryPhotos === 'function' ? getGalleryPhotos() : (typeof DEFAULT_GALLERY_PHOTOS !== 'undefined' ? DEFAULT_GALLERY_PHOTOS : []);
+          if (typeof createInteractivePhotoSlider === 'function' && photos.length > 0) {
+            createInteractivePhotoSlider({
+              containerId: 'waliPhotoSliderContainer',
+              photos: photos,
+              autoPlay: true,
+              autoPlayDelay: 5000,
+              height: 340
+            });
+          }
+        }
+      }, 50);
+    }
+
+    function switchTabWali(tab) {
+      const btnPendidikan = document.getElementById('tabBtnWaliPendidikan');
+      const btnKeamanan = document.getElementById('tabBtnWaliKeamanan');
+      const btnUbudiyah = document.getElementById('tabBtnWaliUbudiyah');
+
+      const contentPendidikan = document.getElementById('waliTabContentPendidikan');
+      const contentKeamanan = document.getElementById('waliTabContentKeamanan');
+      const contentUbudiyah = document.getElementById('waliTabContentUbudiyah');
+
+      if (!btnPendidikan || !contentPendidikan) return;
+
+      btnPendidikan.className = 'btn btn-sm ' + (tab === 'pendidikan' ? 'btn-primary' : 'btn-secondary');
+      btnKeamanan.className = 'btn btn-sm ' + (tab === 'keamanan' ? 'btn-primary' : 'btn-secondary');
+      btnUbudiyah.className = 'btn btn-sm ' + (tab === 'ubudiyah' ? 'btn-primary' : 'btn-secondary');
+
+      contentPendidikan.style.display = tab === 'pendidikan' ? 'block' : 'none';
+      contentKeamanan.style.display = tab === 'keamanan' ? 'block' : 'none';
+      contentUbudiyah.style.display = tab === 'ubudiyah' ? 'block' : 'none';
+
+      if (tab === 'ubudiyah') {
+        const elUbudiyah = document.getElementById('waliUbudiyahPct');
+        if (elUbudiyah) {
+          const val = parseInt(elUbudiyah.dataset.val || elUbudiyah.textContent, 10);
+          if (!isNaN(val)) animateCounter(elUbudiyah, val, 700, '% Hadir');
+        }
+      }
+    }
+
+    function renderWaliKeamananTab(s) {
+      const plg = portalPelanggaran.filter(p => p.santriId === s.id);
+      const izin = portalPerizinan.filter(p => p.santriId === s.id);
+      const totalPoin = plg.reduce((acc, p) => acc + (p.poin || 0), 0);
+
+      let statusKedisiplinan = '';
+      if (totalPoin === 0) {
+        statusKedisiplinan = `
+          <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:16px; margin-bottom:20px; display:flex; align-items:center; gap:14px;">
+            <div style="font-size:36px;">🌟</div>
+            <div>
+              <strong style="color:#065f46; font-size:15px;">Kedisiplinan Sangat Baik (0 Poin Pelanggaran)</strong>
+              <p style="margin:4px 0 0 0; font-size:12.5px; color:#047857;">Alhamdulillah! Ananda ${escapeHtml(s.nama)} senantiasa mematuhi tata tertib pesantren dan tidak memiliki catatan pelanggaran.</p>
+            </div>
+          </div>
+        `;
+      } else {
+        statusKedisiplinan = `
+          <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:16px; margin-bottom:20px; display:flex; align-items:center; gap:14px;">
+            <div style="font-size:36px;">⚠️</div>
+            <div>
+              <strong style="color:#92400e; font-size:15px;">Status Kedisiplinan: ${totalPoin} Poin Akumulasi</strong>
+              <p style="margin:4px 0 0 0; font-size:12.5px; color:#b45309;">Ananda dalam tahap pembinaan kedisiplinan dan pembiasaan takziran edukatif pesantren.</p>
+            </div>
+          </div>
+        `;
+      }
+
+      // Tabel Pelanggaran
+      let plgRows = '';
+      if (plg.length === 0) {
+        plgRows = `<tr><td colspan="6" class="empty-state">Alhamdulillah, tidak ada catatan pelanggaran.</td></tr>`;
+      } else {
+        plg.forEach((p, idx) => {
+          const statChip = p.statusTakziran === 'Selesai' 
+            ? `<span class="badge" style="background:#dcfce7; color:#15803d; font-weight:700;">✓ Takziran Selesai</span>` 
+            : `<span class="badge" style="background:#fef3c7; color:#b45309; font-weight:700;">⏳ Sedang Menjalani</span>`;
+
+          plgRows += `
+            <tr>
+              <td style="text-align:center;">${idx + 1}</td>
+              <td>${formatTanggalIndo(p.tanggal)}</td>
+              <td><strong>${escapeHtml(p.jenisPelanggaran)}</strong></td>
+              <td style="text-align:center;"><strong style="color:#b91c1c;">+${p.poin} Poin</strong></td>
+              <td style="font-size:12px; color:#334155;">${escapeHtml(p.takziran)}</td>
+              <td>${statChip}</td>
+            </tr>
+          `;
+        });
+      }
+
+      // Tabel Perizinan
+      let izinRows = '';
+      if (izin.length === 0) {
+        izinRows = `<tr><td colspan="7" class="empty-state">Belum ada riwayat izin keluar atau pulang ke rumah.</td></tr>`;
+      } else {
+        izin.forEach((p, idx) => {
+          let statChip = '';
+          if (p.status === 'Kembali Tepat Waktu') statChip = `<span class="badge" style="background:#dcfce7; color:#15803d; font-weight:700;">✓ Kembali Tepat Waktu</span>`;
+          else if (p.status === 'Sedang di Luar') statChip = `<span class="badge" style="background:#fef3c7; color:#b45309; font-weight:700;">⏳ Sedang di Luar</span>`;
+          else statChip = `<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">⚠️ Terlambat</span>`;
+
+          izinRows += `
+            <tr>
+              <td style="text-align:center;">${idx + 1}</td>
+              <td><code>${escapeHtml(p.noSurat)}</code></td>
+              <td><strong>${escapeHtml(p.jenisIzin)}</strong></td>
+              <td>${formatTanggalIndo(p.tanggalKeluar)} (${escapeHtml(p.jamKeluar || '-')})</td>
+              <td>${formatTanggalIndo(p.rencanaKembali)} (${escapeHtml(p.jamRencanaKembali || '-')})</td>
+              <td style="font-size:12px;">${escapeHtml(p.alasan)}</td>
+              <td>${statChip}</td>
+            </tr>
+          `;
+        });
+      }
+
+      return `
+        ${statusKedisiplinan}
+
+        <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-top:20px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <span>⚠️</span> Riwayat Catatan Pelanggaran & Takziran Edukatif
+        </h4>
+        <div style="font-size:12px; color:#64748b; margin-bottom:12px;">
+          Informasi transparan mengenai pembinaan adab santri. Seluruh takziran bersifat ibadah dan edukasi.
+        </div>
+        <div class="table-responsive" style="margin-bottom:24px;">
+          <table class="table-modern" style="font-size:12px;">
+            <thead>
+              <tr>
+                <th style="width:30px;">No</th>
+                <th>Tanggal</th>
+                <th>Pelanggaran</th>
+                <th style="text-align:center;">Poin</th>
+                <th>Bentuk Takziran Edukatif</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>${plgRows}</tbody>
+          </table>
+        </div>
+
+        <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-top:20px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <span>🎫</span> Riwayat Surat Perizinan Pulang / Keluar Santri
+        </h4>
+        <div class="table-responsive">
+          <table class="table-modern" style="font-size:12px;">
+            <thead>
+              <tr>
+                <th style="width:30px;">No</th>
+                <th>No Surat</th>
+                <th>Jenis Izin</th>
+                <th>Waktu Keluar</th>
+                <th>Waktu Kembali</th>
+                <th>Keperluan / Alasan</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>${izinRows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderWaliUbudiyahTab(s) {
+      const sJamaah = portalJamaah.filter(j => j.santriId === s.id);
+      const sHadir = sJamaah.filter(j => j.status === 'Hadir Jamaah').length;
+      const sMasbuk = sJamaah.filter(j => j.status && j.status.includes('Masbuk')).length;
+      const pctJamaah = sJamaah.length > 0 ? Math.round((sHadir / sJamaah.length) * 100) : 98;
+
+      const sEkskul = portalEkskul.filter(e => e.santriId === s.id);
+
+      let ekskulRows = '';
+      if (sEkskul.length === 0) {
+        ekskulRows = `<tr><td colspan="5" class="empty-state">Belum ada catatan keikutsertaan kegiatan ekstrakurikuler khusus.</td></tr>`;
+      } else {
+        sEkskul.forEach((e, idx) => {
+          ekskulRows += `
+            <tr>
+              <td style="text-align:center;">${idx + 1}</td>
+              <td><strong>${escapeHtml(e.namaKegiatan)}</strong></td>
+              <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${escapeHtml(e.kategori)}</span></td>
+              <td>${escapeHtml(e.jadwal || '-')}</td>
+              <td><span class="badge" style="background:#dcfce7; color:#15803d; font-weight:700;">${escapeHtml(e.keaktifan || 'Aktif')}</span></td>
+            </tr>
+          `;
+        });
+      }
+
+      return `
+        <!-- Ringkasan Jamaah -->
+        <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:16px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <strong style="color:#065f46; font-size:15px; display:flex; align-items:center; gap:6px;">
+              <span>🕋</span> Keaktifan Shalat Berjamaah 5 Waktu di Masjid:
+            </strong>
+            <p style="margin:4px 0 0 0; font-size:12.5px; color:#047857;">Kedisiplinan ananda dalam menegakkan shalat berjamaah 5 waktu dan wirid bersama.</p>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:20px; font-weight:800; color:#047857;" id="waliUbudiyahPct" data-val="${pctJamaah}">${pctJamaah}% Hadir</div>
+            <span class="badge" style="background:#dcfce7; color:#15803d; font-weight:700;">🌟 Sangat Istiqomah</span>
+          </div>
+        </div>
+
+        <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-top:20px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <span>🎯</span> Kegiatan Ekstrakurikuler & Kajian Kitab Kuning yang Diikuti
+        </h4>
+        <div style="font-size:12px; color:#64748b; margin-bottom:12px;">
+          Pengembangan wawasan keilmuan, kepemimpinan dakwah, dan seni Islami ananda di pondok pesantren:
+        </div>
+        <div class="table-responsive">
+          <table class="table-modern" style="font-size:12px;">
+            <thead>
+              <tr>
+                <th style="width:30px;">No</th>
+                <th>Nama Kegiatan / Kajian</th>
+                <th>Kategori</th>
+                <th>Jadwal Rutin</th>
+                <th>Tingkat Keaktifan</th>
+              </tr>
+            </thead>
+            <tbody>${ekskulRows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function gantiPeriodeBulan() {
+      const bulanEl = document.getElementById('portalFilterBulan');
+      const tahunEl = document.getElementById('portalFilterTahun');
+      if (bulanEl) currentMonth = parseInt(bulanEl.value, 10);
+      if (tahunEl) currentYear = parseInt(tahunEl.value, 10);
+      updateRekapBulanan();
+    }
+    const gantiPeriodeRapor = gantiPeriodeBulan;
+
+    function setPeriodeBulanIni() {
+      const now = new Date();
+      currentMonth = now.getMonth() + 1;
+      currentYear = now.getFullYear();
+      const bulanEl = document.getElementById('portalFilterBulan');
+      const tahunEl = document.getElementById('portalFilterTahun');
+      if (bulanEl) bulanEl.value = String(currentMonth);
+      if (tahunEl) tahunEl.value = String(currentYear);
+      updateRekapBulanan();
+    }
+
+    function navigasiBulan(delta) {
+      let m = currentMonth + delta;
+      let y = currentYear;
+      if (m > 12) {
+        m = 1;
+        y++;
+      } else if (m < 1) {
+        m = 12;
+        y--;
+      }
+      currentMonth = m;
+      currentYear = y;
+      const bulanEl = document.getElementById('portalFilterBulan');
+      const tahunEl = document.getElementById('portalFilterTahun');
+      if (bulanEl) bulanEl.value = String(currentMonth);
+      if (tahunEl) tahunEl.value = String(currentYear);
+      updateRekapBulanan();
+    }
+
+    function updateRekapBulanan() {
+      if (!currentSantri) return;
+      const s = currentSantri;
+
+      const monthStr = String(currentMonth).padStart(2, '0');
+      const yearMonthPrefix = `${currentYear}-${monthStr}`;
+      const namaBulanStr = NAMA_BULAN[currentMonth] || `Bulan ${currentMonth}`;
+
+      // Update Label
+      const displayLabel = document.getElementById('displayPeriodeNama');
+      if (displayLabel) displayLabel.textContent = `Periode ${namaBulanStr} ${currentYear}`;
+      const printLabel = document.getElementById('printPeriodeNama');
+      if (printLabel) printLabel.textContent = `${namaBulanStr} ${currentYear}`;
+
+      // 1. Rekap Presensi 1 Bulan (Abaikan status Alpa di hari libur Kamis/Jumat/Event)
+      const sAbsensiMonth = portalAbsensi.filter(a => {
+        if (a.santriId !== s.id || !a.tanggal || !a.tanggal.startsWith(yearMonthPrefix)) return false;
+        const st = cekStatusHari(a.tanggal, portalSettings);
+        if (st.isLibur && (a.status || '').includes('Alpa')) return false;
+        return true;
+      });
+      const hCount = sAbsensiMonth.filter(a => a.status && a.status.includes('Hadir')).length;
+      const iCount = sAbsensiMonth.filter(a => a.status && a.status.includes('Izin')).length;
+      const sCount = sAbsensiMonth.filter(a => a.status && a.status.includes('Sakit')).length;
+      const aCount = sAbsensiMonth.filter(a => a.status && (a.status.includes('Alpa') || a.status.includes('Belum'))).length;
+      const totalSesi = sAbsensiMonth.length;
+      const pctKehadiran = totalSesi > 0 ? Math.round((hCount / totalSesi) * 100) : 100;
+
+      // Hitung hari aktif & libur bulan ini
+      const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+      let countHariAktif = 0;
+      let countHariLiburRutin = 0;
+      let countHariLiburEvent = 0;
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dStr = `${currentYear}-${monthStr}-${String(d).padStart(2, '0')}`;
+        const st = cekStatusHari(dStr, portalSettings);
+        if (!st.isLibur) countHariAktif++;
+        else if (st.jenis === 'rutin') countHariLiburRutin++;
+        else countHariLiburEvent++;
+      }
+      const totalHariLibur = countHariLiburRutin + countHariLiburEvent;
+
+      // 2. Rekap Setoran 1 Bulan
+      const sSetoranMonth = portalSetoran.filter(item => item.santriId === s.id && item.tanggal && item.tanggal.startsWith(yearMonthPrefix))
+        .sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+      // Program specifics
+      let stat2Title = '';
+      let stat2Val = '';
+      let stat2Sub = '';
+
+      let stat3Title = '';
+      let stat3Val = '';
+      let stat3Sub = '';
+
+      if (s.program === 'Binnadzor' || s.program === 'Program Maqbul') {
+        const setoranBaca = sSetoranMonth.filter(set => set.jenisSetoran && (set.jenisSetoran.includes('Bacaan') || set.jenisSetoran.includes('Binnadzor') || set.jenisSetoran.includes('Khotmil')));
+        const hlmBaca = setoranBaca.reduce((sum, set) => sum + (Number(set.halaman) || 2), 0);
+
+        const setoranHafal = sSetoranMonth.filter(set => set.jenisSetoran && (set.jenisSetoran.includes('Hafalan') || set.jenisSetoran.includes('Ziyadah') || set.jenisSetoran.includes('Tasmi')));
+        const hlmHafal = setoranHafal.reduce((sum, set) => sum + (Number(set.halaman) || 1), 0);
+
+        stat2Title = '📖 Capaian Bacaan Binnadzor';
+        stat2Val = `${hlmBaca} <span style="font-size:14px; font-weight:600;">Halaman</span>`;
+        stat2Sub = `${setoranBaca.length} kali setoran kelancaran tilawah`;
+
+        stat3Title = '🧠 Tambahan Hafalan Baru';
+        stat3Val = `${hlmHafal} <span style="font-size:14px; font-weight:600;">Halaman</span>`;
+        stat3Sub = `${setoranHafal.length} kali setoran Juz 28-30 & Surat Pilihan`;
+      } else if (s.program === 'Pasca Tahfidz') {
+        const setoranTasmi = sSetoranMonth.filter(set => set.jenisSetoran && (set.jenisSetoran.includes('Tasmi') || set.jenisSetoran.includes('Muraja') || set.jenisSetoran.includes('Khotmil')));
+        const hlmTasmi = setoranTasmi.reduce((sum, set) => sum + (Number(set.halaman) || 20), 0);
+        const juzTasmiEst = (hlmTasmi / 20).toFixed(1);
+
+        stat2Title = '👑 Setoran Tasmi\' Bil-Ghaib';
+        stat2Val = `${hlmTasmi} <span style="font-size:14px; font-weight:600;">Halaman</span>`;
+        stat2Sub = `Estimasi ~${juzTasmiEst} Juz tasmi' bil-ghaib`;
+
+        stat3Title = '🎯 Bimbingan Pasca Tahfidz';
+        stat3Val = `<span style="font-size:16px; color:#92400e;">30 Juz Mutqin</span>`;
+        stat3Sub = `Status: Bimbingan Sanad & Matan Tajwid`;
+      } else {
+        // Tahfidz
+        const setoranZiyadah = sSetoranMonth.filter(set => set.jenisSetoran && set.jenisSetoran.includes('Ziyadah'));
+        const hlmZiyadah = setoranZiyadah.reduce((sum, set) => sum + (Number(set.halaman) || 1), 0);
+        const juzZiyadahEst = (hlmZiyadah / 20).toFixed(1);
+
+        const setoranMurajaah = sSetoranMonth.filter(set => set.jenisSetoran && (set.jenisSetoran.includes('Muraja') || set.jenisSetoran.includes('Tasmi')));
+        const hlmMurajaah = setoranMurajaah.reduce((sum, set) => sum + (Number(set.halaman) || 2), 0);
+        const juzMurajaahEst = (hlmMurajaah / 20).toFixed(1);
+
+        stat2Title = '🌟 Ziyadah (Hafalan Baru)';
+        stat2Val = `${hlmZiyadah} <span style="font-size:14px; font-weight:600;">Hlm (~${juzZiyadahEst} Juz)</span>`;
+        stat2Sub = `${setoranZiyadah.length} kali penambahan hafalan baru`;
+
+        stat3Title = '🔄 Pengulangan Muraja\'ah';
+        stat3Val = `${hlmMurajaah} <span style="font-size:14px; font-weight:600;">Hlm (~${juzMurajaahEst} Juz)</span>`;
+        stat3Sub = `${setoranMurajaah.length} kali pengulangan hafalan mutqin`;
+      }
+
+      // Kualitas Predikat
+      let nilaiBadge = 'Mumtaz (A)';
+      let nilaiCls = 'color:#047857;';
+      if (sSetoranMonth.length > 0) {
+        const nilaiCounts = {};
+        sSetoranMonth.forEach(set => {
+          const n = (set.nilai || 'Mumtaz (A)').split(' ')[0];
+          nilaiCounts[n] = (nilaiCounts[n] || 0) + 1;
+        });
+        const topNilai = Object.keys(nilaiCounts).sort((a,b) => nilaiCounts[b] - nilaiCounts[a])[0];
+        if (topNilai === 'Mumtaz') { nilaiBadge = 'Mumtaz (A)'; nilaiCls = 'color:#047857;'; }
+        else if (topNilai === 'Jayyid') { nilaiBadge = 'Jayyid (B)'; nilaiCls = 'color:#0284c7;'; }
+        else if (topNilai === 'Maqbul') { nilaiBadge = 'Maqbul (C)'; nilaiCls = 'color:#d97706;'; }
+      } else {
+        nilaiBadge = 'Sedang Berjalan';
+        nilaiCls = 'color:#64748b; font-size:16px;';
+      }
+
+      // Card Grid HTML
+      const rekapGridHtml = `
+        <div class="rekap-stat-grid">
+          <!-- 1. Presensi Bulan Ini -->
+          <div class="rekap-stat-box" style="border-left:4px solid #10b981;">
+            <div class="rekap-stat-title" style="color:#065f46;">
+              <span>📋</span> Kehadiran Bulan Ini
+            </div>
+            <div class="rekap-stat-val" id="rekapWaliPctHadir" style="color:#059669;">
+              ${pctKehadiran}%
+            </div>
+            <div class="rekap-stat-sub">
+              <span style="color:#16a34a; font-weight:700;">H: ${hCount}</span> • 
+              <span style="color:#d97706; font-weight:700;">I: ${iCount}</span> • 
+              <span style="color:#0284c7; font-weight:700;">S: ${sCount}</span> • 
+              <span style="color:#dc2626; font-weight:700;">A: ${aCount}</span>
+              <div style="margin-top:2px; font-weight:600;">Total ${totalSesi} sesi pertemuan</div>
+              <div style="font-size:10.5px; color:#059669; margin-top:4px; font-weight:600;">ℹ️ Jadwal Aktif: Sabtu - Rabu (Kamis & Jumat Libur)</div>
+            </div>
+          </div>
+
+          <!-- 2. Capaian Baca / Ziyadah Baru -->
+          <div class="rekap-stat-box" style="border-left:4px solid #0284c7;">
+            <div class="rekap-stat-title" style="color:#0369a1;">
+              ${stat2Title}
+            </div>
+            <div class="rekap-stat-val" style="color:#0284c7;">
+              ${stat2Val}
+            </div>
+            <div class="rekap-stat-sub">${stat2Sub}</div>
+          </div>
+
+          <!-- 3. Tambahan Hafalan / Muraja'ah -->
+          <div class="rekap-stat-box" style="border-left:4px solid #f59e0b;">
+            <div class="rekap-stat-title" style="color:#b45309;">
+              ${stat3Title}
+            </div>
+            <div class="rekap-stat-val" style="color:#d97706;">
+              ${stat3Val}
+            </div>
+            <div class="rekap-stat-sub">${stat3Sub}</div>
+          </div>
+
+          <!-- 4. Kualitas Setoran -->
+          <div class="rekap-stat-box" style="border-left:4px solid #8b5cf6;">
+            <div class="rekap-stat-title" style="color:#6d28d9;">
+              <span>⭐</span> Predikat Setoran
+            </div>
+            <div class="rekap-stat-val" style="${nilaiCls}">
+              ${nilaiBadge}
+            </div>
+            <div class="rekap-stat-sub">${sSetoranMonth.length} kali setoran tercatat</div>
+          </div>
+        </div>
+      `;
+
+      // Setoran Table HTML
+      let setoranTableHtml = '';
+      if (sSetoranMonth.length === 0) {
+        setoranTableHtml = `
+          <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:22px; text-align:center; color:#64748b; font-size:13px; margin:16px 0;">
+            <div style="font-size:24px; margin-bottom:6px;">ℹ️</div>
+            <strong>Belum ada rekaman hasil setoran ananda pada periode ${namaBulanStr} ${currentYear}.</strong>
+            <p style="font-size:12px; margin-top:4px; color:#94a3b8;">
+              Silakan pilih bulan lain dengan tombol selector di atas, atau konfirmasikan ke ustadz pembimbing ananda.
+            </p>
+          </div>
+        `;
+      } else {
+        let rows = '';
+        sSetoranMonth.forEach(item => {
+          let badgeNilai = 'nilai-mumtaz';
+          if ((item.nilai || '').includes('Jayyid Jiddan')) badgeNilai = 'nilai-jayyid-jiddan';
+          else if ((item.nilai || '').includes('Jayyid')) badgeNilai = 'nilai-jayyid';
+          else if ((item.nilai || '').includes('Maqbul')) badgeNilai = 'nilai-maqbul';
+
+          rows += `
+            <tr>
+              <td>
+                <strong>${item.tanggal}</strong>
+                <div style="font-size:11px; color:#64748b;">${item.sesi || '-'}</div>
+              </td>
+              <td>
+                <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:600; font-size:11.5px;">${item.jenisSetoran || 'Ziyadah'}</span>
+              </td>
+              <td>
+                <strong style="color:#0f172a;">Juz ${item.juz || '-'}</strong> • QS. ${item.suratNama || '-'} : ${item.ayatAwal || 1}-${item.ayatAkhir || 1}
+                ${item.halaman ? `<span style="font-size:11px; color:#64748b; margin-left:4px;">(${item.halaman} hlm)</span>` : ''}
+              </td>
+              <td>
+                <span class="nilai-chip ${badgeNilai}">${item.nilai || 'Mumtaz (A)'}</span>
+              </td>
+              <td style="font-size:12px; color:#334155;">
+                ${item.catatan || '-'}
+                <div style="font-size:10.5px; color:#64748b; margin-top:2px;">Penyimak: <em>${item.penyimak || s.halaqah || 'Ustadz Pembimbing'}</em></div>
+              </td>
+            </tr>
+          `;
+        });
+
+        setoranTableHtml = `
+          <div class="table-responsive" style="margin-top:12px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:115px;">Tanggal & Sesi</th>
+                  <th style="width:125px;">Jenis Setoran</th>
+                  <th>Materi Surat & Ayat</th>
+                  <th style="width:115px;">Nilai Tajwid</th>
+                  <th>Catatan Evaluasi Ustadz</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      const container = document.getElementById('portalRekapBulananContent');
+      if (container) {
+        container.innerHTML = `
+          <!-- Notice Kebijakan Hari Aktif & Libur Pondok -->
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:12px 16px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:24px;">📅</span>
+              <div>
+                <div style="font-size:13px; font-weight:700; color:#14532d;">
+                  Jadwal Setoran Ananda: Sabtu s.d. Rabu (Kamis & Jumat Libur Halaqah)
+                </div>
+                <div style="font-size:11.5px; color:#166534; margin-top:2px;">
+                  Bulan ${namaBulanStr} ${currentYear}: ${countHariAktif} hari aktif setoran & ${totalHariLibur} hari libur pondok. Hari libur tidak mengurangi persentase kehadiran ananda.
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <span class="badge" style="background:#dcfce7; color:#15803d; font-weight:700; padding:5px 9px; font-size:11.5px;">${countHariAktif} Hari Aktif</span>
+              <span class="badge" style="background:#fef9c3; color:#854d0e; font-weight:700; padding:5px 9px; font-size:11.5px;">${totalHariLibur} Hari Libur</span>
+            </div>
+          </div>
+
+          ${rekapGridHtml}
+          <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-top:22px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <span>📖</span> Rincian Hasil Setoran Selama ${namaBulanStr} ${currentYear}
+            <span style="font-size:12px; font-weight:500; color:#64748b;">(${sSetoranMonth.length} catatan)</span>
+          </h4>
+          ${setoranTableHtml}
+        `;
+        const elHadir = document.getElementById('rekapWaliPctHadir');
+        if (elHadir) animateCounter(elHadir, pctKehadiran, 850, '%');
+      }
+    }
+
+    function hubungiUstadz(santriNama, halaqah) {
+      const kontak = portalSettings.noKontakPondok || '081234567890';
+      let clean = kontak.replace(/\D/g, '');
+      if (clean.startsWith('0')) clean = '62' + clean.substring(1);
+
+      const periode = `${NAMA_BULAN[currentMonth]} ${currentYear}`;
+      const msg = `Assalamu'alaikum Warahmatullahi Wabarakatuh,\nUstadz/Ustdzh Pengurus Pondok,\n\nSaya orang tua/wali dari ananda *${santriNama}* (${halaqah}).\nIngin menanyakan perihal perkembangan tahfidz, hasil setoran, serta presensi kehadiran ananda untuk periode *${periode}*.\n\nJazakumullahu Khairan Katsiran.`;
+      window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(msg)}`, '_blank');
+    }
+  </script>
+</body>
+</html>

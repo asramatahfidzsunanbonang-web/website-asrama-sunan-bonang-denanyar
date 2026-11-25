@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asrama Tahfidz Sunan Bonang - Yayasan PP. Mamba'ul Ma'arif Denanyar Jombang</title>
+  <link rel="stylesheet" href="website.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+  <script>
+    // Global standalone SVG Fallbacks (Offline & Instant Error Safe)
+    function getFacilityFallbackSvg(index) {
+      var colors = [
+        ['#064e3b', '#047857', '#f59e0b', '🕌', 'MASJID JAMI PESANTREN'],
+        ['#0f172a', '#1e293b', '#38bdf8', '🏢', 'ASRAMA NYAMAN & BERSIH'],
+        ['#312e81', '#4338ca', '#a5b4fc', '📖', 'AULA HALAQAH BER-AC'],
+        ['#78350f', '#92400e', '#fde047', '📚', 'PERPUSTAKAAN KITAB & MUSHAF'],
+        ['#14532d', '#15803d', '#f97316', '🍽️', 'DAPUR & RUANG MAKAN'],
+        ['#0e7490', '#0369a1', '#34d399', '⚽', 'SARANA OLAHRAGA']
+      ];
+      var item = colors[index % colors.length];
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">' +
+        '<defs><linearGradient id="gf_' + index + '" x1="0%" y1="0%" x2="100%" y2="100%">' +
+        '<stop offset="0%" stop-color="' + item[0] + '"/><stop offset="100%" stop-color="' + item[1] + '"/>' +
+        '</linearGradient></defs>' +
+        '<rect width="100%" height="100%" fill="url(#gf_' + index + ')"/>' +
+        '<circle cx="400" cy="180" r="90" fill="rgba(255,255,255,0.08)"/>' +
+        '<circle cx="400" cy="180" r="70" fill="none" stroke="' + item[2] + '" stroke-width="2" opacity="0.5"/>' +
+        '<text x="400" y="195" font-size="64" text-anchor="middle">' + item[3] + '</text>' +
+        '<text x="400" y="260" font-family="system-ui, sans-serif" font-size="24" fill="#ffffff" font-weight="bold" text-anchor="middle">' + item[4] + '</text>' +
+        '<text x="400" y="295" font-family="system-ui, sans-serif" font-size="14" fill="' + item[2] + '" font-weight="600" text-anchor="middle">Fasilitas Pesantren Tahfidz Al-Barokah</text>' +
+        '</svg>';
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    function getProgramFallbackSvg(index) {
+      var colors = [
+        ['#0369a1', '#0284c7', '#38bdf8', '📖', 'PROGRAM BINNADZOR', 'Tahap 1 - Fondasi Fashahah'],
+        ['#c2410c', '#ea580c', '#fdba74', '🌟', 'TES MAQBUL & MAQBUL', 'Tahap 2 - Jembatan Akselerasi'],
+        ['#065f46', '#047857', '#6ee7b7', '🕌', 'PROGRAM TAHFIDZ 30 JUZ', 'Tahap 3 - Target Mutqin Bil-Ghaib'],
+        ['#854d0e', '#a16207', '#fde047', '👑', 'PASCA TAHFIDZ & SANAD', 'Tahap 4 - Puncak Sanad & Fashahah']
+      ];
+      var item = colors[index % colors.length];
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">' +
+        '<defs><linearGradient id="gpf_' + index + '" x1="0%" y1="0%" x2="100%" y2="100%">' +
+        '<stop offset="0%" stop-color="' + item[0] + '"/><stop offset="100%" stop-color="' + item[1] + '"/>' +
+        '</linearGradient></defs>' +
+        '<rect width="100%" height="100%" fill="url(#gpf_' + index + ')"/>' +
+        '<circle cx="400" cy="180" r="90" fill="rgba(255,255,255,0.08)"/>' +
+        '<circle cx="400" cy="180" r="70" fill="none" stroke="' + item[2] + '" stroke-width="2" opacity="0.5"/>' +
+        '<text x="400" y="195" font-size="64" text-anchor="middle">' + item[3] + '</text>' +
+        '<text x="400" y="260" font-family="system-ui, sans-serif" font-size="24" fill="#ffffff" font-weight="bold" text-anchor="middle">' + item[4] + '</text>' +
+        '<text x="400" y="295" font-family="system-ui, sans-serif" font-size="14" fill="' + item[2] + '" font-weight="600" text-anchor="middle">' + item[5] + '</text>' +
+        '</svg>';
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+  </script>
+</head>
+<body class="portal-mode-simple view-beranda">
+
+  <!-- ================= 1. ULTRA-SLEEK TOP NOTICE BAR ================= -->
+  <div class="top-notice-bar">
+    <div class="top-notice-left">
+      <span class="top-status-indicator"><span class="top-status-dot"></span> Layanan Pesantren Aktif</span>
+      <span>•</span>
+      <span>📍 <span class="bind-alamat-pondok">Jl. KH. Bisri Syansuri, Denanyar, Jombang, Jawa Timur</span></span>
+      <span>•</span>
+      <span>📞 <span class="bind-kontak-pondok">0812-3456-7890</span></span>
+    </div>
+    <div class="top-notice-right">
+      <span style="color:#fde047; font-weight:700;">🎓 Tahun Ajaran 2025/2026 (PSB Online Dibuka)</span>
+      <span>•</span>
+      <a href="https://wa.me/6281234567890" target="_blank" class="top-wa-pill">
+        <span>💬</span> Hubungi WhatsApp Sekretariat
+      </a>
+    </div>
+  </div>
+
+  <!-- ================= 2. MAIN MODERN GLASSMORPHIC NAVBAR ================= -->
+  <nav class="site-navbar" id="siteNavbar">
+    <div class="navbar-container" id="navbarContainer">
+      <!-- Modern Brand Lockup -->
+      <a href="#beranda" class="brand-wrap" onclick="navigateToView('beranda'); return false;" title="Kembali ke Beranda Utama">
+        <div class="brand-logo">🕌</div>
+        <div class="brand-text">
+          <span class="brand-tag bind-yayasan-pondok">Yayasan PP. Mamba'ul Ma'arif</span>
+          <h1 class="bind-nama-pondok brand-title">Asrama Tahfidz Sunan Bonang</h1>
+          <span class="brand-sub bind-lokasi-pondok">Denanyar Jombang • Tahfidz 30 Juz &amp; Formal</span>
+        </div>
+      </a>
+
+      <!-- Desktop Horizontal Scrollable Menu & Actions Track (Bisa Digeser Ke Kanan & Kiri) -->
+      <div class="navbar-track-wrapper" id="navbarTrackWrapper">
+        <button type="button" class="nav-track-btn nav-track-prev" id="btnNavTrackPrev" onclick="scrollNavTrack(-1)" title="Geser ke kiri" aria-label="Geser ke kiri">‹</button>
+
+        <div class="navbar-scrollable-track" id="navbarScrollableTrack">
+          <!-- Action Items & Gate Access (Mode Simpel, Cek Ananda, Gerbang Akses) - PINDAH KE DEPAN (DEKAT NAMA PONDOK) -->
+          <div class="nav-actions">
+            <!-- Switcher Mode Tampilan: Simpel (Default) vs Gulir Penuh -->
+            <button type="button" class="btn btn-gold btn-sm btn-mode-toggle" id="btnTogglePortalMode" onclick="togglePortalDisplayMode()" style="font-size:11px; padding:6px 11px; font-weight:800; border-radius:999px;" title="Beralih antara Mode Simpel (Fokus Beranda) atau Mode Gulir Penuh">
+              <span>⚡ Mode Simpel</span>
+            </button>
+
+            <!-- Cek Perkembangan Santri Button -->
+            <a href="portal-wali.html" class="btn btn-primary btn-sm btn-nav-wali" style="font-weight:700; border-radius:999px; padding:6px 12px; font-size:11.5px;" title="Cek Perkembangan Santri (Wali)">
+              <span>🔍</span> Cek Perkembangan Santri
+            </a>
+
+            <!-- Dropdown Akses Gerbang Pengurus & Asatidz -->
+            <div class="portal-dropdown">
+              <button type="button" class="btn btn-gold btn-sm portal-dropdown-btn" onclick="togglePortalDropdown(event)" style="font-weight:800; font-size:11.5px; padding:6px 12px; border-radius:999px;" title="Akses Gerbang Pengurus, Asatidz, dan Wali">
+                <span>🔐</span> Gerbang Akses <span style="font-size:9px; margin-left:2px;">▼</span>
+              </button>
+              <div class="portal-dropdown-menu" id="portalDropdownMenu">
+                <a href="admin-tahfidz.html" class="portal-dropdown-item">
+                  <span class="pdi-icon">🔐</span>
+                  <div>
+                    <strong>Gerbang Pengurus (Admin)</strong>
+                    <small>Pengaturan lembaga, setoran &amp; santri</small>
+                  </div>
+                </a>
+                <a href="panel-ustadz.html" class="portal-dropdown-item">
+                  <span class="pdi-icon">👳‍♂️</span>
+                  <div>
+                    <strong>Panel Asatidz Musyrif</strong>
+                    <small>Presensi halaqah &amp; setoran harian</small>
+                  </div>
+                </a>
+                <a href="portal-wali.html" class="portal-dropdown-item">
+                  <span class="pdi-icon">🔍</span>
+                  <div>
+                    <strong>Portal Khusus Wali Santri</strong>
+                    <small>Cek perkembangan hafalan &amp; riwayat santri</small>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-track-separator"></div>
+
+          <!-- Streamlined Main Menu -->
+          <ul class="nav-menu">
+            <li><a href="#beranda" class="nav-link active" onclick="navigateToView('beranda'); return false;">Beranda</a></li>
+            <li><a href="#profil" class="nav-link" onclick="navigateToView('profil'); return false;">Profil &amp; Fasilitas</a></li>
+            <li><a href="#program" class="nav-link" onclick="navigateToView('program'); return false;">Program Tahfidz</a></li>
+            <li><a href="#ekstrakurikuler" class="nav-link" onclick="navigateToView('ekstrakurikuler'); return false;">Ekstrakurikuler</a></li>
+            <li><a href="#sekolah-formal" class="nav-link" onclick="navigateToView('sekolah-formal'); return false;">Sekolah Formal <span class="nav-badge-dot">6</span></a></li>
+            <li><a href="#psb" class="nav-link" onclick="navigateToView('psb'); return false;">Pendaftaran (PSB)</a></li>
+            <li><a href="#artikel" class="nav-link" onclick="navigateToView('artikel'); return false;">Berita</a></li>
+            <li><a href="#galeri" class="nav-link" onclick="navigateToView('galeri'); return false;">Galeri</a></li>
+            <li><a href="#kontak" class="nav-link" onclick="navigateToView('kontak'); return false;">Kontak</a></li>
+          </ul>
+        </div>
+
+        <button type="button" class="nav-track-btn nav-track-next" id="btnNavTrackNext" onclick="scrollNavTrack(1)" title="Geser menu navigasi ke kanan" aria-label="Geser menu navigasi ke kanan">›</button>
+      </div>
+
+      <!-- Mobile Action Bar (< 1024px) -->
+      <div class="mobile-actions-bar" id="mobileActionsBar">
+        <button type="button" class="btn btn-gold btn-sm btn-mode-toggle" id="btnTogglePortalModeMobile" onclick="togglePortalDisplayMode()" style="font-size:10px; padding:4px 7px; font-weight:800; border-radius:999px; white-space:nowrap;" title="Ganti Mode Tampilan (Simpel / Gulir Penuh)">
+          <span>⚡ Simpel</span>
+        </button>
+        <a href="portal-wali.html" class="btn btn-primary btn-sm" id="btnNavWaliMobile" style="font-size:10px; padding:4px 7px; font-weight:700; border-radius:999px; white-space:nowrap;" title="Cek Perkembangan Santri">
+          <span>🔍 Wali</span>
+        </a>
+        <button type="button" class="nav-hamburger-btn" onclick="toggleMobileNav()" aria-label="Buka Menu Navigasi">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile / Tablet Horizontal Category Scroll Strip (Bisa Digeser Ke Kanan Secara Mulus) -->
+  <div class="mobile-nav-chips-bar" id="mobileNavChipsBar">
+    <a href="#beranda" class="mobile-chip active" onclick="navigateToView('beranda'); return false;">🏠 Beranda</a>
+    <a href="#profil" class="mobile-chip" onclick="navigateToView('profil'); return false;">🕌 Profil</a>
+    <a href="#program" class="mobile-chip" onclick="navigateToView('program'); return false;">📖 Program Tahfidz</a>
+    <a href="#ekstrakurikuler" class="mobile-chip" onclick="navigateToView('ekstrakurikuler'); return false;">🎨 Ekstrakurikuler</a>
+    <a href="#sekolah-formal" class="mobile-chip" onclick="navigateToView('sekolah-formal'); return false;">🏫 6 Sekolah Formal</a>
+    <a href="#psb" class="mobile-chip" onclick="navigateToView('psb'); return false;">📝 PSB Online</a>
+    <a href="#artikel" class="mobile-chip" onclick="navigateToView('artikel'); return false;">📰 Berita</a>
+    <a href="#galeri" class="mobile-chip" onclick="navigateToView('galeri'); return false;">📸 Galeri</a>
+    <a href="#kontak" class="mobile-chip" onclick="navigateToView('kontak'); return false;">📞 Kontak</a>
+  </div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer" id="mobileNavDrawer" onclick="toggleMobileNav(true)">
+    <div class="mobile-nav-content" onclick="event.stopPropagation()">
+      <div class="mobile-nav-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:24px;">🕌</span>
+          <div>
+            <h4 style="font-size:14px; font-weight:800; margin:0;" class="bind-nama-pondok">Al-Barokah</h4>
+            <span style="font-size:11px; color:#64748b;">Navigasi Cepat Website</span>
+          </div>
+        </div>
+        <button type="button" onclick="toggleMobileNav(true)" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b;">&times;</button>
+      </div>
+
+      <ul class="mobile-nav-list">
+        <li><a href="#beranda" class="mobile-nav-item active" onclick="navigateToView('beranda'); toggleMobileNav(true); return false;"><span>🏠</span> Beranda</a></li>
+        <li><a href="#profil" class="mobile-nav-item" onclick="navigateToView('profil'); toggleMobileNav(true); return false;"><span>🕌</span> Profil &amp; Fasilitas</a></li>
+        <li><a href="#program" class="mobile-nav-item" onclick="navigateToView('program'); toggleMobileNav(true); return false;"><span>📖</span> Program Tahfidz</a></li>
+        <li><a href="#ekstrakurikuler" class="mobile-nav-item" onclick="navigateToView('ekstrakurikuler'); toggleMobileNav(true); return false;"><span>🎨</span> Ekstrakurikuler Santri</a></li>
+        <li><a href="#sekolah-formal" class="mobile-nav-item" onclick="navigateToView('sekolah-formal'); toggleMobileNav(true); return false;"><span>🏫</span> 6 Sekolah Formal &amp; Brosur</a></li>
+        <li><a href="#psb" class="mobile-nav-item" onclick="navigateToView('psb'); toggleMobileNav(true); return false;"><span>📝</span> Pendaftaran Santri (PSB)</a></li>
+        <li><a href="#artikel" class="mobile-nav-item" onclick="navigateToView('artikel'); toggleMobileNav(true); return false;"><span>📰</span> Berita &amp; Artikel</a></li>
+        <li><a href="#galeri" class="mobile-nav-item" onclick="navigateToView('galeri'); toggleMobileNav(true); return false;"><span>📸</span> Galeri Foto</a></li>
+        <li><a href="#kontak" class="mobile-nav-item" onclick="navigateToView('kontak'); toggleMobileNav(true); return false;"><span>📞</span> Kontak Sekretariat</a></li>
+      </ul>
+
+      <div style="border-top:1px solid #e2e8f0; padding-top:14px; margin-top:auto;">
+        <span style="font-size:11px; font-weight:800; color:#64748b; letter-spacing:0.5px; display:block; margin-bottom:8px;">GERBANG LAYANAN:</span>
+        <a href="portal-wali.html" class="btn btn-primary btn-sm" style="width:100%; margin-bottom:6px; justify-content:flex-start;">
+          <span>🔍</span> Portal Khusus Wali Santri
+        </a>
+        <a href="panel-ustadz.html" class="btn btn-secondary btn-sm" style="width:100%; margin-bottom:6px; justify-content:flex-start;">
+          <span>👳‍♂️</span> Panel Asatidz Musyrif
+        </a>
+        <a href="admin-tahfidz.html" class="btn btn-gold btn-sm" style="width:100%; justify-content:flex-start;">
+          <span>🔐</span> Gerbang Pengurus (Admin)
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 1. HERO BANNER ================= -->
+  <header id="beranda" class="hero-section">
+    <!-- FOTO 1: Background Penuh (Full Photo Background Pesantren / Masjid) -->
+    <div class="hero-bg-photo" id="webHeroBgPhoto"></div>
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-pattern"></div>
+
+    <!-- FOTO 2: Foto Mbah Yai / Foto Pendukung Besar (Pure Gambar, Bebas Digeser ke Mana Saja) -->
+    <div class="hero-floating-photo-container" id="webHeroFloatingPhotoWrap">
+      <div class="hero-floating-photo" id="webHeroFloatingPhoto">
+        <img id="webHeroFloatingImg" src="foto-masyayikh.png" alt="Foto Masyayikh Pondok" draggable="false">
+        
+        <!-- Toolbar Geser & Atur Posisi Foto (KHUSUS SUPER ADMIN - Tersembunyi untuk Publik, Wali Santri & Asatidz) -->
+        <div class="hero-photo-controls" id="heroPhotoControls">
+          <span class="hpc-drag-handle" id="hpcDragHandleText">✋ Tahan &amp; Geser</span>
+          <button type="button" class="hpc-btn hpc-lock" id="btnTogglePhotoLock" onclick="toggleHeroPhotoLock()" title="Kunci posisi foto agar tidak bergeser lagi">🔒 Kunci Posisi</button>
+          <button type="button" class="hpc-btn hpc-accent" onclick="setHeroPhotoPreset('top-right')" title="Posisikan ke Kanan Atas">↗ Kanan Atas</button>
+          <button type="button" class="hpc-btn" onclick="setHeroPhotoPreset('center')" title="Posisikan ke Tengah">⏺ Tengah</button>
+          <button type="button" class="hpc-btn" onclick="nudgeHeroPhoto(-30, 0)" title="Geser ke Kiri">◀ Kiri</button>
+          <button type="button" class="hpc-btn" onclick="nudgeHeroPhoto(30, 0)" title="Geser ke Kanan">Kanan ▶</button>
+          <button type="button" class="hpc-btn" onclick="nudgeHeroPhoto(0, -25)" title="Geser ke Atas">▲ Atas</button>
+          <button type="button" class="hpc-btn" onclick="nudgeHeroPhoto(0, 25)" title="Geser ke Bawah">▼ Bawah</button>
+          <button type="button" class="hpc-btn" onclick="adjustHeroPhotoSize(30)" title="Perbesar Foto">🔍+</button>
+          <button type="button" class="hpc-btn" onclick="adjustHeroPhotoSize(-30)" title="Perkecil Foto">🔎-</button>
+          <button type="button" class="hpc-btn" onclick="toggleHeroPhotoBlend()" title="Beralih Efek Transparan / Bingkai Solid" id="btnToggleBlend">✨ Efek</button>
+          <button type="button" class="hpc-btn" onclick="document.getElementById('floatingPhotoUploadInput').click()" title="Ganti Foto">📷 Ganti Foto</button>
+          <button type="button" class="hpc-btn hpc-reset" onclick="resetHeroPhotoPosition()" title="Kembalikan Posisi Semula">↺ Reset</button>
+        </div>
+        <input type="file" id="floatingPhotoUploadInput" accept="image/*" style="display:none;" onchange="uploadFloatingPhotoDirect(event)">
+      </div>
+    </div>
+
+    <div class="hero-container">
+      <div>
+        <!-- Header Baris Atas: Logo Besar & Teks Sambutan (Bisa Kiri Besar atau di Kanan) -->
+        <div class="hero-identity-bar logo-pos-left reveal-on-scroll reveal-up" id="webHeroHeaderLockup">
+          <!-- Logo Emblem Besar & Megah (76px) -->
+          <div class="hero-crest-column" id="webHeroCrestColumn">
+            <div class="brand-logo hero-emblem-logo" id="webHeroStandaloneLogo" title="Logo Resmi Asrama Tahfidz Sunan Bonang">
+              🕌
+            </div>
+          </div>
+
+          <!-- Teks Sambutan Resmi -->
+          <div class="hero-welcome-badge" id="webHeroWelcomeBadge">
+            <span class="welcome-pulse-dot"></span>
+            <span class="welcome-text" id="webHeroBismillah">Selamat Datang di Website Resmi</span>
+          </div>
+
+          <!-- Tombol Cepat Pengatur Posisi Logo (Kiri / Kanan) - KHUSUS ADMIN (Tersembunyi secara Default untuk Publik) -->
+          <button type="button" class="btn-toggle-logo-pos" id="btnToggleHeroLogoPos" onclick="toggleHeroLogoPosition()" title="Pengaturan Cepat Admin: Pindahkan posisi logo ke Kiri atau Kanan" style="display: none;">
+            ⚙️ Pindah Logo (Admin)
+          </button>
+        </div>
+
+        <!-- Judul Bertingkat Lembaga (1 Baris Penuh - Gagah & Elegan) -->
+        <div class="hero-title-container reveal-on-scroll reveal-up reveal-delay-1" id="webHeroTitleContainer">
+          <!-- Baris 1: Nama Utama Asrama (Pasti 1 Baris Penuh, Huruf Emas Besar) -->
+          <h2 class="hero-main-name" id="webHeroTitleName">ASRAMA TAHFIDZ SUNAN BONANG</h2>
+          <!-- Baris 2: Yayasan Naungan -->
+          <div class="hero-sub-yayasan" id="webHeroTitleYayasan">Yayasan PP. Mamba'ul Ma'arif</div>
+          <!-- Baris 3: Lokasi & Wilayah -->
+          <div class="hero-sub-location" id="webHeroTitleLocation">
+            <span class="loc-pin">📍</span> Denanyar Jombang
+          </div>
+        </div>
+        <p class="hero-subtitle reveal-on-scroll reveal-up reveal-delay-2" id="webHeroSubtitle">
+          Lembaga pendidikan Islam berfokus pada ketuntasan <strong>Program Binnadzor</strong> (bacaan fashih & hafalan dasar Juz 28-30) dan <strong>Program Tahfidz 30 Juz</strong> bersanad mutqin, dengan penanaman akhlaqul karimah.
+        </p>
+
+        <!-- Pusat Pintasan Menu Cepat (Quick Feature Launcher) - SEKARANG DI ATAS -->
+        <div class="hero-quick-launcher reveal-on-scroll reveal-up reveal-delay-3" id="heroQuickLauncher">
+          <div class="quick-launcher-header">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="quick-launcher-badge">⚡ PINTASAN UTAMA PESANTREN</span>
+              <span class="quick-launcher-subtitle">Pilih menu untuk membuka fitur langsung:</span>
+            </div>
+            <div class="quick-launcher-controls">
+              <span class="quick-launcher-hint" id="quickLauncherHint">👇 Menu Lengkap</span>
+              <button type="button" class="btn-toggle-launcher-view" id="btnToggleLauncherView" onclick="toggleLauncherViewMode()" title="Beralih Tampilan: Susun ke Bawah atau Geser ke Kanan">
+                <span id="launcherToggleIcon">↔️ Geser</span>
+              </button>
+            </div>
+          </div>
+          <div class="quick-launcher-grid" id="quickLauncherGrid">
+            <button type="button" class="launcher-pill" onclick="navigateToView('profil')">
+              <span class="launcher-icon">🕌</span>
+              <div class="launcher-info">
+                <span class="launcher-text">Profil &amp; Fasilitas</span>
+                <small class="launcher-sub">Mengenal Asrama</small>
+              </div>
+            </button>
+            <button type="button" class="launcher-pill" onclick="navigateToView('program')">
+              <span class="launcher-icon">📖</span>
+              <div class="launcher-info">
+                <span class="launcher-text">Program Tahfidz</span>
+                <small class="launcher-sub">Binnadzor &amp; 30 Juz</small>
+              </div>
+            </button>
+            <button type="button" class="launcher-pill" onclick="navigateToView('ekstrakurikuler')">
+              <span class="launcher-icon">🎨</span>
+              <div class="launcher-info">
+                <span class="launcher-text">Ekstrakurikuler</span>
+                <small class="launcher-sub">Bakat &amp; Minat</small>
+              </div>
+            </button>
+            <button type="button" class="launcher-pill" onclick="navigateToView('sekolah-formal')">
+              <span class="launcher-icon">🏫</span>
+              <div class="launcher-info">
+                <span class="launcher-text">6 Sekolah Formal</span>
+                <small class="launcher-sub">MTs, SMP, MA, SMK</small>
+              </div>
+            </button>
+            <button type="button" class="launcher-pill" onclick="navigateToView('psb')">
+              <span class="launcher-icon">📝</span>
+              <div class="launcher-info">
+                <span class="launcher-text">Pendaftaran (PSB)</span>
+                <small class="launcher-sub">Biaya &amp; Brosur</small>
+              </div>
+            </button>
+            <button type="button" class="launcher-pill" onclick="navigateToView('artikel')">
+              <span class="launcher-icon">📰</span>
+              <div class="launcher-info">
+                <span class="launcher-text">Kabar &amp; Berita</span>
+                <small class="launcher-sub">Warta Kegiatan</small>
+              </div>
+            </button>
+            <button type="button" class="launcher-pill" onclick="navigateToView('galeri')">
+              <span class="launcher-icon">📸</span>
+              <div class="launcher-info">
+                <span class="launcher-text">Galeri Foto</span>
+                <small class="launcher-sub">Dokumentasi Santri</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Banner Tombol PSB Online (SEKARANG DI ATAS - Menggantikan Posisi 300+) -->
+        <div class="hero-cta-strip reveal-on-scroll reveal-up reveal-delay-4" style="margin: 0 0 16px 0;">
+          <a href="#psb" class="hero-psb-banner-btn" onclick="navigateToView('psb'); return false;">
+            <span class="btn-psb-icon">📝</span>
+            <div class="btn-psb-text">
+              <strong>Pendaftaran Santri Baru (PSB Online)</strong>
+              <small>Tahun Ajaran 2025/2026 Telah Dibuka • Kuota Terbatas</small>
+            </div>
+            <span class="btn-psb-badge">Daftar Sekarang →</span>
+          </a>
+        </div>
+
+        <!-- ================= 3 KOTAK GERBANG LAYANAN UTAMA PESANTREN ================= -->
+        <div class="hero-portals-wrapper reveal-on-scroll reveal-up reveal-delay-4" style="margin: 0 0 18px 0;">
+          <div class="hero-portals-header">
+            <div class="hero-portals-title-wrap">
+              <span class="hero-portals-badge">🏛️ TIGA GERBANG AKSES PESANTREN</span>
+              <span class="hero-portals-subtitle">Pilih portal layanan sesuai peran Anda:</span>
+            </div>
+            <!-- Petunjuk Geser & Tombol Navigasi Geser Kanan-Kiri / Toggle Susun ke Bawah -->
+            <div class="hero-portals-nav">
+              <span class="portals-swipe-hint" id="portalsSwipeHint">👇 3 Gerbang Lengkap</span>
+              <button type="button" class="btn-toggle-portals-view" id="btnTogglePortalsView" onclick="togglePortalsViewMode()" title="Beralih Tampilan: Susun ke Bawah atau Geser ke Samping">
+                <span id="portalsToggleIcon">↔️ Geser</span>
+              </button>
+              <button type="button" class="portal-nav-arrow" id="btnPortalsPrev" onclick="scrollPortalsTrack(-1)" aria-label="Geser ke kiri" title="Geser ke kiri" style="display:none;">◀</button>
+              <button type="button" class="portal-nav-arrow" id="btnPortalsNext" onclick="scrollPortalsTrack(1)" aria-label="Geser ke kanan" title="Geser ke kanan" style="display:none;">▶</button>
+            </div>
+          </div>
+
+          <div class="hero-portals-track" id="portalCardsTrack">
+            <!-- 1. KOTAK PANEL PERKEMBANGAN (WALI SANTRI) -->
+            <div class="portal-box portal-box-wali">
+              <div class="portal-box-head">
+                <div class="portal-box-icon-wrap icon-wali">🔍</div>
+                <span class="portal-box-pill pill-wali">Wali Santri</span>
+              </div>
+              <div class="portal-box-content">
+                <h4 class="portal-box-heading">Panel Perkembangan</h4>
+                <p class="portal-box-text">Pantau perkembangan hafalan harian, rekap juz tuntas &amp; riwayat setoran ananda secara berkala.</p>
+              </div>
+              <a href="portal-wali.html" class="portal-box-action action-wali">
+                <span>Buka Panel Wali</span>
+                <span class="action-arrow">→</span>
+              </a>
+            </div>
+
+            <!-- 2. KOTAK PANEL USTADZ (ASATIDZ MUSYRIF) -->
+            <div class="portal-box portal-box-ustadz">
+              <div class="portal-box-head">
+                <div class="portal-box-icon-wrap icon-ustadz">👳‍♂️</div>
+                <span class="portal-box-pill pill-ustadz">Asatidz Musyrif</span>
+              </div>
+              <div class="portal-box-content">
+                <h4 class="portal-box-heading">Panel Ustadz</h4>
+                <p class="portal-box-text">Presensi halaqah santri harian, input setoran hafalan Al-Qur'an &amp; penilaian tajwid tajam.</p>
+              </div>
+              <a href="panel-ustadz.html" class="portal-box-action action-ustadz">
+                <span>Masuk Panel Ustadz</span>
+                <span class="action-arrow">→</span>
+              </a>
+            </div>
+
+            <!-- 3. KOTAK GERBANG PENGURUS (ADMINISTRASI & PIMPINAN) -->
+            <div class="portal-box portal-box-admin">
+              <div class="portal-box-head">
+                <div class="portal-box-icon-wrap icon-admin">🔐</div>
+                <span class="portal-box-pill pill-admin">Pimpinan &amp; Admin</span>
+              </div>
+              <div class="portal-box-content">
+                <h4 class="portal-box-heading">Gerbang Pengurus</h4>
+                <p class="portal-box-text">Pusat kendali lembaga, master santri, mutaba'ah, kurikulum, PSB &amp; website pondok.</p>
+              </div>
+              <a href="admin-tahfidz.html" class="portal-box-action action-admin">
+                <span>Akses Pengurus</span>
+                <span class="action-arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Angka Kunci Statistik Ringkas (SEKARANG DI PALING BAWAH) -->
+        <div class="hero-stats reveal-on-scroll reveal-up reveal-delay-5" style="margin-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.18); padding-top: 20px;">
+          <div class="hero-stat-item">
+            <h3>300+</h3>
+            <p>Santri Putra &amp; Putri</p>
+          </div>
+          <div class="hero-stat-item">
+            <h3>30 Juz</h3>
+            <p>Target Mutqin Bil-Ghaib</p>
+          </div>
+          <div class="hero-stat-item">
+            <h3>6 Sekolah</h3>
+            <p>Formal Terpadu Denanyar</p>
+          </div>
+          <div class="hero-stat-item">
+            <h3>15+</h3>
+            <p>Asatidz Musyrif Bersanad</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Interactive Card: Quick Parent Check & PSB -->
+      <div class="hero-card-banner reveal-on-scroll reveal-right" id="webHeroCardBanner">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:8px;">
+          <h3 style="font-size:17px; font-weight:700; color:#fff; margin:0; display:flex; align-items:center; gap:8px;">
+            <span>⚡</span> Layanan Cepat Pesantren
+          </h3>
+          <button type="button" class="btn-toggle-hero-card" onclick="toggleHeroCardBanner()" title="Sembunyikan / Tampilkan Layanan Cepat" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff; border-radius:6px; font-size:11px; padding:3px 8px; cursor:pointer; font-weight:700;">
+            <span id="heroCardToggleText">🔽 Sembunyikan</span>
+          </button>
+        </div>
+
+        <div id="heroCardBannerBody">
+          <!-- Quick Check NIS Form -->
+          <div style="background:#fff; border-radius:14px; padding:18px; margin-bottom:16px; color:#1e293b;">
+            <h4 style="font-size:14px; font-weight:700; color:#065f46; margin-bottom:4px;">
+              🔍 Pantau Perkembangan Santri
+            </h4>
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">
+              Wali santri dapat mengecek setoran hafalan dan absensi ananda menggunakan <strong>NIS atau Nama Santri</strong> (bisa salah satunya):
+            </p>
+            <form onsubmit="handleCekSantriHome(event)" class="hero-quick-check-form">
+              <input type="text" id="inputCekSantriHome" class="form-control" style="font-size:13px; padding:8px 12px;" placeholder="Ketik NIS atau Nama Santri..." required>
+              <button type="submit" class="btn btn-primary btn-sm" style="font-weight:700;">Cek Perkembangan</button>
+            </form>
+          </div>
+
+          <!-- Quick Links -->
+          <a href="#program" class="hero-feature-box" onclick="navigateToView('program'); return false;">
+            <div class="hero-feature-icon">📖</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700; color:#0f172a;">2 Jalur Pendidikan Tahfidz</h4>
+              <p style="font-size:12px; color:#64748b;">Kurikulum Binnadzor &amp; Tahfidz 30 Juz</p>
+            </div>
+          </a>
+
+          <a href="#sekolah-formal" class="hero-feature-box" onclick="navigateToView('sekolah-formal'); return false;">
+            <div class="hero-feature-icon" style="background:#e0f2fe; color:#0284c7;">🏫</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700; color:#0f172a;">6 Pilihan Sekolah Formal</h4>
+              <p style="font-size:12px; color:#64748b;">MTsN 4, MTs MM, MAN 4, MAMM, SMP MM, SMK Bisri</p>
+            </div>
+          </a>
+
+          <a href="#psb" class="hero-feature-box" onclick="navigateToView('psb'); return false;">
+            <div class="hero-feature-icon" style="background:#fef3c7; color:#b45309;">🎓</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700; color:#0f172a;">Penerimaan Santri Baru (PSB)</h4>
+              <p style="font-size:12px; color:#64748b;">Tahun Ajaran 2025/2026 Telah Dibuka</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= 2. PROFIL PESANTREN ================= -->
+  <section id="profil" class="section-wrapper">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+        <span class="view-indicator-pill">🕌 Profil Pondok, Pengasuh &amp; Fasilitas</span>
+      </div>
+
+      <div class="section-header reveal-on-scroll reveal-up">
+        <span class="section-tag">Tentang Pesantren</span>
+        <h2 class="section-title">Membina Generasi Qur'ani dengan Sanad & Akhlaq Mulia</h2>
+        <p class="section-desc">Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah berdiri sebagai kawah candradimuka bagi para penuntut ilmu yang bertekad menjaga Al-Qur'an di dalam dada.</p>
+      </div>
+
+      <!-- Bento Grid Tentang Pesantren Modern -->
+      <div class="about-bento-grid">
+        <!-- 1. Hero Bento Card: Profil Pesantren (7 Cols) -->
+        <div class="about-bento-card about-bento-hero reveal-on-scroll reveal-left" onclick="openAboutDetailModal('profil')" title="Klik untuk lihat profil & sejarah lengkap">
+          <div class="about-hero-img-wrap">
+            <img id="webProfilHeroImg" src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80" alt="Kampus Pesantren Al-Barokah" class="about-hero-img" onerror="this.onerror=null; this.src=getFacilityFallbackSvg(0);" loading="lazy">
+            <div class="about-hero-gradient"></div>
+            <span class="facility-badge" style="background:rgba(6,78,59,0.9); color:#a7f3d0; border-color:rgba(167,243,208,0.4);">
+              🕌 Profil Pesantren
+            </span>
+            <div class="facility-card-icon-floating">🕌</div>
+          </div>
+          <div class="about-hero-body">
+            <h3 id="webProfilHeroTitle" style="font-size:20px; font-weight:800; color:var(--dark-900); margin-bottom:8px;">
+              Profil Pondok Pesantren Tahfidzul Qur'an
+            </h3>
+            <p id="webDescProfilText" style="font-size:13.5px; color:var(--dark-600); line-height:1.65; margin-bottom:18px;">
+              Didirikan untuk menjaga kemurnian bacaan Al-Qur'an secara talaqqi musyafahah dengan sanad muttashil. Memadukan kedalaman kajian kitab kuning para ulama salaf dengan akselerasi hafalan 30 juz berdisiplin tinggi, melahirkan generasi Qur'ani yang tangguh, berakhlak mulia, dan berjiwa ikhlas.
+            </p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
+              <span class="about-stat-pill">🕌 Profil &amp; Sejarah Lengkap</span>
+              <span class="about-stat-pill">📜 100% Sanad Qira'at Muttashil</span>
+              <span class="about-stat-pill">👥 Rasio Bimbingan 1:8 Santri</span>
+              <span class="about-stat-pill">🛡️ Lingkungan Asri &amp; Terjaga</span>
+            </div>
+            <div class="facility-action-hint">
+              <span>📖 Baca Profil Lengkap, Sejarah &amp; Keunggulan Pesantren</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Pengasuh Bento Card (5 Cols) -->
+        <div class="about-bento-card about-bento-pengasuh reveal-on-scroll reveal-right" onclick="openAboutDetailModal('pengasuh')" title="Klik untuk profil & sanad pengasuh" style="display:flex; flex-direction:column; overflow:hidden; padding:0;">
+          <!-- Foto Besar Pengasuh Banner -->
+          <div id="webPengasuhBentoPhotoWrap" style="height:210px; width:100%; position:relative; overflow:hidden; background:#064e3b; display:flex;">
+            <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #064e3b 0%, #022c22 100%);">
+              <span style="font-size:64px;">👳‍♂️</span>
+            </div>
+            <span style="position:absolute; top:12px; left:12px; background:rgba(6,78,59,0.9); color:#fef08a; font-weight:800; font-size:11px; padding:4px 12px; border-radius:999px; border:1px solid rgba(254,240,138,0.4); backdrop-filter:blur(4px); z-index:3;">
+              PENGASUH PESANTREN
+            </span>
+          </div>
+
+          <div style="padding:22px; display:flex; flex-direction:column; flex:1;">
+            <div id="webPengasuhBentoNames" style="margin-bottom:14px;">
+              <h3 class="bind-pengasuh-pondok" style="font-size:18px; font-weight:800; color:#ffffff; margin:0; line-height:1.3;">
+                KH. Ahmad Dahlan Masykur, Al-Hafidz
+              </h3>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.08); border-left:3px solid #f59e0b; border-radius:12px; padding:16px 18px; margin-bottom:20px; position:relative; backdrop-filter:blur(4px);">
+              <span style="position:absolute; top:-10px; right:12px; font-size:38px; color:rgba(245,158,11,0.35); font-family:serif; line-height:1;">“</span>
+              <p id="webSambutanText" style="font-size:13px; line-height:1.65; color:rgba(255,255,255,0.95); font-style:italic; margin:0 0 10px 0;">
+                "Menghafal Al-Qur'an bukan perlombaan kecepatan, melainkan ikrar seumur hidup untuk membersamai firman Allah. Bacaan yang fashih dan hati yang ikhlas adalah sayap utama bagi seorang penghafal Al-Qur'an."
+              </p>
+              <div style="font-size:12px; color:#fde047; font-weight:700; text-align:right;">
+                — <span class="bind-pengasuh-pondok">KH. Ahmad Dahlan Masykur, Al-Hafidz</span>
+              </div>
+            </div>
+
+            <button type="button" class="btn-about-card-action" style="margin-top:auto;">
+              <span>📜 Profil, Sanad & Nasihat Pengasuh</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Visi Pesantren (4 Cols) -->
+        <div class="about-bento-card about-bento-vision reveal-on-scroll reveal-up reveal-delay-1" onclick="openAboutDetailModal('visi')" title="Klik untuk rincian visi & misi">
+          <div style="padding:22px; display:flex; flex-direction:column; height:100%;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+              <span style="font-size:26px;">🎯</span>
+              <h4 style="font-size:16px; font-weight:800; color:#065f46; margin:0;">Visi Pesantren</h4>
+            </div>
+            <p id="webVisiText" style="font-size:13.5px; line-height:1.6; color:#1e293b; font-weight:600; margin-bottom:16px;">
+              Menjadi pusat pendidikan tahfidzul Qur'an unggulan yang melahirkan para huffadz mutqin, faham kaidah ilmu syar'i, serta berkepribadian tangguh dan berakhlakul karimah.
+            </p>
+            <div style="margin-top:auto; padding-top:12px; border-top:1px dashed #bbf7d0; display:flex; flex-direction:column; gap:6px;">
+              <div style="font-size:12px; color:#166534; font-weight:700; display:flex; align-items:center; gap:6px;"><span>✓</span> Target Mutqin 30 Juz Bil-Ghaib</div>
+              <div style="font-size:12px; color:#166534; font-weight:700; display:flex; align-items:center; gap:6px;"><span>✓</span> Fashahah Makhraj & Kaidah Tajwid</div>
+              <div style="font-size:12px; color:#166534; font-weight:700; display:flex; align-items:center; gap:6px;"><span>✓</span> Adab & Akhlaq Mulia Salaf</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. 4 Misi Strategis (4 Cols) -->
+        <div class="about-bento-card about-bento-mission reveal-on-scroll reveal-up reveal-delay-2" onclick="openAboutDetailModal('misi')" title="Klik untuk rincian 4 misi strategis">
+          <div style="padding:22px; display:flex; flex-direction:column; height:100%;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+              <span style="font-size:26px;">🧭</span>
+              <h4 style="font-size:16px; font-weight:800; color:var(--dark-900); margin:0;">4 Misi Strategis</h4>
+            </div>
+            <div class="mission-step-card">
+              <div class="mission-step-num">1</div>
+              <div style="font-size:12px; color:#334155;"><strong>Fashahah Binnadzor:</strong> Kaidah tajwid, makharijul huruf & ghorib.</div>
+            </div>
+            <div class="mission-step-card">
+              <div class="mission-step-num">2</div>
+              <div style="font-size:12px; color:#334155;"><strong>Tahfidz 30 Juz:</strong> Ziyadah & muraja'ah intensif bil-ghaib.</div>
+            </div>
+            <div class="mission-step-card">
+              <div class="mission-step-num">3</div>
+              <div style="font-size:12px; color:#334155;"><strong>Panca Jiwa:</strong> Keikhlasan, kemandirian & ukhuwah santri.</div>
+            </div>
+            <div class="mission-step-card">
+              <div class="mission-step-num">4</div>
+              <div style="font-size:12px; color:#334155;"><strong>Dirasah Syar'i:</strong> Kajian kitab kuning & fiqih ibadah.</div>
+            </div>
+            <ul id="webMisiList" style="display:none;">
+              <li>Menyelenggarakan pembelajaran tilawah Al-Qur'an secara fasih dengan kaidah tajwid dan makharijul huruf yang kokoh (Program Binnadzor).</li>
+              <li>Membimbing santri menghafal Al-Qur'an 30 Juz secara mutqin dengan metode ziyadah dan muraja'ah intensif (Program Tahfidz).</li>
+              <li>Menanamkan panca jiwa pesantren: keikhlasan, kesederhanaan, kemandirian, ukhuwah Islamiyah, dan kebebasan berfikir yang bertanggung jawab.</li>
+              <li>Membekali santri dengan kajian kitab kuning (fiqih ibadah, aqidah, akhlaq, dan bahasa Arab).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fasilitas Pesantren -->
+      <h3 class="reveal-on-scroll reveal-up" style="font-size:20px; font-weight:700; text-align:center; margin-bottom:24px;">Fasilitas Pendukung Santri</h3>
+      <div class="facility-grid">
+        <!-- 1. Masjid Jami' -->
+        <div class="facility-card reveal-on-scroll reveal-up reveal-delay-1" onclick="openFacilityModal(0)" title="Klik untuk lihat foto & detail fasilitas">
+          <div class="facility-img-wrap">
+            <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=800&q=80" alt="Masjid Jami' Pesantren" class="facility-img" onerror="this.onerror=null; if(typeof getFacilityFallbackSvg==='function') this.src=getFacilityFallbackSvg(0);" loading="lazy">
+            <div class="facility-img-gradient"></div>
+            <span class="facility-badge">🕌 Pusat Ibadah</span>
+            <div class="facility-card-icon-floating">🕌</div>
+          </div>
+          <div class="facility-body">
+            <h4 class="facility-title">Masjid Jami' Pesantren</h4>
+            <p class="facility-desc">Pusat shalat berjamaah 5 waktu, qiyamul lail, dan halaqah setoran hafalan santri.</p>
+            <div class="facility-action-hint">
+              <span>🔍 Klik Lihat Foto & Detail</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Asrama Nyaman -->
+        <div class="facility-card reveal-on-scroll reveal-up reveal-delay-2" onclick="openFacilityModal(1)" title="Klik untuk lihat foto & detail fasilitas">
+          <div class="facility-img-wrap">
+            <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80" alt="Asrama Nyaman & Bersih" class="facility-img" onerror="this.onerror=null; if(typeof getFacilityFallbackSvg==='function') this.src=getFacilityFallbackSvg(1);" loading="lazy">
+            <div class="facility-img-gradient"></div>
+            <span class="facility-badge">🏢 Hunian Santri</span>
+            <div class="facility-card-icon-floating">🏢</div>
+          </div>
+          <div class="facility-body">
+            <h4 class="facility-title">Asrama Nyaman & Bersih</h4>
+            <p class="facility-desc">Asrama representatif dengan pemisahan area komplek putra dan putri secara mandiri.</p>
+            <div class="facility-action-hint">
+              <span>🔍 Klik Lihat Foto & Detail</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Aula Halaqah AC -->
+        <div class="facility-card reveal-on-scroll reveal-up reveal-delay-3" onclick="openFacilityModal(2)" title="Klik untuk lihat foto & detail fasilitas">
+          <div class="facility-img-wrap">
+            <img src="https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80" alt="Aula Halaqah Ber-AC" class="facility-img" onerror="this.onerror=null; if(typeof getFacilityFallbackSvg==='function') this.src=getFacilityFallbackSvg(2);" loading="lazy">
+            <div class="facility-img-gradient"></div>
+            <span class="facility-badge">📖 Ruang Tahfidz</span>
+            <div class="facility-card-icon-floating">📖</div>
+          </div>
+          <div class="facility-body">
+            <h4 class="facility-title">Aula Halaqah Ber-AC</h4>
+            <p class="facility-desc">Ruang bimbingan tahfidz yang sejuk dan tenang untuk kenyamanan santri menyimak.</p>
+            <div class="facility-action-hint">
+              <span>🔍 Klik Lihat Foto & Detail</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Perpustakaan Kitab -->
+        <div class="facility-card reveal-on-scroll reveal-up reveal-delay-4" onclick="openFacilityModal(3)" title="Klik untuk lihat foto & detail fasilitas">
+          <div class="facility-img-wrap">
+            <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80" alt="Perpustakaan Kitab & Mushaf" class="facility-img" onerror="this.onerror=null; if(typeof getFacilityFallbackSvg==='function') this.src=getFacilityFallbackSvg(3);" loading="lazy">
+            <div class="facility-img-gradient"></div>
+            <span class="facility-badge">📚 Literasi Islam</span>
+            <div class="facility-card-icon-floating">📚</div>
+          </div>
+          <div class="facility-body">
+            <h4 class="facility-title">Perpustakaan Kitab & Mushaf</h4>
+            <p class="facility-desc">Koleksi kitab tafsir, hadits, fiqih, serta berbagai mushaf rasm Utsmani.</p>
+            <div class="facility-action-hint">
+              <span>🔍 Klik Lihat Foto & Detail</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Dapur & Ruang Makan -->
+        <div class="facility-card reveal-on-scroll reveal-up reveal-delay-5" onclick="openFacilityModal(4)" title="Klik untuk lihat foto & detail fasilitas">
+          <div class="facility-img-wrap">
+            <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80" alt="Dapur & Ruang Makan" class="facility-img" onerror="this.onerror=null; if(typeof getFacilityFallbackSvg==='function') this.src=getFacilityFallbackSvg(4);" loading="lazy">
+            <div class="facility-img-gradient"></div>
+            <span class="facility-badge">🍽️ Gizi & Halal</span>
+            <div class="facility-card-icon-floating">🍽️</div>
+          </div>
+          <div class="facility-body">
+            <h4 class="facility-title">Dapur & Ruang Makan</h4>
+            <p class="facility-desc">Penyediaan menu makan santri bergizi, higienis, dan terjaga kehalalannya 3x sehari.</p>
+            <div class="facility-action-hint">
+              <span>🔍 Klik Lihat Foto & Detail</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Sarana Olahraga -->
+        <div class="facility-card reveal-on-scroll reveal-up reveal-delay-6" onclick="openFacilityModal(5)" title="Klik untuk lihat foto & detail fasilitas">
+          <div class="facility-img-wrap">
+            <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80" alt="Sarana Olahraga" class="facility-img" onerror="this.onerror=null; if(typeof getFacilityFallbackSvg==='function') this.src=getFacilityFallbackSvg(5);" loading="lazy">
+            <div class="facility-img-gradient"></div>
+            <span class="facility-badge">⚽ Kebugaran</span>
+            <div class="facility-card-icon-floating">⚽</div>
+          </div>
+          <div class="facility-body">
+            <h4 class="facility-title">Sarana Olahraga</h4>
+            <p class="facility-desc">Lapangan futsal, bulu tangkis, dan tenis meja untuk menjaga kebugaran jasmani santri.</p>
+            <div class="facility-action-hint">
+              <span>🔍 Klik Lihat Foto & Detail</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. PROGRAM PENDIDIKAN ================= -->
+  <section id="program" class="section-wrapper" style="background:#f1f5f9; border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0;">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+        <span class="view-indicator-pill">📖 Program Tahfidz &amp; Kurikulum 4 Tahap</span>
+      </div>
+
+      <div class="section-header reveal-on-scroll reveal-up">
+        <span class="section-tag tag-gold">Kurikulum Pesantren</span>
+        <h2 class="section-title">Jenjang 4 Tahap Kurikulum Al-Qur'an Pesantren</h2>
+        <p class="section-desc">Sistem tahfidz bertingkat dari pembinaan fashahah Binnadzor, akselerasi Program Maqbul, hafalan 30 Juz Bil-Ghaib, hingga Kelas Pasca Tahfidz (Progres Tasmi' & Sanad).</p>
+      </div>
+
+      <div class="program-cards-grid">
+        <!-- 1. Binnadzor -->
+        <div class="program-card card-binnadzor reveal-on-scroll reveal-left" onclick="openProgramModal(0)" title="Klik untuk rincian kurikulum & syarat">
+          <div class="program-img-wrap">
+            <img src="https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=800&q=80" alt="Program Binnadzor" class="program-img" onerror="this.onerror=null; if(typeof getProgramFallbackSvg==='function') this.src=getProgramFallbackSvg(0);" loading="lazy">
+            <div class="program-img-gradient"></div>
+            <span class="program-badge" style="position:absolute; top:12px; left:12px; background:#e0f2fe; color:#0369a1; z-index:2; margin-bottom:0;">Sistem Kelas (A s.d. E)</span>
+            <div class="program-card-icon-floating">📖</div>
+          </div>
+          <div class="program-body">
+            <h3 class="program-title">1. Program Binnadzor</h3>
+            <p class="program-desc" id="webDescBinnadzor">
+              Jenjang awal wajib bagi santri baru. Dikelompokkan ke dalam <strong>Kelas A, B, C, D, E</strong> (dengan rombel A1, A2, B1, B2... dst.) dan dibina langsung oleh Ustadz pengampu tiap kelas.
+            </p>
+            <ul class="program-features">
+              <li><span>✓</span> <strong>Khotmil Qur'an 30 Juz Bi-An-Nadzor</strong> (Kefasihan tajwid & ghorib)</li>
+              <li><span>✓</span> <strong>Target Wajib Hafalan 3 Juz:</strong> Juz 28, Juz 29, dan Juz 30</li>
+              <li><span>✓</span> <strong>Hafalan Surat Pilihan:</strong> Surat Yasin, Ar-Rahman, Al-Waqi'ah, Al-Mulk</li>
+              <li><span>✓</span> Pembagian rombel fleksibel (A1, A2, B1...) dengan Asatidz pendamping</li>
+            </ul>
+            <div class="program-action-hint">
+              <span>📖 Klik Rincian Kurikulum & Syarat</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Tes Maqbul & Program Maqbul -->
+        <div class="program-card reveal-on-scroll reveal-up reveal-delay-1" onclick="openProgramModal(1)" title="Klik untuk rincian kurikulum & syarat" style="border: 2px solid #fed7aa; background: #fffcf8;">
+          <div class="program-img-wrap">
+            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80" alt="Tes Maqbul & Program Maqbul" class="program-img" onerror="this.onerror=null; if(typeof getProgramFallbackSvg==='function') this.src=getProgramFallbackSvg(1);" loading="lazy">
+            <div class="program-img-gradient"></div>
+            <span class="program-badge" style="position:absolute; top:12px; left:12px; background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; z-index:2; margin-bottom:0;">Evaluasi Tiap 3 Bulan</span>
+            <div class="program-card-icon-floating">🌟</div>
+          </div>
+          <div class="program-body">
+            <h3 class="program-title">2. Tes Maqbul & Program Maqbul</h3>
+            <p class="program-desc" id="webDescMaqbul">
+              Jembatan akselerasi pra-tahfidz. Setiap 3 bulan sekali diadakan <strong>Tes Maqbul</strong> untuk menguji ketuntasan bacaan dan hafalan santri Binnadzor.
+            </p>
+            <ul class="program-features">
+              <li><span>✓</span> <strong>Tes Maqbul Triwulanan:</strong> Ujian komprehensif fashahah & hafalan target</li>
+              <li><span>✓</span> <strong>Lolos Tes Maqbul:</strong> Santri resmi masuk ke <strong>Program Maqbul</strong></li>
+              <li><span>✓</span> <strong>Program Maqbul:</strong> Masa pembinaan intensif persiapan menuju Tahfidz</li>
+              <li><span>✓</span> <strong>Wisuda Binnadzor:</strong> Pengukuhan resmi kelulusan ke jenjang Tahfidz</li>
+            </ul>
+            <div class="program-action-hint">
+              <span>📖 Klik Rincian Kurikulum & Syarat</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Tahfidz -->
+        <div class="program-card card-tahfidz reveal-on-scroll reveal-up reveal-delay-2" onclick="openProgramModal(2)" title="Klik untuk rincian kurikulum & syarat">
+          <div class="program-img-wrap">
+            <img src="https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80" alt="Program Tahfidz" class="program-img" onerror="this.onerror=null; if(typeof getProgramFallbackSvg==='function') this.src=getProgramFallbackSvg(2);" loading="lazy">
+            <div class="program-img-gradient"></div>
+            <span class="program-badge" style="position:absolute; top:12px; left:12px; background:#d1fae5; color:#065f46; z-index:2; margin-bottom:0;">Sistem Halaqah Ustadz</span>
+            <div class="program-card-icon-floating">🕌</div>
+          </div>
+          <div class="program-body">
+            <h3 class="program-title">3. Program Tahfidz (Alumni Wisuda)</h3>
+            <p class="program-desc" id="webDescTahfidz">
+              Dikhususkan bagi alumni wisuda Binnadzor. Tidak menggunakan jenjang kelas, melainkan <strong>langsung dibina per Halaqah Ustadz</strong> pembimbing.
+            </p>
+            <ul class="program-features">
+              <li><span>✓</span> <strong>Pembagian per Ustadz:</strong> Dibimbing di Halaqah Asatidz spesialis tahfidz</li>
+              <li><span>✓</span> <strong>Target Hafalan 30 Juz Bil-Ghaib</strong> (Tanpa melihat mushaf secara mutqin)</li>
+              <li><span>✓</span> Metode Ziyadah (Hafalan Baru) & Muraja'ah Harian Terpimpin</li>
+              <li><span>✓</span> Persiapan sidang kelulusan & wisuda akbar Tahfidz 30 Juz</li>
+            </ul>
+            <div class="program-action-hint">
+              <span>📖 Klik Rincian Kurikulum & Syarat</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Pasca Tahfidz -->
+        <div class="program-card reveal-on-scroll reveal-right reveal-delay-3" onclick="openProgramModal(3)" title="Klik untuk rincian kurikulum & syarat" style="border: 2px solid #fcd34d; background: #fffdf5;">
+          <div class="program-img-wrap">
+            <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=800&q=80" alt="Kelas Pasca Tahfidz" class="program-img" onerror="this.onerror=null; if(typeof getProgramFallbackSvg==='function') this.src=getProgramFallbackSvg(3);" loading="lazy">
+            <div class="program-img-gradient"></div>
+            <span class="program-badge" style="position:absolute; top:12px; left:12px; background:#fef3c7; color:#92400e; border:1px solid #fde68a; z-index:2; margin-bottom:0;">Khusus Wisuda 30 Juz</span>
+            <div class="program-card-icon-floating">👑</div>
+          </div>
+          <div class="program-body">
+            <h3 class="program-title">4. Kelas Pasca Tahfidz (Tasmi' & Sanad)</h3>
+            <p class="program-desc" id="webDescPascaTahfidz">
+              Dikhususkan bagi mahasantri yang telah <strong>khatam 30 Juz</strong>, memenuhi kualifikasi ketuntasan, dan resmi diwisuda Tahfidz. Tidak memakai jenjang kelas, melainkan <strong>dibina langsung per Ustadz Pengampu</strong>.
+            </p>
+            <ul class="program-features">
+              <li><span>✓</span> <strong>Pembagian per Ustadz Pengampu:</strong> Bimbingan intensif spesialis pasca tahfidz</li>
+              <li><span>✓</span> <strong>Progres Tasmi' Bil-Ghaib Bertingkat:</strong> Tasmi' 5 - 30 Juz Sekali Duduk</li>
+              <li><span>✓</span> <strong>Pendalaman Kaidah Tajwid:</strong> Matan Al-Jazariyah & Tuhfatul Athfal</li>
+              <li><span>✓</span> <strong>Sertifikasi Sanad Al-Qur'an:</strong> Ijazah sanad muttashil bagi santri mutqin</li>
+            </ul>
+            <div class="program-action-hint">
+              <span>📖 Klik Rincian Kurikulum & Syarat</span>
+              <span class="arrow-hint">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3.4 PROGRAM EKSTRAKURIKULER SANTRI ================= -->
+  <section id="ekstrakurikuler" class="section-wrapper ekskul-section-wrapper">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+      </div>
+
+      <div class="section-header text-center reveal-on-scroll reveal-up">
+        <span class="section-badge"><span>🎨</span> PENGEMBANGAN MINAT &amp; BAKAT SANTRI</span>
+        <h2 class="section-title">Program Ekstrakurikuler Santri</h2>
+        <p class="section-desc">
+          Menumbuhkan potensi, ketangkasan fisik, kemandirian, dan kreativitas santri melalui beragam kegiatan minat bakat yang terarah, beradab, dan bernilai dakwah.
+        </p>
+        <div class="header-divider"></div>
+      </div>
+
+      <!-- Kategori Filter Tabs -->
+      <div class="ekskul-filters-wrap reveal-on-scroll reveal-up reveal-delay-1">
+        <div class="filter-bar" id="ekskulFilters">
+          <!-- Dynamic populated by website.js -->
+        </div>
+      </div>
+
+      <!-- Grid Kartu Ekstrakurikuler -->
+      <div class="ekskul-grid" id="ekstrakurikulerGrid">
+        <!-- Dynamic populated by website.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3.5 PILIHAN SEKOLAH FORMAL TERPADU ================= -->
+  <section id="sekolah-formal" class="section-wrapper school-wrapper">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+        <span class="view-indicator-pill">🏫 Pilihan 6 Sekolah Formal &amp; Brosur</span>
+      </div>
+
+      <div class="section-header reveal-on-scroll reveal-up">
+        <span class="section-tag tag-gold">Pilihan Sekolah Formal Santri</span>
+        <h2 class="section-title">Pendidikan Formal Terpadu Denanyar</h2>
+        <p class="section-desc">
+          Santri Pondok Pesantren Tahfidz dapat menempuh pendidikan formal berkualitas tinggi di lingkungan Denanyar yang terintegrasi secara harmonis dengan jadwal halaqah setoran hafalan Al-Qur'an.
+        </p>
+      </div>
+
+      <!-- Filter Bar -->
+      <div style="display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:28px;">
+        <div class="articles-filter-bar reveal-on-scroll reveal-up" id="schoolFilters" style="margin-bottom:0;">
+          <button class="filter-btn active" onclick="filterFormalSchools('semua', this)">Semua Jenjang (6 Sekolah)</button>
+          <button class="filter-btn" onclick="filterFormalSchools('mts_smp', this)">Tingkat MTs &amp; SMP (3 Sekolah)</button>
+          <button class="filter-btn" onclick="filterFormalSchools('ma_smk', this)">Tingkat MAN, MA &amp; SMK (3 Sekolah)</button>
+        </div>
+      </div>
+
+      <!-- Grid 6 Formal Schools -->
+      <div class="school-grid" id="formalSchoolsGrid">
+        <!-- Rendered dynamically by website.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4. PENDAFTARAN SANTRI BARU (PSB) ================= -->
+  <section id="psb" class="section-wrapper psb-wrapper">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+        <span class="view-indicator-pill">📝 Pendaftaran Santri Baru (PSB Online)</span>
+      </div>
+
+      <div class="section-header reveal-on-scroll reveal-up">
+        <span class="section-tag tag-gold">PSB Online 2025/2026</span>
+        <h2 class="section-title">Penerimaan Santri Baru Telah Dibuka</h2>
+        <p class="section-desc">Mari bergabung bersama keluarga besar penghafal Al-Qur'an. Daftarkan putra-putri Anda melalui formulir online di bawah ini.</p>
+      </div>
+
+      <div class="psb-grid">
+        <!-- Info PSB -->
+        <div class="psb-info-card reveal-on-scroll reveal-left">
+          <!-- Banner Aksi Brosur Resmi PSB & Download -->
+          <div style="background:linear-gradient(135deg, #064e3b 0%, #022c22 100%); color:#fff; border-radius:14px; padding:18px 20px; margin-bottom:18px; border:2px solid #f59e0b; box-shadow:0 6px 20px rgba(6,78,59,0.22);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div>
+                <span style="background:#fef08a; color:#78350f; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; display:inline-block; margin-bottom:4px;">
+                  📄 BROSUR RESMI &amp; BIAYA PENDIDIKAN
+                </span>
+                <h4 style="font-size:16px; font-weight:800; color:#fff; margin:0 0 2px 0;">Brosur PSB &amp; Rincian Biaya</h4>
+                <p style="font-size:12px; color:rgba(255,255,255,0.85); margin:0;">Buka brosur digital siap cetak atau cek rincian biaya pondok.</p>
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-gold btn-sm" onclick="openModalBrosurPSB()" style="font-weight:800; padding:8px 14px; box-shadow:0 4px 14px rgba(245,158,11,0.4); display:flex; align-items:center; gap:6px;">
+                  <span>📥</span> Lihat &amp; Unduh Brosur
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU KONTAK PANITIA / CP WHATSAPP PSB -->
+          <div style="background:linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border:2px solid #10b981; border-radius:14px; padding:18px 20px; margin-bottom:22px; box-shadow:0 4px 16px rgba(16,185,129,0.12);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+              <span style="background:#059669; color:#fff; font-size:10.5px; font-weight:800; padding:3px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:6px;">
+                <span style="display:inline-block; width:7px; height:7px; background:#4ade80; border-radius:50%; box-shadow:0 0 6px #4ade80;"></span>
+                LAYANAN INFORMASI &amp; CP PSB
+              </span>
+              <span style="font-size:11.5px; color:#047857; font-weight:700;">🟢 Fast Response</span>
+            </div>
+
+            <h4 style="font-size:16px; font-weight:800; color:#064e3b; margin:0 0 6px 0; display:flex; align-items:center; gap:8px;">
+              <span>💬</span> Hubungi WhatsApp Admin / CP PSB
+            </h4>
+            <p style="font-size:12px; color:#065f46; margin:0 0 14px 0; line-height:1.5;">
+              Ada pertanyaan seputar persyaratan, jadwal tes, biaya, atau panduan pendaftaran? Hubungi Contact Person (CP) panitia kami via WhatsApp:
+            </p>
+
+            <!-- Grid Kontak CP Panitia -->
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <!-- CP 1: Admin / Panitia Putra -->
+              <div style="background:#ffffff; border:1px solid #a7f3d0; border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 1px 4px rgba(0,0,0,0.02);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="width:38px; height:38px; border-radius:50%; background:#dcfce7; color:#15803d; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0;">
+                    👳
+                  </div>
+                  <div>
+                    <div style="font-size:13px; font-weight:800; color:#0f172a;">
+                      CP Panitia PSB (Putra &amp; Umum)
+                    </div>
+                    <div style="font-size:11.5px; color:#059669; font-weight:700;" class="bind-kontak-pondok">
+                      0812-3456-7890
+                    </div>
+                  </div>
+                </div>
+                <a href="https://wa.me/6281234567890?text=Assalamu%27alaikum%20Panitia%20PSB%2C%20saya%20ingin%20konsultasi%20mengenai%20pendaftaran%20santri%20baru" target="_blank" class="btn btn-sm bind-wa-psb-putra" style="background:#25d366; color:#ffffff; font-size:11.5px; font-weight:800; padding:7px 14px; border-radius:999px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; box-shadow:0 3px 10px rgba(37,211,102,0.3);">
+                  <span>📲</span> Chat WA Admin
+                </a>
+              </div>
+
+              <!-- CP 2: Admin / Panitia Putri -->
+              <div style="background:#ffffff; border:1px solid #fbcfe8; border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 1px 4px rgba(0,0,0,0.02);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="width:38px; height:38px; border-radius:50%; background:#fce7f3; color:#be185d; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0;">
+                    🧕
+                  </div>
+                  <div>
+                    <div style="font-size:13px; font-weight:800; color:#0f172a;">
+                      CP Panitia PSB (Putri / Konsultasi Wali)
+                    </div>
+                    <div style="font-size:11.5px; color:#be185d; font-weight:700;" class="bind-kontak-pondok">
+                      0812-3456-7890
+                    </div>
+                  </div>
+                </div>
+                <a href="https://wa.me/6281234567890?text=Assalamu%27alaikum%20Ustadzah%20Panitia%20PSB%20Putri%2C%20saya%20ingin%20konsultasi%20mengenai%20pendaftaran%20santriwati%20baru" target="_blank" class="btn btn-sm bind-wa-psb-putri" style="background:#db2777; color:#ffffff; font-size:11.5px; font-weight:800; padding:7px 14px; border-radius:999px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; box-shadow:0 3px 10px rgba(219,39,119,0.3);">
+                  <span>💬</span> Konsultasi Putri
+                </a>
+              </div>
+            </div>
+
+            <!-- Catatan Jam Layanan -->
+            <div style="margin-top:12px; font-size:11px; color:#047857; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+              <span>🕒 Layanan Panitia: Setiap Hari (07.30 - 21.00 WIB)</span>
+              <span>⚡ Balasan cepat &amp; ramah</span>
+            </div>
+          </div>
+
+          <h3 style="font-size:20px; font-weight:800; color:var(--dark-900); margin-bottom:16px;">
+            Alur & Ketentuan Pendaftaran
+          </h3>
+
+          <div class="psb-step-item">
+            <div class="psb-step-no">1</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Isi Formulir Online</h4>
+              <p style="font-size:12.5px; color:var(--dark-600);">Lengkapi data calon santri dan orang tua pada formulir di samping.</p>
+            </div>
+          </div>
+
+          <div class="psb-step-item">
+            <div class="psb-step-no">2</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Konfirmasi via WhatsApp Panitia</h4>
+              <p style="font-size:12.5px; color:var(--dark-600);">Setelah mengisi form, nomor registrasi akan keluar dan langsung terhubung ke WhatsApp panitia.</p>
+            </div>
+          </div>
+
+          <div class="psb-step-item">
+            <div class="psb-step-no">3</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Tes Seleksi Baca Al-Qur'an</h4>
+              <p style="font-size:12.5px; color:var(--dark-600);">Calon santri mengikuti tes baca Al-Qur'an untuk penempatan kelas (Binnadzor atau Tahfidz).</p>
+            </div>
+          </div>
+
+          <div class="psb-step-item">
+            <div class="psb-step-no">4</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Pengumuman & Daftar Ulang</h4>
+              <p style="font-size:12.5px; color:var(--dark-600);">Santri yang dinyatakan diterima melakukan daftar ulang dan pengukuran seragam.</p>
+            </div>
+          </div>
+
+          <hr style="border:none; border-top:1px solid var(--light-200); margin:20px 0;">
+
+          <h4 style="font-size:13.5px; font-weight:700; color:var(--dark-800); margin-bottom:8px;">Syarat Pendaftaran:</h4>
+          <ul style="font-size:12.5px; color:var(--dark-600); margin-left:18px; line-height:1.7;">
+            <li>Lulus SD/MI atau SMP/MTs (Usia 12 - 18 tahun).</li>
+            <li>Memiliki niat tulus dan kesiapan tinggal di asrama pondok.</li>
+            <li>Fotokopi Akta Kelahiran, Kartu Keluarga, dan Ijazah terakhir.</li>
+            <li>Surat keterangan sehat dari dokter/puskesmas.</li>
+          </ul>
+
+          <!-- RINCIAN BIAYA PENDAFTARAN & PENDIDIKAN PONDOK -->
+          <div style="background:#f8fafc; border:1.5px solid #bbf7d0; border-radius:14px; padding:18px; margin:20px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:6px;">
+              <h4 style="font-size:14.5px; font-weight:800; color:#065f46; margin:0; display:flex; align-items:center; gap:6px;">
+                <span>💰</span> Rincian Biaya Masuk &amp; Pendidikan Santri
+              </h4>
+              <span style="font-size:11px; background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; padding:2px 8px; border-radius:999px; font-weight:700;">
+                Tahun Ajaran 2025/2026
+              </span>
+            </div>
+
+            <!-- Tabel Baris Biaya Transparan (Dinamis dari Admin) -->
+            <div id="webBiayaListContainer" style="display:flex; flex-direction:column; gap:8px; font-size:12.5px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:#ffffff; border-radius:8px; border:1px solid #e2e8f0;">
+                <div>
+                  <strong style="color:#0f172a;">1. Infaq Formulir &amp; Tes Seleksi</strong>
+                  <div style="font-size:11px; color:#64748b;">Dibayar 1 kali saat pendaftaran seleksi</div>
+                </div>
+                <div style="font-weight:800; color:#065f46; font-size:13.5px;" id="webBiayaFormulir">
+                  Rp 150.000
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:#ffffff; border-radius:8px; border:1px solid #e2e8f0;">
+                <div>
+                  <strong style="color:#0f172a;">2. Infaq Pengembangan Sarana &amp; Asrama</strong>
+                  <div style="font-size:11px; color:#64748b;">Ranjang, almari, sarana halaqah (dapat diangsur)</div>
+                </div>
+                <div style="font-weight:800; color:#065f46; font-size:13.5px;" id="webBiayaGedung">
+                  Rp 2.500.000
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:#ffffff; border-radius:8px; border:1px solid #e2e8f0;">
+                <div>
+                  <strong style="color:#0f172a;">3. Paket Seragam Lengkap</strong>
+                  <div style="font-size:11px; color:#64748b;">3 stel seragam pondok, almamater &amp; atribut</div>
+                </div>
+                <div style="font-weight:800; color:#065f46; font-size:13.5px;" id="webBiayaSeragam">
+                  Rp 650.000
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:#ffffff; border-radius:8px; border:1px solid #e2e8f0;">
+                <div>
+                  <strong style="color:#0f172a;">4. Mushaf Tahfidz &amp; Kitab Syari'ah</strong>
+                  <div style="font-size:11px; color:#64748b;">Mushaf standar Kudus, matan tajwid &amp; kitab fiqih</div>
+                </div>
+                <div style="font-weight:800; color:#065f46; font-size:13.5px;" id="webBiayaKitab">
+                  Rp 350.000
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#ecfdf5; border-radius:8px; border:1.5px solid #10b981;">
+                <div>
+                  <strong style="color:#065f46; font-size:13px;">5. Iuran Bulanan / Syahriah (All-In)</strong>
+                  <div style="font-size:11px; color:#15803d;">Asrama, makan bergizi 3x sehari, bimbingan tahfidz &amp; laundry</div>
+                </div>
+                <div style="font-weight:800; color:#047857; font-size:15px;" id="webBiayaBulanan">
+                  Rp 750.000<span style="font-size:11px; font-weight:normal;">/bln</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Catatan Beasiswa -->
+            <div style="margin-top:12px; padding:10px 12px; background:#fffbeb; border-radius:8px; border-left:3.5px solid #f59e0b; font-size:11.5px; color:#92400e; line-height:1.5;">
+              🌟 <strong>Program Beasiswa &amp; Keringanan:</strong> Tersedia beasiswa penuh/subsidi bagi santri yatim, dhuafa, atau huffadz berprestasi. Hubungi panitia untuk informasi seleksi beasiswa.
+            </div>
+
+            <!-- Info Rekening Resmi Pembayaran & Infaq Pondok (Dinamis dari Admin) -->
+            <div id="webRekeningListContainer"></div>
+          </div>
+
+          <hr style="border:none; border-top:1px solid var(--light-200); margin:20px 0;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <span style="font-size:12px; color:var(--dark-500); font-weight:600;">Akses Panitia PSB:</span>
+            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openModalDataPendaftar()">
+              📋 Data Pendaftar Masuk (<span id="countPendaftarBadge">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Form PSB Online -->
+        <div class="psb-form-card reveal-on-scroll reveal-right">
+          <h3 style="font-size:20px; font-weight:800; color:var(--primary-900); margin-bottom:4px;">
+            📝 Formulir Pendaftaran Online
+          </h3>
+          <p style="font-size:12.5px; color:var(--dark-500); margin-bottom:14px;">
+            Mohon isi data dengan benar dan teliti.
+          </p>
+
+          <!-- Quick Help / CP WhatsApp Notice Bar di atas Form -->
+          <div style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:12px; padding:11px 16px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; box-shadow:0 2px 8px rgba(16,185,129,0.08);">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:22px;">💬</span>
+              <div>
+                <div style="font-size:12.5px; font-weight:800; color:#166534;">
+                  Butuh Bantuan atau Ada Kendala Pengisian?
+                </div>
+                <div style="font-size:11.5px; color:#15803d;">
+                  Hubungi Admin / CP PSB via WA: <strong class="bind-kontak-pondok">0812-3456-7890</strong>
+                </div>
+              </div>
+            </div>
+            <a href="https://wa.me/6281234567890?text=Assalamu%27alaikum%20Admin%20PSB%2C%20saya%20butuh%20panduan%20pengisian%20formulir%20pendaftaran" target="_blank" class="btn btn-sm bind-wa-psb-help" style="background:#25d366; color:#fff; font-size:11.5px; font-weight:800; padding:6px 14px; border-radius:999px; text-decoration:none; display:inline-flex; align-items:center; gap:5px; box-shadow:0 3px 10px rgba(37,211,102,0.3);">
+              <span>📲</span> Chat WA Admin
+            </a>
+          </div>
+
+          <form id="formPSB" onsubmit="handleFormPSB(event)">
+            <!-- 1. DATA PRIBADI SANTRI -->
+            <div style="margin-bottom:18px;">
+              <h4 style="font-size:14px; font-weight:700; color:#065f46; border-bottom:1.5px solid #d1fae5; padding-bottom:6px; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                <span>👤</span> 1. Data Pribadi Calon Santri
+              </h4>
+              
+              <div class="form-row">
+                <div class="form-col form-group" style="flex:2;">
+                  <label class="form-label">Nama Lengkap Santri <span style="color:red;">*</span></label>
+                  <input type="text" id="psbNama" class="form-control" placeholder="Nama lengkap sesuai akta kelahiran..." required>
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Tuliskan nama lengkap sesuai dengan Akta Kelahiran atau Kartu Keluarga.</small>
+                </div>
+                <div class="form-col form-group" style="flex:1;">
+                  <label class="form-label">Nama Panggilan</label>
+                  <input type="text" id="psbNamaPanggilan" class="form-control" placeholder="Nama panggilan...">
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Nama panggilan sehari-hari.</small>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col form-group">
+                  <label class="form-label">No. Kartu Keluarga (No. KK) <span style="color:red;">*</span></label>
+                  <input type="text" id="psbNoKK" class="form-control" maxlength="16" minlength="16" pattern="[0-9]{16}" placeholder="16 digit No. KK..." required>
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Wajib 16 digit Nomor KK yang tertera di bagian atas Kartu Keluarga.</small>
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">NIK Santri (16 Digit di KK) <span style="color:red;">*</span></label>
+                  <input type="text" id="psbNik" class="form-control" maxlength="16" minlength="16" pattern="[0-9]{16}" placeholder="Contoh: 3517xxxxxxxxxxxx" required>
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Wajib 16 digit Nomor Induk Kependudukan sesuai Akta / KK.</small>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col form-group" style="flex:1;">
+                  <label class="form-label">NISN (Nomor Induk Siswa Nasional) <span style="color:red;">*</span></label>
+                  <input type="text" id="psbNisn" class="form-control" maxlength="10" minlength="10" pattern="[0-9]{10}" placeholder="10 digit NISN..." required>
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Wajib 10 digit NISN dari sekolah/madrasah asal.</small>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col form-group">
+                  <label class="form-label">Tempat Lahir <span style="color:red;">*</span></label>
+                  <input type="text" id="psbTempatLahir" class="form-control" placeholder="Kota/Kab. kelahiran..." required>
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">Tanggal Lahir <span style="color:red;">*</span></label>
+                  <input type="date" id="psbTanggalLahir" class="form-control" required>
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">Jenis Kelamin <span style="color:red;">*</span></label>
+                  <select id="psbJK" class="form-control" required>
+                    <option value="L">Laki-laki (Putra / Ikhwan)</option>
+                    <option value="P">Perempuan (Putri / Akhwat)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col form-group">
+                  <label class="form-label">Anak ke-</label>
+                  <input type="number" id="psbAnakKe" class="form-control" min="1" placeholder="1">
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">Dari berapa bersaudara</label>
+                  <input type="number" id="psbJumlahSaudara" class="form-control" min="1" placeholder="3">
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">Riwayat Penyakit (Opsional)</label>
+                  <input type="text" id="psbRiwayatPenyakit" class="form-control" placeholder="Contoh: Asma, Alergi, Maag, dll.">
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Tuliskan jika santri memiliki riwayat penyakit khusus.</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. PENDIDIKAN & RIWAYAT HAFALAN -->
+            <div style="margin-bottom:18px;">
+              <h4 style="font-size:14px; font-weight:700; color:#065f46; border-bottom:1.5px solid #d1fae5; padding-bottom:6px; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                <span>📖</span> 2. Asal Sekolah, Sekolah Tujuan & Riwayat Hafalan
+              </h4>
+
+              <div class="form-row">
+                <div class="form-col form-group">
+                  <label class="form-label">Asal Sekolah Sebelumnya <span style="color:red;">*</span></label>
+                  <input type="text" id="psbAsalSekolah" class="form-control" placeholder="Contoh: SDIT Al-Hikmah / SDN 1 / MTsN 1..." required>
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">
+                    ℹ️ Tuliskan nama lengkap sekolah/madrasah asal calon santri.
+                  </small>
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">Pilihan Sekolah Formal yang Dituju <span style="color:red;">*</span></label>
+                  <select id="psbSekolahTujuan" class="form-control" required>
+                    <option value="" disabled selected>-- Pilih Sekolah Formal yang Dituju --</option>
+                    <optgroup label="Tingkat Menengah Pertama (Setara SMP)">
+                      <option value="MTsN 4 Denanyar">MTsN 4 Denanyar (MTsN 4 Jombang)</option>
+                      <option value="MTs MM Denanyar">MTs MM (MTs Mamba'ul Ma'arif)</option>
+                      <option value="SMP MM Denanyar">SMP MM (SMP Mamba'ul Ma'arif)</option>
+                    </optgroup>
+                    <optgroup label="Tingkat Menengah Atas (Setara SMA/SMK)">
+                      <option value="MAN 4 Denanyar">MAN 4 Denanyar (MAN 4 Jombang)</option>
+                      <option value="MAMM Denanyar">MAMM (MA Mamba'ul Ma'arif)</option>
+                      <option value="SMK Bisri Syansuri">SMK Bisri Syansuri (Kejuruan/Vokasi)</option>
+                    </optgroup>
+                    <optgroup label="Pilihan Khusus">
+                      <option value="Pondok Murni (Fokus Tahfidz Tanpa Formal)">Khusus Pondok Saja (Fokus Tahfidz Murni)</option>
+                      <option value="Ma'had Aly">Ma'had Aly (Pendidikan Tinggi Pesantren)</option>
+                    </optgroup>
+                  </select>
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">
+                    ℹ️ Pilih lembaga formal yang akan ditempuh di lingkungan pondok.
+                  </small>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom:14px;">
+                <label class="form-label">Apakah Sudah Mendaftar di Sekolah yang Dituju? <span style="color:red;">*</span></label>
+                <select id="psbStatusDaftarSekolah" class="form-control" required>
+                  <option value="" disabled selected>-- Pilih Status Pendaftaran Sekolah --</option>
+                  <option value="Sudah Mendaftar">Sudah Mendaftar di Sekolah Tujuan</option>
+                  <option value="Belum Mendaftar">Belum Mendaftar (Akan Mendaftar Mandiri)</option>
+                </select>
+                <div style="background:#fffbeb; border:1px solid #fef3c7; border-radius:8px; padding:7px 11px; margin-top:5px; font-size:11.5px; color:#92400e; line-height:1.4;">
+                  ⚠️ <strong>Pemberitahuan:</strong> Pendaftaran unit sekolah formal (MAN 4 / MTsN 4 / MTs-MA-SMP MM / SMK Bisri Syansuri / Ma'had Aly) dilakukan secara terpisah melalui masing-masing panitia sekolah dan tidak otomatis tergabung dalam pendaftaran pondok ini.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Riwayat Hafalan Al-Qur'an Sebelumnya <span style="color:red;">*</span></label>
+                <input type="text" id="psbRiwayatHafalan" class="form-control" placeholder="Contoh: Belum punya hafalan / Sudah Juz 30 / Surat Al-Mulk..." required>
+                <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:8px 12px; margin-top:6px; font-size:11.5px; color:#065f46; line-height:1.5;">
+                  💡 <strong>Petunjuk Pengisian:</strong> Jika calon santri <u>belum pernah menghafal</u> Al-Qur'an, silakan tulis <strong>"Belum punya hafalan"</strong> atau <strong>"Nol juz"</strong>. Jika sudah memiliki hafalan sebelumnya, sebutkan juz atau nama surat yang sudah dihafal (contoh: <em>Juz 30</em>, atau <em>Juz 29–30</em>, atau <em>Surat Al-Waqi'ah & Al-Mulk</em>).
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. DATA ORANG TUA / WALI -->
+            <div style="margin-bottom:18px;">
+              <h4 style="font-size:14px; font-weight:700; color:#065f46; border-bottom:1.5px solid #d1fae5; padding-bottom:6px; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                <span>👨‍👩‍👦</span> 3. Data Orang Tua / Wali Santri
+              </h4>
+
+              <div class="form-row">
+                <div class="form-col form-group">
+                  <label class="form-label">Nama Lengkap Ayah <span style="color:red;">*</span></label>
+                  <input type="text" id="psbNamaAyah" class="form-control" placeholder="Nama ayah kandung..." required>
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">Pekerjaan Ayah</label>
+                  <input type="text" id="psbPekerjaanAyah" class="form-control" placeholder="PNS, Wiraswasta, Petani, Guru...">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col form-group">
+                  <label class="form-label">Nama Lengkap Ibu <span style="color:red;">*</span></label>
+                  <input type="text" id="psbNamaIbu" class="form-control" placeholder="Nama ibu kandung..." required>
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">Pekerjaan Ibu</label>
+                  <input type="text" id="psbPekerjaanIbu" class="form-control" placeholder="Ibu Rumah Tangga, Guru, PNS, Pedagang...">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col form-group">
+                  <label class="form-label">No. WhatsApp Aktif Wali (Untuk Informasi PSB) <span style="color:red;">*</span></label>
+                  <input type="tel" id="psbNoWa" class="form-control" placeholder="08xxxxxxxxxx" required>
+                  <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Nomor WA aktif yang dapat dihubungi panitia untuk informasi tes seleksi & pengumuman.</small>
+                </div>
+                <div class="form-col form-group">
+                  <label class="form-label">Penghasilan Gabungan Orang Tua / Bulan</label>
+                  <select id="psbPenghasilan" class="form-control">
+                    <option value="Di bawah Rp 2.000.000">Di bawah Rp 2.000.000</option>
+                    <option value="Rp 2.000.000 - Rp 5.000.000" selected>Rp 2.000.000 - Rp 5.000.000</option>
+                    <option value="Rp 5.000.000 - Rp 10.000.000">Rp 5.000.000 - Rp 10.000.000</option>
+                    <option value="Di atas Rp 10.000.000">Di atas Rp 10.000.000</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Alamat Lengkap Tempat Tinggal <span style="color:red;">*</span></label>
+                <textarea id="psbAlamat" class="form-control" rows="2" placeholder="Nama jalan/dusun, RT/RW, Desa/Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi, Kode Pos..." required></textarea>
+                <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Cantumkan alamat domisili lengkap orang tua/wali saat ini.</small>
+              </div>
+            </div>
+
+            <!-- 4. UPLOAD BERKAS DOKUMEN (WAJIB DILENGKAPI) -->
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px; margin-bottom:18px;">
+              <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                <span>📎</span> 4. Unggah Berkas Pendaftaran (Wajib Dilengkapi) <span style="color:red;">*</span>
+              </h4>
+              <p style="font-size:11.5px; color:#64748b; margin-bottom:14px;">
+                Seluruh berkas dokumen di bawah <strong>wajib diunggah</strong>. Foto berukuran besar (5-10MB) <strong>otomatis dikompres menjadi ~300KB tetap tajam</strong> agar hemat kuota dan cepat masuk ke data panitia.
+              </p>
+
+              <div class="form-row">
+                <div class="form-col form-group" style="margin-bottom:10px;">
+                  <label class="form-label" style="font-size:12px; font-weight:700;">Pas Foto Calon Santri (3x4) <span style="color:red;">*</span></label>
+                  <input type="file" id="psbFotoSantri" class="form-control" accept="image/*" style="font-size:12px; padding:6px 10px;" onchange="handleFileCompress(event, 'previewFotoSantri', 'base64FotoSantri')" required>
+                  <input type="hidden" id="base64FotoSantri">
+                  <div id="previewFotoSantri" style="font-size:11px; color:#059669; margin-top:4px; display:none; font-weight:600;">✓ Foto siap</div>
+                </div>
+                <div class="form-col form-group" style="margin-bottom:10px;">
+                  <label class="form-label" style="font-size:12px; font-weight:700;">Foto Kartu Keluarga (KK) <span style="color:red;">*</span></label>
+                  <input type="file" id="psbFotoKK" class="form-control" accept="image/*" style="font-size:12px; padding:6px 10px;" onchange="handleFileCompress(event, 'previewFotoKK', 'base64FotoKK')" required>
+                  <input type="hidden" id="base64FotoKK">
+                  <div id="previewFotoKK" style="font-size:11px; color:#059669; margin-top:4px; display:none; font-weight:600;">✓ KK siap</div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col form-group" style="margin-bottom:0;">
+                  <label class="form-label" style="font-size:12px; font-weight:700;">Foto KTP Ayah / Ibu / Wali <span style="color:red;">*</span></label>
+                  <input type="file" id="psbFotoKTP" class="form-control" accept="image/*" style="font-size:12px; padding:6px 10px;" onchange="handleFileCompress(event, 'previewFotoKTP', 'base64FotoKTP')" required>
+                  <input type="hidden" id="base64FotoKTP">
+                  <div id="previewFotoKTP" style="font-size:11px; color:#059669; margin-top:4px; display:none; font-weight:600;">✓ KTP siap</div>
+                </div>
+                <div class="form-col form-group" style="margin-bottom:0;">
+                  <label class="form-label" style="font-size:12px; font-weight:700;">Foto Akta Kelahiran <span style="color:red;">*</span></label>
+                  <input type="file" id="psbFotoAkta" class="form-control" accept="image/*" style="font-size:12px; padding:6px 10px;" onchange="handleFileCompress(event, 'previewFotoAkta', 'base64FotoAkta')" required>
+                  <input type="hidden" id="base64FotoAkta">
+                  <div id="previewFotoAkta" style="font-size:11px; color:#059669; margin-top:4px; display:none; font-weight:600;">✓ Akta siap</div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" id="btnSubmitPSB" class="btn btn-gold btn-lg" style="width:100%; margin-top:4px;">
+              <span>🚀</span> Kirim Pendaftaran Online Sekarang
+            </button>
+
+            <!-- Link Bantuan CP di Bawah Tombol Kirim -->
+            <div style="margin-top:14px; text-align:center; font-size:12px; color:#64748b; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:6px;">
+              <span>Mengalami kendala saat submit formulir?</span>
+              <a href="https://wa.me/6281234567890?text=Assalamu%27alaikum%20Admin%20PSB%2C%20saya%20mengalami%20kendala%20saat%20mengisi%20formulir%20pendaftaran" target="_blank" class="bind-wa-psb-help" style="color:#059669; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+                <span>💬</span> Hubungi CP / WhatsApp Panitia
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 5. BERITA & ARTIKEL PONDOK ================= -->
+  <section id="artikel" class="section-wrapper">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+        <span class="view-indicator-pill">📰 Berita, Artikel &amp; Tausiyah</span>
+      </div>
+
+      <div class="section-header reveal-on-scroll reveal-up">
+        <span class="section-tag">Kabar Pesantren</span>
+        <h2 class="section-title">Berita, Artikel & Kajian Tahfidz</h2>
+        <p class="section-desc">Dokumentasi kegiatan, tausiyah asatidz, dan informasi terkini dari Pondok Pesantren.</p>
+      </div>
+
+      <div style="display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
+        <!-- Category Filter -->
+        <div class="articles-filter-bar reveal-on-scroll reveal-up" id="articleFilters" style="margin-bottom:0;">
+          <button class="filter-btn active" onclick="filterArticles('Semua', this)">Semua Kategori</button>
+          <button class="filter-btn" onclick="filterArticles('Berita Pondok', this)">Berita Pondok</button>
+          <button class="filter-btn" onclick="filterArticles('Tausiyah & Hikmah', this)">Tausiyah & Hikmah</button>
+          <button class="filter-btn" onclick="filterArticles('Pengumuman', this)">Pengumuman</button>
+        </div>
+      </div>
+
+      <!-- Articles Grid -->
+      <div class="articles-grid" id="articlesGrid">
+        <!-- Injected dynamically via website.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 6. GALERI FOTO DOKUMENTASI ================= -->
+  <section id="galeri" class="section-wrapper" style="background:#f1f5f9; border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0;">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+        <span class="view-indicator-pill">📸 Dokumentasi Visual &amp; Galeri Foto</span>
+      </div>
+
+      <div class="section-header reveal-on-scroll reveal-up">
+        <span class="section-tag tag-gold">Dokumentasi Visual</span>
+        <h2 class="section-title">Galeri Foto Kegiatan Santri</h2>
+        <p class="section-desc">Momen kebersamaan, suasana halaqah setoran hafalan, dan kegiatan harian di pesantren.</p>
+      </div>
+
+      <!-- WIDGET SLIDER FOTO INTERAKTIF MODERN (KEN BURNS, DRAG/SWIPE, & 3D TILT) -->
+      <div class="photo-showcase-widget reveal-on-scroll reveal-zoom" id="websiteFeaturedShowcaseWrap" style="margin-bottom:32px;">
+        <div class="photo-showcase-header">
+          <div class="photo-showcase-title-wrap">
+            <span class="photo-showcase-badge"><span class="live-dot"></span> Sorotan Utama Pesantren</span>
+            <div>
+              <h3 class="photo-showcase-title">📸 Dokumentasi & Dinamika Santri Al-Qur'an</h3>
+              <p class="photo-showcase-subtitle">Momen berharga setoran ziyadah, ujian tasmi' kubro, wisuda kelulusan, & kajian kitab</p>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:12px; color:#a7f3d0;">💡 <em>Geser / drag atau klik foto untuk perbesar</em></span>
+          </div>
+        </div>
+        <div id="websiteFeaturedShowcase">
+          <!-- Rendered by createInteractivePhotoSlider -->
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
+        <!-- Filter Galeri -->
+        <div class="articles-filter-bar reveal-on-scroll reveal-up" id="galleryFilters" style="margin-bottom:0;">
+          <button class="filter-btn active" onclick="filterGallery('Semua', this)">Semua Foto</button>
+          <button class="filter-btn" onclick="filterGallery('Halaqah Setoran', this)">Halaqah Setoran</button>
+          <button class="filter-btn" onclick="filterGallery('Wisuda & Tasmi\'', this)">Wisuda & Tasmi'</button>
+          <button class="filter-btn" onclick="filterGallery('Kegiatan Santri', this)">Kegiatan Santri</button>
+          <button class="filter-btn" onclick="filterGallery('Fasilitas', this)">Fasilitas</button>
+        </div>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- Injected dynamically via website.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 7. KONTAK & LOKASI ================= -->
+  <section id="kontak" class="section-wrapper">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+        <span class="view-indicator-pill">📞 Kontak Sekretariat &amp; Media Sosial</span>
+      </div>
+
+      <div class="section-header reveal-on-scroll reveal-up">
+        <span class="section-tag">Hubungi Kami</span>
+        <h2 class="section-title">Sekretariat Pondok Pesantren</h2>
+        <p class="section-desc">Silakan hubungi kami untuk informasi pendaftaran, kunjungan wali santri, atau konsultasi program.</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:36px;">
+        <!-- Contact Card -->
+        <div class="reveal-on-scroll reveal-left" style="background:#fff; border:1px solid var(--light-200); border-radius:var(--radius-xl); padding:32px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-size:18px; font-weight:800; color:var(--dark-900); margin-bottom:18px;">Informasi Kontak Kantor</h3>
+
+          <div style="margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--dark-500);">Alamat Lengkap:</div>
+            <div style="font-size:14.5px; color:var(--dark-800); margin-top:4px;" class="bind-alamat-pondok">
+              Jl. Pesantren Luhur No. 45, Cirebon, Jawa Barat
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--dark-500);">WhatsApp & Telepon:</div>
+            <div style="font-size:16px; font-weight:700; color:var(--primary-700); margin-top:4px;" class="bind-kontak-pondok">
+              0812-3456-7890
+            </div>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--dark-500);">Jam Pelayanan Kantor:</div>
+            <div style="font-size:14px; color:var(--dark-800); margin-top:4px;">
+              Sabtu - Kamis: 08.00 - 17.00 WIB (Jum'at Libur)
+            </div>
+          </div>
+
+          <a href="https://api.whatsapp.com/send?phone=6281234567890&text=Assalamu'alaikum%20Admin%20Pondok,%20saya%20ingin%20bertanya%20seputar%20pesantren" target="_blank" class="btn btn-whatsapp btn-lg" style="width:100%;">
+            <span>💬</span> Chat WhatsApp Sekretariat
+          </a>
+        </div>
+
+        <!-- Maps Placeholder / Guide -->
+        <div class="reveal-on-scroll reveal-right" style="background:var(--light-100); border:1px solid var(--light-200); border-radius:var(--radius-xl); padding:32px; display:flex; flex-direction:column; justify-content:center; text-align:center;">
+          <div style="font-size:48px; margin-bottom:12px;">🗺️</div>
+          <h3 style="font-size:18px; font-weight:700; color:var(--dark-900); margin-bottom:8px;">Peta & Akses Menuju Pesantren</h3>
+          <p style="font-size:13px; color:var(--dark-600); line-height:1.6; max-width:400px; margin:0 auto 20px auto;">
+            Lokasi pondok strategis, sejuk, dan tenang, berjarak sekitar 15 menit dari gerbang tol terdekat. Dapat diakses dengan kendaraan roda empat maupun bus rombongan.
+          </p>
+          <a href="https://maps.google.com" target="_blank" class="btn btn-secondary btn-sm" style="align-self:center;">
+            Buka di Google Maps ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- ================= SALURAN MEDIA SOSIAL RESMI ================= -->
+      <div class="social-media-container reveal-on-scroll reveal-up">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h3 style="font-size:18px; font-weight:800; color:var(--dark-900); display:flex; align-items:center; gap:8px;">
+              <span>📱</span> Saluran Media Sosial Resmi Pesantren
+            </h3>
+            <p style="font-size:13px; color:var(--dark-600); margin-top:2px;">
+              Ikuti publikasi harian kegiatan santri, live streaming tasmi', kajian kitab, dan info penerimaan santri baru:
+            </p>
+          </div>
+        </div>
+
+        <div class="social-grid">
+          <!-- 1. Instagram Putra -->
+          <a id="linkIgPutra" href="https://instagram.com" target="_blank" class="social-badge-btn badge-ig-putra reveal-on-scroll reveal-up reveal-delay-1">
+            <div class="social-badge-icon">📸</div>
+            <div>
+              <div class="social-badge-sub">Instagram Putra</div>
+              <div class="social-badge-handle" id="textIgPutra">@albarokah_putra</div>
+            </div>
+          </a>
+
+          <!-- 2. Instagram Putri -->
+          <a id="linkIgPutri" href="https://instagram.com" target="_blank" class="social-badge-btn badge-ig-putri reveal-on-scroll reveal-up reveal-delay-2">
+            <div class="social-badge-icon">🌸</div>
+            <div>
+              <div class="social-badge-sub">Instagram Putri</div>
+              <div class="social-badge-handle" id="textIgPutri">@albarokah_putri</div>
+            </div>
+          </a>
+
+          <!-- 3. TikTok Putra -->
+          <a id="linkTiktokPutra" href="https://tiktok.com" target="_blank" class="social-badge-btn badge-tiktok-putra reveal-on-scroll reveal-up reveal-delay-3">
+            <div class="social-badge-icon">🎵</div>
+            <div>
+              <div class="social-badge-sub">TikTok Putra</div>
+              <div class="social-badge-handle" id="textTiktokPutra">@tahfidz_putra</div>
+            </div>
+          </a>
+
+          <!-- 4. TikTok Putri -->
+          <a id="linkTiktokPutri" href="https://tiktok.com" target="_blank" class="social-badge-btn badge-tiktok-putri reveal-on-scroll reveal-up reveal-delay-4">
+            <div class="social-badge-icon">🎶</div>
+            <div>
+              <div class="social-badge-sub">TikTok Putri</div>
+              <div class="social-badge-handle" id="textTiktokPutri">@tahfidz_putri</div>
+            </div>
+          </a>
+
+          <!-- 5. YouTube -->
+          <a id="linkYoutube" href="https://youtube.com" target="_blank" class="social-badge-btn badge-yt reveal-on-scroll reveal-up reveal-delay-5">
+            <div class="social-badge-icon">▶️</div>
+            <div>
+              <div class="social-badge-sub">YouTube Official</div>
+              <div class="social-badge-handle" id="textYoutube">Pesantren Tahfidz TV</div>
+            </div>
+          </a>
+
+          <!-- 6. Facebook -->
+          <a id="linkFacebook" href="https://facebook.com" target="_blank" class="social-badge-btn badge-fb reveal-on-scroll reveal-up reveal-delay-6">
+            <div class="social-badge-icon">📘</div>
+            <div>
+              <div class="social-badge-sub">Facebook Fanspage</div>
+              <div class="social-badge-handle" id="textFacebook">Pondok Pesantren Al-Barokah</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4 class="bind-nama-pondok">Pondok Pesantren Tahfidz Al-Barokah</h4>
+        <p style="font-size:13px; line-height:1.7; color:rgba(255,255,255,0.7); margin-bottom:16px;">
+          Lembaga pendidikan Islam berfokus pada ketuntasan Program Binnadzor dan Program Tahfidz 30 Juz bersanad, mencetak generasi Al-Qur'an yang shalih, mandiri, dan berakhlakul karimah.
+        </p>
+        <p style="font-size:12.5px; color:rgba(255,255,255,0.6);" class="bind-alamat-pondok">
+          Jl. Pesantren Luhur No. 45, Cirebon, Jawa Barat
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Menu Utama</h4>
+        <ul class="footer-links">
+          <li><a href="#beranda">Beranda</a></li>
+          <li><a href="#profil">Profil Pesantren</a></li>
+          <li><a href="#program">Program Pendidikan</a></li>
+          <li><a href="#psb">Pendaftaran Santri (PSB)</a></li>
+          <li><a href="#artikel">Berita & Artikel</a></li>
+          <li><a href="#galeri">Galeri Dokumentasi</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Akses Aplikasi</h4>
+        <ul class="footer-links">
+          <li><a href="portal-wali.html">🔍 Portal Khusus Wali Santri (Cek Perkembangan Santri)</a></li>
+          <li><a href="admin-tahfidz.html">🔐 Gerbang Pengurus (Admin & Divisi)</a></li>
+          <li><a href="panel-ustadz.html">👳‍♂️ Panel Asatidz (Presensi Setoran)</a></li>
+          <li><a href="#psb">📝 Formulir Pendaftaran (PSB Online)</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Pimpinan Pondok</h4>
+        <div style="font-size:13px; line-height:1.6; color:rgba(255,255,255,0.8);">
+          <div>Pengasuh: <strong class="bind-pengasuh-pondok">KH. Ahmad Dahlan Masykur, Al-Hafidz</strong></div>
+          <div style="margin-top:6px;">Ketua Tahfidz: <strong class="bind-kepala-tahfidz">Ust. Muhammad Ridwan, S.Pd.I., Al-Hafidz</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Social Links Bar -->
+    <div style="max-width:1200px; margin:24px auto 0 auto; padding:18px 24px 0 24px; border-top:1px solid rgba(255,255,255,0.12); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="font-size:12.5px; color:rgba(255,255,255,0.7); font-weight:600;">
+        📱 Saluran Medsos Resmi:
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:12px;">
+        <a id="footerLinkIgPutra" href="https://instagram.com" target="_blank" style="color:#fef08a; text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:5px 10px; border-radius:20px;">
+          <span>📸</span> IG Putra
+        </a>
+        <a id="footerLinkIgPutri" href="https://instagram.com" target="_blank" style="color:#fef08a; text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:5px 10px; border-radius:20px;">
+          <span>🌸</span> IG Putri
+        </a>
+        <a id="footerLinkTiktokPutra" href="https://tiktok.com" target="_blank" style="color:#fef08a; text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:5px 10px; border-radius:20px;">
+          <span>🎵</span> TikTok Putra
+        </a>
+        <a id="footerLinkTiktokPutri" href="https://tiktok.com" target="_blank" style="color:#fef08a; text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:5px 10px; border-radius:20px;">
+          <span>🎶</span> TikTok Putri
+        </a>
+        <a id="footerLinkYoutube" href="https://youtube.com" target="_blank" style="color:#fef08a; text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:5px 10px; border-radius:20px;">
+          <span>▶️</span> YouTube
+        </a>
+        <a id="footerLinkFacebook" href="https://facebook.com" target="_blank" style="color:#fef08a; text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:5px 10px; border-radius:20px;">
+          <span>📘</span> Facebook
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2024 <span class="bind-nama-pondok">Pondok Pesantren Tahfidz Al-Barokah</span>. All Rights Reserved.</div>
+      <div>Sistem Informasi Akademik & Portal Tahfidz Santri</div>
+    </div>
+  </footer>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal Detail Tentang Pesantren & Sanad Pengasuh -->
+  <div class="modal-overlay" id="modalAboutDetail" onclick="closeAboutDetailModal()">
+    <div class="interactive-detail-modal-box" style="max-width:880px;" onclick="event.stopPropagation()">
+      <div class="modal-media-header" style="height:260px; background:linear-gradient(135deg, #064e3b 0%, #022c22 100%);">
+        <img id="aboutModalHeaderImg" src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80" alt="Tentang Pesantren" class="modal-media-img" onerror="this.onerror=null; this.src=getFacilityFallbackSvg(0);">
+        <div class="modal-media-gradient"></div>
+        <button type="button" class="modal-media-floating-close" onclick="closeAboutDetailModal()" title="Tutup">&times;</button>
+        <div class="modal-media-caption-overlay">
+          <span style="background:#f59e0b; color:#78350f; font-weight:800; font-size:11px; padding:3px 10px; border-radius:999px; display:inline-block; margin-bottom:4px;">PROFIL & SANAD KEILMUAN</span>
+          <h2 id="aboutModalMainTitle" style="font-size:22px; font-weight:800; color:#fff; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.5);">Pondok Pesantren Tahfidz Al-Barokah</h2>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs inside Modal -->
+      <div style="display:flex; border-bottom:1px solid #e2e8f0; background:#f8fafc; padding:0 16px;">
+        <button type="button" class="about-tab-btn active" id="tabBtnProfil" onclick="switchAboutModalTab('profil')" style="padding:14px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:#065f46; border-bottom:3px solid #059669; cursor:pointer;">
+          🕌 Profil & Sejarah
+        </button>
+        <button type="button" class="about-tab-btn" id="tabBtnPengasuh" onclick="switchAboutModalTab('pengasuh')" style="padding:14px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:#64748b; cursor:pointer;">
+          📜 Sanad & Pengasuh
+        </button>
+        <button type="button" class="about-tab-btn" id="tabBtnVisi" onclick="switchAboutModalTab('visi')" style="padding:14px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:#64748b; cursor:pointer;">
+          🎯 Visi & 4 Misi Pesantren
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div style="padding:24px 26px; overflow-y:auto; flex-grow:1;">
+        <!-- Tab 1: Profil -->
+        <div id="tabContentProfil">
+          <h3 id="webModalDescProfilTitle" style="font-size:17px; font-weight:800; color:#0f172a; margin-bottom:10px;">Tradisi Menjaga Al-Qur'an dengan Sanad Shahih</h3>
+          <p id="webModalDescProfilText" style="font-size:14px; line-height:1.7; color:#334155; margin-bottom:16px;">
+            Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah didirikan dengan niat ikhlas meneruskan amanah para Masyaikh dalam menjaga kemurnian bacaan Al-Qur'anul Karim. Kami meyakini bahwa menghafal Al-Qur'an tidak sekadar menghafal teks lafadz, melainkan mengambil bacaan secara talaqqi musyafahah (berhadap-hadapan langsung dari lisan guru ke murid) dengan sanad yang muttashil bersambung hingga baginda Rasulullah SAW.
+          </p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:14px; border-radius:12px;">
+              <div id="webModalPoin1Title" style="font-weight:800; color:#15803d; font-size:13px; margin-bottom:4px;">🌿 Lingkungan Asri &amp; Terjaga</div>
+              <p id="webModalPoin1Desc" style="font-size:12.5px; color:#334155; margin:0; line-height:1.5;">Kampus pesantren dikelilingi pepohonan sejuk, jauh dari kebisingan kota, serta terpisah mandiri antara komplek putra dan putri demi menjaga kekhusyukan muraja'ah santri.</p>
+            </div>
+            <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:14px; border-radius:12px;">
+              <div id="webModalPoin2Title" style="font-weight:800; color:#1d4ed8; font-size:13px; margin-bottom:4px;">👥 Halaqah Kecil (Rasio 1:8)</div>
+              <p id="webModalPoin2Desc" style="font-size:12.5px; color:#334155; margin:0; line-height:1.5;">Tiap satu Ustadz pembimbing membina maksimal 8 santri, menjamin setiap huruf yang disetorkan disimak dengan ketelitian penuh.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Pengasuh & Sanad -->
+        <div id="tabContentPengasuh" style="display:none;">
+          <div id="tabContentPengasuhProfiles">
+            <div style="display:flex; gap:18px; align-items:center; margin-bottom:18px; background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #e2e8f0;">
+              <div style="font-size:48px;">👳‍♂️</div>
+              <div>
+                <div style="font-size:11px; font-weight:800; color:#059669; text-transform:uppercase;">Pengasuh Pondok</div>
+                <h3 class="bind-pengasuh-pondok" style="font-size:18px; font-weight:800; color:#0f172a; margin:2px 0 4px 0;">KH. Ahmad Dahlan Masykur, Al-Hafidz</h3>
+                <p style="font-size:12.5px; color:#64748b; margin:0;">Ulama huffadz alumnus pesantren tahfidz salaf yang mengabdikan hidupnya dalam pembinaan qira'at Al-Qur'an dan kajian kitab kuning.</p>
+              </div>
+            </div>
+          </div>
+
+          <h4 style="font-size:14.5px; font-weight:800; color:#065f46; margin-bottom:10px;">📜 Rantai Silsilah Sanad Qira'at Al-Qur'an Muttashil</h4>
+          <div style="background:#064e3b; color:#fff; padding:18px; border-radius:14px; font-size:12.5px; line-height:1.8; border:2px solid #f59e0b;">
+            <div style="color:#fef08a; font-weight:700; margin-bottom:6px;">Silsilah Qira'at Imam 'Ashim riwayat Hafsh:</div>
+            <div><strong id="modalSanadKyaiName">KH. Ahmad Dahlan Masykur, Al-Hafidz</strong></div>
+            <div style="opacity:0.85;">↳ berguru kepada <strong>KH. Muhammad Arwani Amin / KH. M. Munawwir</strong></div>
+            <div style="opacity:0.85;">↳ berguru kepada <strong>Syaikh Abdul Karim Ad-Diba'i</strong></div>
+            <div style="opacity:0.85;">↳ berguru kepada <strong>Syaikh Khalil Ar-Razi</strong> (hingga Imam Al-Jazari & Imam Asy-Syathibi)</div>
+            <div style="opacity:0.85;">↳ berguru kepada <strong>Imam 'Ashim bin Abi An-Najud</strong></div>
+            <div style="opacity:0.85;">↳ dari <strong>Abu Abdirrahman As-Sulami & Zirr bin Hubaisy</strong></div>
+            <div style="opacity:0.85;">↳ dari Sahabat: <strong>Utsman bin Affan, Ali bin Abi Thalib, Abdullah bin Mas'ud, Ubay bin Ka'ab (RA)</strong></div>
+            <div style="color:#fde047; font-weight:800; margin-top:6px;">↳ dari Junjungan Nabi Besar Muhammad Shallallahu 'Alaihi Wasallam</div>
+            <div style="color:#a7f3d0; font-weight:700;">↳ dari Malaikat Jibril 'Alaihissalam ↳ dari ALLAH Subhanahu wa Ta'ala.</div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Visi & 4 Misi Pesantren -->
+        <div id="tabContentVisi" style="display:none;">
+          <!-- Visi -->
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:14px; padding:18px; margin-bottom:18px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+              <span style="font-size:22px;">🎯</span>
+              <h4 style="font-size:15px; font-weight:800; color:#065f46; margin:0;">Visi Pesantren</h4>
+            </div>
+            <p id="webModalVisiText" style="font-size:13.5px; line-height:1.65; color:#14532d; font-weight:600; margin:0;">
+              "Menjadi pusat pendidikan tahfidzul Qur'an unggulan yang melahirkan para huffadz mutqin, faham kaidah ilmu syar'i, serta berkepribadian tangguh dan berakhlakul karimah."
+            </p>
+          </div>
+
+          <!-- 4 Misi Strategis -->
+          <h4 style="font-size:14.5px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+            <span>🧭</span> 4 Misi Strategis Pondok Pesantren
+          </h4>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+            <div style="padding:12px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-left:4px solid #059669; border-radius:10px;">
+              <div style="font-weight:800; color:#065f46; font-size:13px; margin-bottom:3px;">1. Fashahah Binnadzor &amp; Kaidah Tajwid</div>
+              <div style="font-size:12.5px; color:#334155; line-height:1.55;">Menyelenggarakan pembelajaran tilawah Al-Qur'an secara fasih dengan kaidah tajwid, makharijul huruf yang kokoh, dan materi ghorib musykilat (Program Binnadzor).</div>
+            </div>
+            <div style="padding:12px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-left:4px solid #0284c7; border-radius:10px;">
+              <div style="font-weight:800; color:#0369a1; font-size:13px; margin-bottom:3px;">2. Tahfidz 30 Juz Bersanad Muttashil</div>
+              <div style="font-size:12.5px; color:#334155; line-height:1.55;">Membimbing santri menghafal Al-Qur'an 30 Juz secara mutqin dengan metode ziyadah dan muraja'ah intensif bil-ghaib serta sanad muttashil bersambung hingga Rasulullah SAW.</div>
+            </div>
+            <div style="padding:12px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-left:4px solid #f59e0b; border-radius:10px;">
+              <div style="font-weight:800; color:#b45309; font-size:13px; margin-bottom:3px;">3. Penanaman Karakter &amp; Nilai Luhur Pesantren</div>
+              <div style="font-size:12.5px; color:#334155; line-height:1.55;">Menanamkan jiwa keikhlasan, kesederhanaan, kemandirian, dan ukhuwah Islamiyah yang tulus antar sesama penghafal Al-Qur'an.</div>
+            </div>
+            <div style="padding:12px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-left:4px solid #8b5cf6; border-radius:10px;">
+              <div style="font-weight:800; color:#6d28d9; font-size:13px; margin-bottom:3px;">4. Dirasah Syar'i &amp; Akhlaqul Karimah</div>
+              <div style="font-size:12.5px; color:#334155; line-height:1.55;">Membekali santri dengan kajian kitab kuning salaf (fiqih ibadah, aqidah, adab suluk, dan bahasa Arab) sebagai bekal pondasi amal di tengah umat.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:14px 24px; background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; justify-content:flex-end;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeAboutDetailModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detail Fasilitas Interaktif -->
+  <div class="modal-overlay" id="modalFacilityDetail" onclick="closeFacilityModal()">
+    <div class="interactive-detail-modal-box" onclick="event.stopPropagation()">
+      <div class="modal-media-header">
+        <img id="facModalImg" src="" alt="Fasilitas" class="modal-media-img" onclick="stepFacilityModal(1)" title="Klik foto untuk lihat fasilitas berikutnya" style="cursor:pointer;">
+        <div class="modal-media-gradient"></div>
+        <button type="button" class="modal-media-floating-close" onclick="closeFacilityModal()" title="Tutup">&times;</button>
+        <div class="modal-media-controls">
+          <button type="button" class="modal-nav-arrow-btn" onclick="stepFacilityModal(-1)" title="Fasilitas Sebelumnya">◀</button>
+          <button type="button" class="modal-nav-arrow-btn" onclick="stepFacilityModal(1)" title="Fasilitas Berikutnya">▶</button>
+        </div>
+        <div class="modal-media-caption-overlay">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span id="facModalBadge" style="background:#f59e0b; color:#78350f; font-weight:800; font-size:11.5px; padding:3px 10px; border-radius:999px;"></span>
+            <span id="facModalCounter" style="font-size:12px; color:#fde68a; font-weight:700;">1 / 6 Fasilitas</span>
+          </div>
+          <h2 id="facModalTitle" style="font-size:22px; font-weight:800; color:#fff; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.5);"></h2>
+        </div>
+      </div>
+      <div style="padding:22px 26px; overflow-y:auto; flex-grow:1;">
+        <p id="facModalDesc" style="font-size:14.5px; line-height:1.7; color:#334155; margin-bottom:18px;"></p>
+        <h4 style="font-size:14px; font-weight:800; color:#0f172a; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <span>🌟</span> Spesifikasi & Keunggulan Fasilitas:
+        </h4>
+        <ul id="facModalSpecs" style="margin-left:0; padding-left:0; list-style:none; margin-bottom:16px;"></ul>
+        <div style="background:#f8fafc; border-left:4px solid #059669; padding:12px 16px; border-radius:8px; font-size:12.5px; color:#475569;">
+          <strong style="color:#0f172a;">📅 Jadwal & Pemanfaatan:</strong> <span id="facModalSchedule"></span>
+        </div>
+      </div>
+      <div style="padding:14px 24px; background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <span style="font-size:12px; color:#64748b;">💡 <em>Gunakan tombol ◀ / ▶ atau klik foto untuk geser fasilitas</em></span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeFacilityModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detail Program Kurikulum Interaktif -->
+  <div class="modal-overlay" id="modalProgramDetail" onclick="closeProgramModal()">
+    <div class="interactive-detail-modal-box" onclick="event.stopPropagation()">
+      <div class="modal-media-header">
+        <img id="progModalImg" src="" alt="Program" class="modal-media-img" onclick="stepProgramModal(1)" title="Klik foto untuk lihat program berikutnya" style="cursor:pointer;">
+        <div class="modal-media-gradient"></div>
+        <button type="button" class="modal-media-floating-close" onclick="closeProgramModal()" title="Tutup">&times;</button>
+        <div class="modal-media-controls">
+          <button type="button" class="modal-nav-arrow-btn" onclick="stepProgramModal(-1)" title="Program Sebelumnya">◀</button>
+          <button type="button" class="modal-nav-arrow-btn" onclick="stepProgramModal(1)" title="Program Berikutnya">▶</button>
+        </div>
+        <div class="modal-media-caption-overlay">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <div style="display:flex; gap:8px;">
+              <span id="progModalStage" style="background:#059669; color:#ffffff; font-weight:800; font-size:11.5px; padding:3px 10px; border-radius:999px;"></span>
+              <span id="progModalBadge" style="background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); color:#fff; font-weight:700; font-size:11px; padding:3px 10px; border-radius:999px;"></span>
+            </div>
+            <span id="progModalCounter" style="font-size:12px; color:#fde68a; font-weight:700;">Tahap 1 / 4</span>
+          </div>
+          <h2 id="progModalTitle" style="font-size:22px; font-weight:800; color:#fff; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.5);"></h2>
+        </div>
+      </div>
+      <div style="padding:22px 26px; overflow-y:auto; flex-grow:1;">
+        <p id="progModalDesc" style="font-size:14.5px; line-height:1.7; color:#334155; margin-bottom:18px;"></p>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:12px 14px; border-radius:10px;">
+            <div style="font-size:11.5px; font-weight:800; color:#15803d; text-transform:uppercase; margin-bottom:4px;">🎯 Target Hafalan</div>
+            <div id="progModalTarget" style="font-size:13px; color:#1e293b; font-weight:600; line-height:1.45;"></div>
+          </div>
+          <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:12px 14px; border-radius:10px;">
+            <div style="font-size:11.5px; font-weight:800; color:#1d4ed8; text-transform:uppercase; margin-bottom:4px;">📚 Metode Bimbingan</div>
+            <div id="progModalMetode" style="font-size:13px; color:#1e293b; line-height:1.45;"></div>
+          </div>
+        </div>
+
+        <h4 style="font-size:14px; font-weight:800; color:#0f172a; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <span>🌟</span> Komponen Kurikulum Utama:
+        </h4>
+        <ul id="progModalFeatures" style="margin-left:0; padding-left:0; list-style:none; margin-bottom:16px;"></ul>
+
+        <div style="background:#fefce8; border-left:4px solid #ca8a04; padding:12px 16px; border-radius:8px; font-size:12.5px; color:#854d0e;">
+          <strong style="color:#713f12;">📋 Sistem Ujian & Kelulusan:</strong> <span id="progModalEvaluasi"></span>
+        </div>
+      </div>
+      <div style="padding:14px 24px; background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <a href="#psb" class="btn btn-primary btn-sm" onclick="closeProgramModal()">
+          <span>📝</span> Daftar Program Ini via PSB Online →
+        </a>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeProgramModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 0. MODAL BROSUR RESMI PSB (PRINTABLE & DOWNLOAD) ================= -->
+  <div class="modal-overlay" id="modalBrosurPSB" onclick="closeModalBrosurPSB()">
+    <div class="interactive-detail-modal-box" style="max-width:920px;" onclick="event.stopPropagation()">
+      <!-- Action Bar Modal -->
+      <div style="padding:14px 22px; background:#064e3b; color:#fff; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:2px solid #f59e0b;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:24px;">📄</span>
+          <div>
+            <h3 style="font-size:16px; font-weight:800; color:#fff; margin:0; line-height:1.2;">Brosur Resmi PSB 2025/2026</h3>
+            <p style="font-size:11.5px; color:#a7f3d0; margin:2px 0 0 0;">Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah</p>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button type="button" class="btn btn-gold btn-sm" onclick="printBrosurPSB()" style="font-weight:800; padding:7px 15px; box-shadow:0 3px 10px rgba(0,0,0,0.25); display:flex; align-items:center; gap:6px;">
+            <span>🖨️</span> Cetak / Simpan PDF
+          </button>
+          <a href="#" id="linkWaBrosur" target="_blank" class="btn btn-sm" style="background:#25d366; color:#fff; font-weight:700; padding:7px 13px; border-radius:6px; text-decoration:none; display:flex; align-items:center; gap:6px;">
+            <span>💬</span> WhatsApp Panitia
+          </a>
+          <button type="button" onclick="closeModalBrosurPSB()" style="background:none; border:none; color:#cbd5e1; font-size:26px; cursor:pointer; line-height:1; padding:2px 6px;" title="Tutup">&times;</button>
+        </div>
+      </div>
+
+      <!-- Kertas Brosur A4 Interaktif -->
+      <div id="brosurPrintArea" style="padding:28px 32px; overflow-y:auto; flex-grow:1; background:#ffffff; color:#1e293b; font-family:system-ui,-apple-system,sans-serif;">
+        <!-- Kop Surat Brosur -->
+        <div style="display:flex; align-items:center; gap:18px; border-bottom:3px double #064e3b; padding-bottom:16px; margin-bottom:18px;">
+          <div class="brand-logo" style="width:72px; height:72px; font-size:38px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#064e3b; color:#fff; border-radius:12px; border:2px solid #f59e0b;">
+            🕌
+          </div>
+          <div style="flex-grow:1;">
+            <div style="font-size:11.5px; font-weight:800; color:#059669; text-transform:uppercase; letter-spacing:1px;">
+              Penerimaan Santri Baru (PSB) • Tahun Ajaran 2025/2026
+            </div>
+            <h2 class="bind-nama-pondok" style="font-size:22px; font-weight:900; color:#064e3b; margin:2px 0 3px 0; line-height:1.2;">
+              Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah
+            </h2>
+            <p style="font-size:12px; color:#475569; margin:0; line-height:1.4;">
+              📍 <span class="bind-alamat-pondok">Jl. Pesantren Luhur No. 45, Cirebon, Jawa Barat</span> • 📞 <span class="bind-kontak-pondok">0812-3456-7890</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Headline Banner Brosur -->
+        <div style="background:linear-gradient(135deg, #064e3b 0%, #022c22 100%); color:#fff; border-radius:12px; padding:16px 20px; margin-bottom:22px; display:flex; justify-content:space-between; align-items:center; border:2px solid #f59e0b;">
+          <div>
+            <div style="color:#fef08a; font-weight:800; font-size:11.5px; text-transform:uppercase;">
+              Membina Generasi Qur'ani Bersanad &amp; Berakhlaq Mulia
+            </div>
+            <h3 style="font-size:17px; font-weight:800; margin:3px 0 0 0; color:#ffffff;">
+              Pendaftaran Santri Baru Putra &amp; Putri Telah Dibuka
+            </h3>
+          </div>
+          <div style="background:rgba(245,158,11,0.22); border:1.5px solid #f59e0b; padding:8px 14px; border-radius:8px; text-align:center; flex-shrink:0;">
+            <div style="font-size:10px; font-weight:700; color:#fef08a;">KUOTA TERBATAS</div>
+            <div style="font-size:14px; font-weight:900; color:#ffffff;">Rasio 1:8 Santri</div>
+          </div>
+        </div>
+
+        <!-- 2 Kolom Konten Brosur -->
+        <div style="display:grid; grid-template-columns:1.05fr 0.95fr; gap:24px;">
+          <!-- Kolom Kiri: Program & Kurikulum -->
+          <div>
+            <div style="margin-bottom:18px;">
+              <h4 style="font-size:13.5px; font-weight:800; color:#065f46; border-bottom:2px solid #bbf7d0; padding-bottom:5px; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                <span>📖</span> 4 Jenjang Program Kurikulum Pesantren
+              </h4>
+              <div style="display:flex; flex-direction:column; gap:8px; font-size:11.5px;">
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:9px 12px; border-radius:8px;">
+                  <strong style="color:#15803d; font-size:12px;">1. Program Binnadzor (Jenjang Dasar)</strong>
+                  <div style="color:#334155; margin-top:2px; line-height:1.45;">Fashahah tilawah, pemantapan makharijul huruf, tajwid &amp; hafalan dasar Juz 28-30 (dibina per kelas &amp; Ustadz pengampu).</div>
+                </div>
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:9px 12px; border-radius:8px;">
+                  <strong style="color:#15803d; font-size:12px;">2. Program Persiapan Maqbul</strong>
+                  <div style="color:#334155; margin-top:2px; line-height:1.45;">Akselerasi pra-tahfidz dengan evaluasi ujian triwulan dan matrikulasi menuju program Tahfidz 30 juz.</div>
+                </div>
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:9px 12px; border-radius:8px;">
+                  <strong style="color:#15803d; font-size:12px;">3. Program Tahfidz 30 Juz</strong>
+                  <div style="color:#334155; margin-top:2px; line-height:1.45;">Bimbingan intensif hafalan 30 Juz mutqin bil-ghaib per halaqah musyrif (rasio maksimal 8 santri per pembimbing).</div>
+                </div>
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:9px 12px; border-radius:8px;">
+                  <strong style="color:#15803d; font-size:12px;">4. Kelas Pasca Tahfidz (Tasmi' &amp; Sanad)</strong>
+                  <div style="color:#334155; margin-top:2px; line-height:1.45;">Tasmi' bil-ghaib sekali duduk 5-30 juz &amp; ijazah sanad qira'at muttashil bersambung hingga Rasulullah SAW.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fasilitas Pondok -->
+            <div>
+              <h4 style="font-size:13.5px; font-weight:800; color:#065f46; border-bottom:2px solid #bbf7d0; padding-bottom:5px; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                <span>🏢</span> Fasilitas Utama Santri
+              </h4>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:11px; color:#334155;">
+                <div style="background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">🕌 Masjid Jami' 2 Lantai</div>
+                <div style="background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">🛏️ Asrama Putra &amp; Putri Terpisah</div>
+                <div style="background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">🍲 Makan Bergizi 3x Sehari</div>
+                <div style="background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">📚 Perpustakaan &amp; Kitab Salaf</div>
+                <div style="background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">🩺 Poskestren 24 Jam</div>
+                <div style="background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">⚽ Sarana Olahraga &amp; Rihlah</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kolom Kanan: Rincian Biaya, Syarat & Alur -->
+          <div>
+            <!-- Rincian Biaya -->
+            <div style="margin-bottom:18px;">
+              <h4 style="font-size:13.5px; font-weight:800; color:#065f46; border-bottom:2px solid #bbf7d0; padding-bottom:5px; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                <span>💰</span> Rincian Investasi Pendidikan (Biaya)
+              </h4>
+              <div style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:10px; padding:12px; font-size:11.5px;">
+                <div id="brosurBiayaList">
+                  <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #cbd5e1;">
+                    <span>1. Infaq Formulir &amp; Tes Seleksi</span>
+                    <strong style="color:#059669;" class="bind-biaya-formulir">Rp 150.000</strong>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #cbd5e1;">
+                    <span>2. Infaq Sarana &amp; Asrama (Diangsur)</span>
+                    <strong style="color:#059669;" class="bind-biaya-gedung">Rp 2.500.000</strong>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #cbd5e1;">
+                    <span>3. Paket Seragam (3 Stel + Jas)</span>
+                    <strong style="color:#059669;" class="bind-biaya-seragam">Rp 650.000</strong>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed #cbd5e1;">
+                    <span>4. Mushaf Kudus &amp; Kitab Tajwid</span>
+                    <strong style="color:#059669;" class="bind-biaya-kitab">Rp 350.000</strong>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-weight:800; color:#065f46; font-size:12.5px; background:#ecfdf5; border-radius:6px; padding:7px 10px;">
+                    <span>5. Syahriah Bulanan (All-In):</span>
+                    <span class="bind-biaya-bulanan">Rp 750.000 / bln</span>
+                  </div>
+                </div>
+                <div style="font-size:10.5px; color:#15803d; margin-top:8px; line-height:1.4;">
+                  ✓ Sudah all-in: Asrama, makan 3x sehari, laundry, &amp; pembinaan 24 jam.
+                </div>
+                <div style="font-size:10.5px; color:#b45309; margin-top:3px; font-weight:700;">
+                  🌟 Beasiswa tersedia bagi santri yatim / berprestasi.
+                </div>
+                <div id="brosurRekeningList"></div>
+              </div>
+            </div>
+
+            <!-- Syarat & Ketentuan -->
+            <div style="margin-bottom:16px;">
+              <h4 style="font-size:13.5px; font-weight:800; color:#065f46; border-bottom:2px solid #bbf7d0; padding-bottom:5px; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                <span>📋</span> Syarat Pendaftaran
+              </h4>
+              <ul style="font-size:11px; color:#334155; margin:0 0 0 16px; padding:0; line-height:1.55;">
+                <li>Lulus SD/MI atau SMP/MTs (Usia 12 - 18 tahun).</li>
+                <li>Memiliki niat tulus &amp; kesiapan tinggal di asrama pondok.</li>
+                <li>Fotokopi KK, Akta Kelahiran &amp; Ijazah terakhir.</li>
+                <li>Mengikuti tes seleksi baca Al-Qur'an (penempatan binnadzor/tahfidz).</li>
+              </ul>
+            </div>
+
+            <!-- Kontak Sekretariat -->
+            <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:10px; padding:10px 12px; font-size:11px; color:#78350f;">
+              <strong>Sekretariat Panitia PSB:</strong>
+              <div style="margin-top:2px;">📞 WhatsApp: <strong class="bind-kontak-pondok">0812-3456-7890</strong></div>
+              <div>🌐 Formulir Online: <strong class="bind-nama-pondok">Pondok Pesantren Tahfidz</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Brosur Resmi -->
+        <div style="margin-top:20px; padding-top:10px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; font-size:10.5px; color:#94a3b8;">
+          <span>Dokumen Brosur Resmi Penerimaan Santri Baru (PSB)</span>
+          <span>Dicetak melalui Sistem Informasi SiTahfidz</span>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding:12px 20px; background:#f8fafc; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span style="font-size:12px; color:#64748b;">💡 <em>Brosur siap dicetak di kertas A4 atau disimpan dalam format PDF.</em></span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModalBrosurPSB()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. Modal Baca Artikel Detail -->
+  <div class="modal-overlay" id="modalArticle">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalArticleTitle">Judul Artikel</h3>
+        <button class="modal-close" onclick="closeModalArticle()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="modalArticleMeta" style="display:flex; align-items:center; gap:12px; font-size:12px; color:#64748b; margin-bottom:16px; flex-wrap:wrap;"></div>
+        <img id="modalArticleImg" src="" alt="Cover" style="width:100%; max-height:360px; object-fit:cover; border-radius:12px; margin-bottom:20px; display:none;">
+        <div id="modalArticleContent"></div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="closeModalArticle()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Modal Lightbox (Zoom Foto) -->
+  <div class="modal-overlay" id="modalLightbox" onclick="closeLightbox()">
+    <div style="max-width:850px; width:100%; background:#0f172a; border-radius:18px; overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
+      <div style="position:relative;">
+        <img id="lightboxImg" src="" alt="Full view" style="width:100%; max-height:75vh; object-fit:contain; background:#000; display:block;">
+        <button style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.6); color:#fff; border:none; border-radius:50%; width:36px; height:36px; font-size:20px; cursor:pointer;" onclick="closeLightbox()">&times;</button>
+      </div>
+      <div style="padding:20px 24px; color:#fff;">
+        <div id="lightboxMeta" style="font-size:12px; color:var(--gold-500); font-weight:600; margin-bottom:4px;"></div>
+        <h3 id="lightboxTitle" style="font-size:18px; font-weight:700; margin-bottom:6px;"></h3>
+        <p id="lightboxDesc" style="font-size:13px; color:#cbd5e1;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Modal Bukti Pendaftaran (PSB) -->
+  <div class="modal-overlay" id="modalBuktiPSB">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🎉 Pendaftaran Online Berhasil!</h3>
+        <button class="modal-close" onclick="closeModalBuktiPSB()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="font-size:42px;">✅</div>
+          <h3 style="font-size:18px; font-weight:800; color:#065f46;">Data Pendaftaran Diterima</h3>
+          <p style="font-size:12.5px; color:#64748b;">Simpan nomor registrasi Anda di bawah ini:</p>
+        </div>
+
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px; margin-bottom:18px;">
+          <div style="text-align:center; margin-bottom:10px;">
+            <div style="font-size:11px; text-transform:uppercase; color:#15803d; font-weight:700;">Nomor Registrasi PSB:</div>
+            <div id="buktiRegNo" style="font-size:22px; font-weight:800; color:#166534; letter-spacing:1px;">PSB-2025-XXXX</div>
+          </div>
+          <div style="font-size:13px; color:#1e293b; line-height:1.7;">
+            <div>Nama Calon: <strong id="buktiNama">-</strong></div>
+            <div>No. Kartu Keluarga: <span id="buktiNoKK" style="font-family:monospace; font-weight:700;">-</span></div>
+            <div>NIK Santri: <span id="buktiNIK" style="font-family:monospace; font-weight:700;">-</span></div>
+            <div>NISN: <span id="buktiNISN" style="font-family:monospace; font-weight:700;">-</span></div>
+            <div>Sekolah Tujuan: <strong id="buktiSekolah">-</strong></div>
+            <div>Status Daftar Sekolah: <span id="buktiStatusSekolah" style="font-weight:600;">-</span></div>
+            <div>Jenis Kelamin: <span id="buktiJK">-</span></div>
+            <div>Wali Santri: <span id="buktiWali">-</span></div>
+            <div>Tanggal Daftar: <span id="buktiTgl">-</span></div>
+          </div>
+        </div>
+
+        <!-- Info Rekening Transfer Infaq Pendaftaran -->
+        <div id="buktiPembayaranContainer" style="display:none; margin-bottom:14px;"></div>
+
+        <p style="font-size:12.5px; color:#475569; line-height:1.6; margin-bottom:16px;">
+          Silakan klik tombol di bawah untuk mengirim konfirmasi langsung ke WhatsApp Panitia PSB Pondok Pesantren agar dijadwalkan tes seleksi baca Al-Qur'an.
+        </p>
+
+        <button id="btnKonfirmasiWa" class="btn btn-whatsapp btn-lg" style="width:100%;">
+          <span>💬</span> Konfirmasi via WhatsApp Panitia
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="closeModalBuktiPSB()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Modal Rekap Data Pendaftar PSB (Khusus Panitia) -->
+  <div class="modal-overlay" id="modalDataPendaftar">
+    <div class="modal-box modal-lg" style="max-width:960px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📋 Rekap Data Pendaftar Santri Baru (PSB)</h3>
+        <button class="modal-close" onclick="closeModalDataPendaftar()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div>
+            <p style="font-size:13px; color:#64748b;">
+              Daftar seluruh calon santri yang telah mengisi formulir online di website:
+            </p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="eksporPendaftarExcel()">
+            📥 Ekspor ke Excel (.xlsx)
+          </button>
+        </div>
+
+        <div class="table-responsive" style="max-height:380px; overflow-y:auto; border:1px solid #e2e8f0; border-radius:10px;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>No. Registrasi</th>
+                <th>Nama Calon Santri</th>
+                <th>Sekolah Tujuan</th>
+                <th>Asal Sekolah</th>
+                <th>Orang Tua / Wali</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tablePendaftarBody">
+              <!-- Injected dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Google Sheets Webhook Sync Box -->
+        <div style="margin-top:20px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px;">
+          <h4 style="font-size:13.5px; font-weight:700; color:#166534; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+            <span>📊</span> Sambungkan Otomatis ke Google Sheets (Spreadsheet)
+          </h4>
+          <p style="font-size:12px; color:#334155; margin-bottom:10px;">
+            Jika Anda memasukkan link Google Apps Script Webhook dari spreadsheet Anda di sini, setiap ada santri yang klik daftar di website, datanya akan <strong>otomatis langsung menjadi baris baru di Google Spreadsheet Anda</strong>:
+          </p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <input type="url" id="inputGoogleSheetWebhook" class="form-control" style="flex:1; min-width:280px; font-size:12.5px; padding:8px 12px;" placeholder="https://script.google.com/macros/s/XXXXX/exec">
+            <button class="btn btn-secondary btn-sm" onclick="simpanGoogleSheetWebhook()">
+              💾 Simpan Link Spreadsheet
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="closeModalDataPendaftar()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6.8 MODAL DETAIL EKSTRAKURIKULER SANTRI ================= -->
+  <div class="modal-overlay" id="modalEkstrakurikuler" onclick="closeModalEkstrakurikuler(event)">
+    <div class="interactive-detail-modal-box" onclick="event.stopPropagation()" style="max-width:760px; width:92%; background:#ffffff; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px -15px rgba(0,0,0,0.4); display:flex; flex-direction:column; max-height:92vh;">
+      
+      <!-- Header Modal -->
+      <div id="modalEkstrakurikulerHeader" style="padding:18px 24px; color:#fff; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, #065f46 0%, #047857 100%);">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div id="modalEkstrakurikulerIcon" style="font-size:28px;">🎨</div>
+          <div>
+            <span id="modalEkstrakurikulerBadge" style="display:inline-block; font-size:11px; font-weight:800; background:rgba(255,255,255,0.22); color:#fff; padding:2px 8px; border-radius:999px; margin-bottom:4px; letter-spacing:0.5px;"></span>
+            <h3 id="modalEkstrakurikulerTitle" style="font-size:17px; font-weight:800; color:#fff; margin:0; line-height:1.2;">
+              Program Ekstrakurikuler
+            </h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalEkstrakurikuler()" style="background:none; border:none; color:#ffffff; font-size:26px; cursor:pointer; line-height:1; padding:2px 6px;" title="Tutup">&times;</button>
+      </div>
+
+      <!-- Body Modal (Scrollable) -->
+      <div id="modalEkstrakurikulerBody" style="padding:22px; overflow-y:auto; flex-grow:1; background:#f8fafc;">
+        <!-- Dynamic content injected by website.js -->
+      </div>
+
+      <!-- Footer Modal -->
+      <div style="padding:14px 22px; background:#f1f5f9; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span style="font-size:12px; color:#64748b;">Pengembangan Minat &amp; Bakat Santri Pondok</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeModalEkstrakurikuler()">Tutup</button>
+          <a id="btnModalEkstrakurikulerWa" href="https://wa.me/6281234567890" target="_blank" class="btn btn-primary btn-sm" style="background:#059669; border-color:#059669; font-weight:700;">
+            <span>💬</span> Tanya Info via WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 7. MODAL BROSUR SEKOLAH FORMAL ================= -->
+  <div class="modal-overlay" id="modalBrosurSekolah" onclick="closeModalBrosurSekolah(event)">
+    <div class="interactive-detail-modal-box" onclick="event.stopPropagation()" style="max-width:780px; width:92%; background:#ffffff; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px -15px rgba(0,0,0,0.4); display:flex; flex-direction:column; max-height:92vh;">
+      
+      <!-- Header Modal -->
+      <div id="modalBrosurSekolahHeader" style="padding:18px 24px; color:#fff; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, #065f46 0%, #047857 100%);">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div id="modalBrosurSekolahIcon" style="font-size:28px;">🏛️</div>
+          <div>
+            <span id="modalBrosurSekolahBadge" style="display:none;"></span>
+            <h3 id="modalBrosurSekolahTitle" style="font-size:17px; font-weight:800; color:#fff; margin:0; line-height:1.2;">
+              Brosur MTsN 4 Denanyar
+            </h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalBrosurSekolah()" style="background:none; border:none; color:#ffffff; font-size:26px; cursor:pointer; line-height:1; padding:2px 6px;" title="Tutup">&times;</button>
+      </div>
+
+      <!-- Body Modal (Scrollable) -->
+      <div id="modalBrosurSekolahBody" style="padding:22px; overflow-y:auto; flex-grow:1; background:#f8fafc;">
+        <!-- Dynamic content injected by website.js -->
+      </div>
+
+      <!-- Footer Modal -->
+      <div style="padding:14px 22px; background:#f1f5f9; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span style="font-size:12px; color:#64748b;">Pilihan Sekolah Formal Terpadu SiTahfidz</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeModalBrosurSekolah()">Tutup</button>
+          <a id="btnModalBrosurSekolahWa" href="https://wa.me/6281234567890" target="_blank" class="btn btn-primary btn-sm" style="background:#059669; border-color:#059669; font-weight:700;">
+            <span>💬</span> Konsultasi WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL FULLSCREEN ZOOM BROSUR ================= -->
+  <div class="modal-overlay" id="modalBrosurZoom" onclick="closeModalBrosurZoom()" style="display:none; z-index:999999; background:rgba(0,0,0,0.92); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;">
+    <div style="position:relative; max-width:95vw; max-height:95vh; display:flex; flex-direction:column; align-items:center;" onclick="event.stopPropagation()">
+      <div style="position:absolute; top:-40px; right:0; display:flex; gap:12px; align-items:center;">
+        <span id="zoomBrosurTitle" style="color:#fff; font-size:14px; font-weight:700;">Brosur</span>
+        <button type="button" onclick="closeModalBrosurZoom()" style="background:#ef4444; border:none; color:#fff; font-size:18px; font-weight:800; border-radius:50%; width:32px; height:32px; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+      </div>
+      <img id="zoomBrosurImg" src="" alt="Brosur Fullscreen" style="max-width:92vw; max-height:88vh; object-fit:contain; border-radius:8px; box-shadow:0 20px 50px rgba(0,0,0,0.8);">
+    </div>
+  </div>
+
+  <!-- ================= FLOATING WHATSAPP FAST CONTACT PILL (MOBILE & DESKTOP) ================= -->
+  <a href="https://wa.me/6281234567890?text=Assalamu%27alaikum%20Admin%20Pondok,%20saya%20ingin%20bertanya%20informasi%20Asrama%20Tahfidz%20Sunan%20Bonang" target="_blank" class="floating-wa-btn" id="floatingWaBtn" title="Hubungi WhatsApp Sekretariat">
+    <span class="floating-wa-icon">💬</span>
+    <span class="floating-wa-text">Chat WhatsApp</span>
+  </a>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SCRIPTS -->
+  <script src="xlsx.full.min.js"></script>
+  <script src="sample-data.js"></script>
+  <!-- Firebase SDK (Compat v10.12.0) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-sync.js"></script>
+  <script src="image-cropper.js"></script>
+  <script src="website.js"></script>
+</body>
+</html>

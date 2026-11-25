@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Panel Asatidz - Presensi & Hasil Setoran Santri</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --primary-ustadz: #047857;
+      --primary-light: #ecfdf5;
+      --primary-border: #a7f3d0;
+    }
+    body {
+      background-color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1e293b;
+    }
+    .ustadz-topbar {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      color: #ffffff;
+      padding: 14px 20px;
+      box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .ustadz-topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .ustadz-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ustadz-brand-logo {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      max-width: 48px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      line-height: 1;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .ustadz-brand-logo img,
+    .ustadz-brand-logo .pondok-logo-img {
+      width: 100%;
+      height: 100%;
+      max-width: 48px;
+      max-height: 48px;
+      object-fit: contain;
+      background: transparent;
+      display: block;
+    }
+    .ustadz-brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+    .ustadz-brand-sub {
+      font-size: 11.5px;
+      color: #a7f3d0;
+      margin: 2px 0 0 0;
+      font-weight: 500;
+    }
+    .ustadz-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ustadz-nav-tabs {
+      max-width: 1200px;
+      margin: 16px auto 0 auto;
+      padding: 0 16px;
+      display: flex;
+      gap: 10px;
+    }
+    .ustadz-nav-tab-btn {
+      flex: 1;
+      padding: 12px 18px;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px 12px 0 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .ustadz-nav-tab-btn:hover {
+      background: #f8fafc;
+      color: #047857;
+      border-color: #94a3b8;
+    }
+    .ustadz-nav-tab-btn.active {
+      background: #ffffff;
+      color: #047857;
+      border-color: #047857;
+      border-bottom: 2px solid #ffffff;
+      position: relative;
+      margin-bottom: -2px;
+      box-shadow: 0 -2px 8px rgba(4, 120, 87, 0.08);
+    }
+    .ustadz-container {
+      max-width: 1200px;
+      margin: 0 auto 40px auto;
+      padding: 0 16px;
+    }
+    .ustadz-panel-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 0 0 16px 16px;
+      padding: 22px 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    @media (max-width: 768px) {
+      .ustadz-topbar { padding: 12px 14px; }
+      .ustadz-brand-title { font-size: 15px; }
+      .ustadz-panel-box { padding: 16px 12px; }
+      .ustadz-nav-tab-btn { font-size: 12.5px; padding: 10px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= TOPBAR KHUSUS ASATIDZ ================= -->
+  <header class="ustadz-topbar">
+    <div class="ustadz-topbar-inner">
+      <div class="ustadz-brand">
+        <div class="ustadz-brand-logo" id="headerLogoWrap">🕌</div>
+        <div>
+          <h1 class="ustadz-brand-title" id="headerPondokName">Pondok Pesantren Tahfidz Al-Qur'an</h1>
+          <p class="ustadz-brand-sub">👳‍♂️ Panel Khusus Asatidz: Presensi & Hasil Setoran Harian Santri</p>
+        </div>
+      </div>
+      <div class="ustadz-top-actions">
+        <div class="header-badge" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:12px; padding:4px 10px; border-radius:999px;">
+          <span>📅</span> <span id="headerCurrentDate">Hari Ini</span>
+        </div>
+        <div class="header-badge" style="background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; display:inline-flex; align-items:center;">
+          <span class="live-pulse-dot"></span>
+          <span>Sesi:</span>&nbsp;<span id="headerActiveSession">Shubuh</span>
+        </div>
+        <span id="cloudSyncBadge" class="cloud-sync-badge-pill" style="display:inline-flex; align-items:center; gap:5px; font-size:11.5px; padding:4px 11px; border-radius:999px; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.35); color:#fff; cursor:pointer; font-weight:600;" onclick="paksaUnggahKeCloud()" title="Status Sinkronisasi Cloud">
+          <span class="pulse-dot"></span> <span id="syncText">Cloud Sync</span>
+        </span>
+        <a href="admin-tahfidz.html" class="btn btn-gold btn-sm" style="text-decoration:none; font-weight:700;" title="Buka Seluruh Menu Administrator Pondok">
+          <span>⚙️</span> Panel Admin
+        </a>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="lockUstadzPanel()" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff;" title="Kunci kembali panel ustadz">
+          🔒 Kunci / Keluar
+        </button>
+        <a href="index.html" class="btn btn-secondary btn-sm" style="background:#fff; color:#064e3b; text-decoration:none; font-weight:600;">
+          🏠 Web Pondok
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= UNIFIED WORKSPACE HEADER BANNER ================= -->
+  <div style="max-width:1200px; margin:16px auto 0 auto; padding:0 16px;">
+    <div style="background:#047857; color:#fff; border-radius:12px 12px 0 0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div style="font-size:14px; font-weight:800; display:flex; align-items:center; gap:8px;">
+        <span style="font-size:18px;">📋</span>
+        <span>Presensi & Hasil Setoran Harian Santri (Alur Terpadu)</span>
+      </div>
+      <div style="font-size:12px; color:#a7f3d0;">
+        Sekali duduk: Ustadz langsung mengabsen kehadiran dan mencatat capaian setoran santri binaan
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="ustadz-container">
+    <div class="ustadz-panel-box">
+
+      <!-- 1. BAR PILIH NAMA USTADZ PENGAMPU -->
+      <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:14px 18px; margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
+          <div style="font-size:13.5px; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:20px;">👳‍♂️</span>
+            <span>Pilih Nama Anda (Ustadz / Pembimbing):</span>
+          </div>
+          <div id="absensiActiveUstadzNotice" style="background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:12px; font-weight:700; padding:4px 12px; border-radius:999px;">
+            <!-- Dynamic Notice -->
+          </div>
+        </div>
+        <p style="font-size:12px; color:#64748b; margin:0 0 10px 0;">
+          Cukup klik nama Anda di bawah ini, otomatis hanya santri bimbingan Anda yang muncul untuk diabsen & dicatat setorannya:
+        </p>
+        <div id="absensiUstadzChips" style="display:flex; gap:8px; flex-wrap:wrap;">
+          <!-- Generated dynamically -->
+        </div>
+      </div>
+
+      <!-- 2. FILTER & AKSI PRESENSI / SETORAN -->
+      <div class="filter-bar" style="margin-bottom:16px;">
+        <div class="form-group" style="margin-bottom:0; min-width:160px;">
+          <label class="form-label" style="margin-bottom:3px;">Tanggal Setoran</label>
+          <input type="date" id="absensiTanggal" class="form-control" onchange="renderPresensiTable(); renderSetoranTable();">
+        </div>
+        <div class="form-group" style="margin-bottom:0; min-width:180px;">
+          <label class="form-label" style="margin-bottom:3px;">Sesi Waktu Halaqah</label>
+          <select id="absensiSesi" class="form-control" onchange="renderPresensiTable(); renderSetoranTable();">
+            <!-- Dynamic -->
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0; flex:1; min-width:210px;">
+          <label class="form-label" style="margin-bottom:3px; display:flex; justify-content:space-between; align-items:center;">
+            <span>Cari Nama Santri</span>
+            <span style="font-size:10.5px; color:#047857; font-weight:700;">🔄 Lintas Halaqah (Badal)</span>
+          </label>
+          <input type="text" id="absensiSearch" class="form-control" placeholder="Ketik nama santri sendiri atau santri titipan (badal)..." oninput="renderPresensiTable()">
+          <small style="font-size:10.5px; color:#64748b; margin-top:3px; display:block;">
+            💡 <em>Kosongkan kolom untuk santri sendiri, atau ketik nama untuk santri titipan dari halaqah lain.</em>
+          </small>
+        </div>
+        <div style="display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btnSetSemuaHadir" onclick="setSemuaAbsen('Hadir (Setor)')" style="height:38px;">
+            ✓ Set Semua Hadir
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="simpanPresensiHarian()" style="height:38px; font-weight:700;">
+            💾 Simpan Presensi
+          </button>
+          <button type="button" class="btn btn-gold btn-sm" onclick="openModalSetoran()" style="height:38px; font-weight:700;">
+            ➕ Catat Setoran Baru
+          </button>
+        </div>
+      </div>
+
+      <!-- Banner Status Hari Aktif / Libur -->
+      <div id="statusHariBanner" style="display:none; margin-bottom:14px;"></div>
+
+      <!-- 3. ATTENDANCE STATS COUNTER -->
+      <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; font-size:12.5px;">
+        <span class="badge badge-status-hadir-setor" id="countHadirSetor">Hadir & Setor: 0</span>
+        <span class="badge badge-status-hadir-nosetor" id="countHadirNoSetor">Hadir Belum Setor: 0</span>
+        <span class="badge badge-status-izin" id="countIzin">Izin: 0</span>
+        <span class="badge badge-status-sakit" id="countSakit">Sakit: 0</span>
+        <span class="badge badge-status-alpa" id="countAlpa">Alpa / Belum Absen: 0</span>
+      </div>
+
+      <!-- 4. UNIFIED ATTENDANCE & SETORAN TABLE -->
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:36px;">No</th>
+              <th>Santri & NIS</th>
+              <th>Program</th>
+              <th style="min-width:240px;">Status Kehadiran Sesi Ini</th>
+              <th style="min-width:230px;">Capaian Setoran Sesi Ini</th>
+              <th>Catatan / Keterangan</th>
+              <th style="text-align:center; min-width:115px;">Aksi Setoran</th>
+            </tr>
+          </thead>
+          <tbody id="tableAbsensiBody">
+            <!-- Dynamic -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 5. RIWAYAT LOG HASIL SETORAN SANTRI BINAAN -->
+      <div style="margin-top:36px; padding-top:24px; border-top:2px dashed #cbd5e1;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+          <div>
+            <h3 style="font-size:16px; font-weight:800; color:#0f172a; margin:0; display:flex; align-items:center; gap:8px;">
+              <span>📖</span> Riwayat Log Hasil Setoran Santri Bimbingan Anda
+            </h3>
+            <p style="font-size:12px; color:#64748b; margin:2px 0 0 0;">
+              Arsip log hasil setoran ziyadah, muraja'ah, bacaan binnadzor, dan tasmi' santri binaan Anda
+            </p>
+          </div>
+          <button type="button" class="btn btn-gold btn-sm" onclick="openModalSetoran()" style="font-weight:700;">
+            ➕ Catat Setoran Santri
+          </button>
+        </div>
+
+        <!-- Filter Log -->
+        <div class="filter-bar" style="margin-bottom:14px; display:flex; gap:10px; flex-wrap:wrap;">
+          <input type="text" id="setoranSearch" class="search-input" placeholder="Cari santri, surat, catatan..." oninput="renderSetoranTable()" style="min-width:180px; flex:1;">
+          
+          <select id="setoranFilterJenis" onchange="renderSetoranTable()">
+            <option value="">Semua Jenis Setoran</option>
+            <option value="Ziyadah">Ziyadah (Hafalan Baru)</option>
+            <option value="Muraja'ah">Muraja'ah (Penguatan)</option>
+            <option value="Bacaan Al-Qur'an (Bin-Nadzor)">Bacaan Binnadzor</option>
+            <option value="Hafalan Juz 28">Hafalan Juz 28</option>
+            <option value="Hafalan Juz 29">Hafalan Juz 29</option>
+            <option value="Hafalan Juz 30">Hafalan Juz 30</option>
+            <option value="Tasmi' Sekali Duduk">Tasmi' Bil-Ghaib</option>
+          </select>
+
+          <select id="setoranFilterNilai" onchange="renderSetoranTable()">
+            <option value="">Semua Nilai</option>
+            <option value="Mumtaz (A)">Mumtaz (A)</option>
+            <option value="Jayyid Jiddan (B+)">Jayyid Jiddan (B+)</option>
+            <option value="Jayyid (B)">Jayyid (B)</option>
+            <option value="Maqbul (C)">Maqbul (C)</option>
+            <option value="Perlu Ulang (D)">Perlu Ulang (D)</option>
+          </select>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tanggal & Sesi</th>
+                <th>Nama Santri</th>
+                <th>Program</th>
+                <th>Jenis Setoran</th>
+                <th>Surat & Ayat / Juz</th>
+                <th>Nilai</th>
+                <th>Catatan Evaluasi</th>
+                <th>Ustadz Penyimak</th>
+                <th style="text-align:right;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tableSetoranBody">
+              <!-- Dynamic -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ================= MODAL CATAT HASIL SETORAN ================= -->
+  <div id="modalSetoran" class="modal-overlay">
+    <div class="modal-box" style="max-width:560px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalSetoranTitle">📖 Catat Hasil Setoran Harian Santri</h3>
+        <button type="button" class="modal-close" onclick="closeModalSetoran()">&times;</button>
+      </div>
+      <form id="formSetoran" onsubmit="simpanSetoran(event)">
+        <div class="modal-body">
+          <input type="hidden" id="formSetoranId">
+
+          <div class="form-group">
+            <label class="form-label">Nama Santri <span style="color:var(--danger)">*</span></label>
+            <select id="formSetoranSantri" class="form-control" required>
+              <!-- Dynamic -->
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col form-group">
+              <label class="form-label">Tanggal Setoran</label>
+              <input type="date" id="formSetoranTanggal" class="form-control" required>
+            </div>
+            <div class="form-col form-group">
+              <label class="form-label">Sesi Waktu</label>
+              <select id="formSetoranSesi" class="form-control" required>
+                <!-- Dynamic -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Jenis Setoran</label>
+            <select id="formSetoranJenis" class="form-control" required>
+              <option value="Ziyadah">Ziyadah (Hafalan Baru)</option>
+              <option value="Muraja'ah">Muraja'ah (Penguatan Hafalan)</option>
+              <option value="Bacaan Al-Qur'an (Bin-Nadzor)">Bacaan Al-Qur'an (Bin-Nadzor)</option>
+              <option value="Hafalan Juz 30">Hafalan Juz 30 (Binnadzor)</option>
+              <option value="Hafalan Juz 29">Hafalan Juz 29 (Binnadzor)</option>
+              <option value="Hafalan Juz 28">Hafalan Juz 28 (Binnadzor)</option>
+              <option value="Tasmi' Sekali Duduk">Tasmi' Bil-Ghaib (Sekali Duduk)</option>
+              <option value="Ujian Tasmi' Binnadzor">Ujian Tasmi' Binnadzor</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col form-group" style="flex:2;">
+              <label class="form-label">Pilih Surat Al-Qur'an</label>
+              <select id="formSetoranSurat" class="form-control" onchange="onSuratChange()">
+                <!-- Dynamic -->
+              </select>
+            </div>
+            <div class="form-col form-group" style="flex:1;">
+              <label class="form-label">Juz</label>
+              <select id="formSetoranJuz" class="form-control">
+                <!-- Dynamic -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col form-group">
+              <label class="form-label">Ayat Awal</label>
+              <input type="number" id="formSetoranAyatAwal" class="form-control" min="1" value="1">
+            </div>
+            <div class="form-col form-group">
+              <label class="form-label">Ayat Akhir</label>
+              <input type="number" id="formSetoranAyatAkhir" class="form-control" min="1" value="10">
+            </div>
+            <div class="form-col form-group">
+              <label class="form-label">Halaman (Mushaf)</label>
+              <input type="number" id="formSetoranHalaman" class="form-control" min="1" max="604" value="1">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Kualitas Nilai Hafalan / Bacaan</label>
+            <select id="formSetoranNilai" class="form-control">
+              <option value="Mumtaz (A)">Mumtaz (A) - Sangat Lancar & Bertajwid</option>
+              <option value="Jayyid Jiddan (B+)">Jayyid Jiddan (B+) - Lancar Tajwid Bagus</option>
+              <option value="Jayyid (B)">Jayyid (B) - Cukup Lancar Ada Sedikit Lupa</option>
+              <option value="Maqbul (C)">Maqbul (C) - Terbata-bata / Banyak Koreksi</option>
+              <option value="Perlu Ulang (D)">Perlu Ulang (D) - Wajib Mengulang Sesi Depan</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Catatan Bimbingan / Tajwid / Fashahah</label>
+            <textarea id="formSetoranCatatan" class="form-control" rows="2" placeholder="Contoh: Perhatikan hukum mad jaiz dan ghunnah di ayat 5..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Ustadz Penyimak</label>
+            <input type="text" id="formSetoranPenyimak" class="form-control" placeholder="Nama Ustadz..." required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModalSetoran()">Batal</button>
+          <button type="submit" class="btn btn-gold" style="font-weight:700;">💾 Simpan Hasil Setoran</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= PIN LOCK OVERLAY (KHUSUS ASATIDZ) ================= -->
+  <div id="pinLockOverlay" class="modal-overlay" style="display:none; background:rgba(6, 78, 59, 0.96); z-index:99999;">
+    <div class="modal-box" style="max-width:380px; text-align:center; padding:32px 24px;">
+      <div style="font-size:44px; margin-bottom:12px;">🔐</div>
+      <h3 style="font-size:18px; font-weight:800; color:#0f172a; margin-bottom:6px;">Panel Khusus Asatidz</h3>
+      <p style="font-size:12.5px; color:#64748b; margin-bottom:20px; line-height:1.5;">
+        Halaman ini khusus untuk para <strong>Ustadz / Pembimbing Halaqah</strong> dalam mengisi Presensi dan Hasil Setoran Santri.
+        <br><br>
+        Masukkan PIN Asatidz:
+      </p>
+      <form onsubmit="handleVerifyUstadzPin(event)">
+        <input type="password" id="inputUstadzPin" class="form-control" style="font-size:24px; text-align:center; letter-spacing:6px; font-weight:bold; margin-bottom:14px;" maxlength="10" placeholder="••••••" required autofocus>
+        <button type="submit" class="btn btn-primary" style="width:100%; padding:10px; font-size:14px; margin-bottom:10px; font-weight:700;">
+          Buka Panel Ustadz 🔓
+        </button>
+        <a href="index.html" class="btn btn-secondary btn-sm" style="width:100%; text-decoration:none; display:inline-block; padding:8px 0;">
+          ← Kembali ke Website Utama
+        </a>
+      </form>
+      <div id="pinErrorMsg" style="display:none; color:#dc2626; font-size:12px; margin-top:12px; font-weight:600; line-height:1.4;">
+        ⚠️ PIN Asatidz salah!
+      </div>
+      <div style="font-size:11px; color:#94a3b8; margin-top:14px;">
+        Default PIN Asatidz: <code>888888</code> (Diberikan oleh Bagian Administrasi Pondok)
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- SCRIPTS -->
+  <script src="sample-data.js"></script>
+  <script src="quran-data.js"></script>
+  <!-- Firebase SDK (Compat v10.12.0) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-sync.js"></script>
+  <script src="ustadz.js"></script>
+</body>
+</html>

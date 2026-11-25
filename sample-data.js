@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS = {
   heroBannerPhoto: "",
   kepalaTahfidz: "Ust. Muhammad Ridwan, S.Pd.I., Al-Hafidz",
   noKontakPondok: "0812-3456-7890",
+  noKontakPutri: "0813-9876-5432",
   tahunAjaran: "2025/2026",
   logoPondok: "", // Base64 atau kosong (default kaligrafi / icon masjid)
   medsos: {

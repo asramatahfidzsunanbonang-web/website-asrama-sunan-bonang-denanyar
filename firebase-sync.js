@@ -181,10 +181,11 @@ function applyCloudDataToLocal(cloudData) {
       }
 
       // 4. Update Website Publik (index.html) jika sedang terbuka
-      if (typeof WebState !== 'undefined' && typeof renderDynamicWebContent === 'function') {
+      if (typeof WebState !== 'undefined') {
         if (typeof initStorage === 'function') initStorage();
         if (typeof initPondokIdentity === 'function') initPondokIdentity();
-        renderDynamicWebContent();
+        if (typeof renderDynamicWebContent === 'function') renderDynamicWebContent();
+        if (typeof renderWebsitePembayaran === 'function') renderWebsitePembayaran();
         if (typeof renderArticles === 'function') renderArticles();
       }
     }

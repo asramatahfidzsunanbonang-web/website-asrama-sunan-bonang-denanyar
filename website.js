@@ -698,9 +698,17 @@ function initPondokIdentity() {
     btn.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Assalamu'alaikum Admin Panitia PSB Putra ${namaPondok}, saya ingin bertanya dan konsultasi mengenai pendaftaran santri baru...`)}`;
   });
 
+  // Bind WhatsApp PSB Putri (Ustadzah / Konsultasi Wali)
+  const putriPhone = WebState.settings.noKontakPutri || WebState.settings.noKontakPondok || "0813-9876-5432";
+  const rawPutri = putriPhone.replace(/\D/g, '');
+  const cleanPutriPhone = rawPutri.startsWith('0') ? '62' + rawPutri.slice(1) : (rawPutri.startsWith('62') ? rawPutri : cleanPhone);
+
+  const kontakPutriElements = document.querySelectorAll('.bind-kontak-putri');
+  kontakPutriElements.forEach(el => el.textContent = putriPhone);
+
   const waPsbPutri = document.querySelectorAll('.bind-wa-psb-putri');
   waPsbPutri.forEach(btn => {
-    btn.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Assalamu'alaikum Ustdzh Panitia PSB Putri ${namaPondok}, saya ingin bertanya dan konsultasi mengenai pendaftaran santriwati baru...`)}`;
+    btn.href = `https://wa.me/${cleanPutriPhone}?text=${encodeURIComponent(`Assalamu'alaikum Ustadzah Panitia PSB Putri ${namaPondok}, saya ingin bertanya dan konsultasi mengenai pendaftaran santriwati baru...`)}`;
   });
 
   const waPsbHelp = document.querySelectorAll('.bind-wa-psb-help');
@@ -1524,6 +1532,8 @@ function closeModalEkstrakurikuler(event) {
 
 function renderDynamicWebContent() {
   renderDynamicFacilities();
+  // Selalu muat rincian komponen biaya & rekening bank dinamis
+  renderWebsitePembayaran();
 
   const raw = localStorage.getItem(STORAGE_KEYS.CONTENT);
   if (!raw) return;

@@ -2177,9 +2177,22 @@
 
                 <div class="form-row">
                   <div class="form-col form-group">
-                    <label class="form-label">No. Telepon / WhatsApp Sekretariat &amp; CP Pendaftaran (PSB)</label>
+                    <label class="form-label" style="font-weight:700; color:#065f46;">
+                      👳 No. WhatsApp CP Pendaftaran Putra &amp; Sekretariat Umum
+                    </label>
                     <input type="text" id="settingKontak" class="form-control" placeholder="Contoh: 0812-3456-7890">
-                    <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">ℹ️ Nomor ini menjadi pusat Contact Person (CP) pendaftaran online, tombol floating WA, dan konfirmasi bukti pendaftaran.</small>
+                    <small style="display:block; font-size:11px; color:#64748b; margin-top:4px;">
+                      ℹ️ Nomor WhatsApp panitia PSB Putra, tombol floating WA beranda, dan konfirmasi bukti pendaftaran.
+                    </small>
+                  </div>
+                  <div class="form-col form-group">
+                    <label class="form-label" style="font-weight:700; color:#be185d;">
+                      🧕 No. WhatsApp CP Pendaftaran Putri (Ustadzah / Konsultasi Wali)
+                    </label>
+                    <input type="text" id="settingKontakPutri" class="form-control" placeholder="Contoh: 0813-9876-5432">
+                    <small style="display:block; font-size:11px; color:#be185d; margin-top:4px;">
+                      ℹ️ Nomor WhatsApp khusus panitia PSB Putri &amp; konsultasi wali santriwati di bagian pendaftaran PSB.
+                    </small>
                   </div>
                 </div>
 
@@ -2679,6 +2692,9 @@
                     <button type="button" class="btn btn-gold btn-sm" onclick="tambahBiayaAdmin()" style="font-weight:700;">
                       ➕ Tambah Komponen Biaya
                     </button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="simpanBiayaDanRekeningLangsung()" style="font-weight:800; background:#059669; border-color:#047857;">
+                      💾 Simpan Biaya &amp; Rekening
+                    </button>
                   </div>
                 </div>
 
@@ -2693,9 +2709,12 @@
                   <!-- Dynamic populated by renderAdminBiayaList() -->
                 </div>
 
-                <div style="text-align:left; margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:24px;">
                   <button type="button" class="btn btn-gold btn-sm" onclick="tambahBiayaAdmin()" style="font-weight:700;">
                     ➕ Tambah Komponen Biaya Baru
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="simpanBiayaDanRekeningLangsung()" style="font-weight:800; background:#059669; border-color:#047857; padding:7px 18px;">
+                    💾 Simpan Rincian Biaya ke Website &amp; Cloud ↗
                   </button>
                 </div>
 
@@ -2718,6 +2737,9 @@
                     <button type="button" class="btn btn-primary btn-sm" onclick="tambahRekeningAdmin()" style="font-weight:700;">
                       ➕ Tambah Rekening Bank
                     </button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="simpanBiayaDanRekeningLangsung()" style="font-weight:800; background:#059669; border-color:#047857;">
+                      💾 Simpan Rekening Bank
+                    </button>
                   </div>
                 </div>
 
@@ -2726,9 +2748,12 @@
                   <!-- Dynamic populated by renderAdminRekeningList() -->
                 </div>
 
-                <div style="text-align:left; margin-bottom:18px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:18px;">
                   <button type="button" class="btn btn-primary btn-sm" onclick="tambahRekeningAdmin()" style="font-weight:700;">
                     ➕ Tambah Rekening Bank / Metode Pembayaran
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="simpanBiayaDanRekeningLangsung()" style="font-weight:800; background:#059669; border-color:#047857; padding:7px 18px;">
+                    💾 Simpan Rekening &amp; Rincian Biaya ke Website ↗
                   </button>
                 </div>
 

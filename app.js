@@ -7748,6 +7748,8 @@ function renderPengaturanTab() {
   document.getElementById('settingKepalaTahfidz').value = AppState.settings.kepalaTahfidz || '';
   document.getElementById('settingTahunAjaran').value = AppState.settings.tahunAjaran || '';
   document.getElementById('settingKontak').value = AppState.settings.noKontakPondok || '';
+  const elPutri = document.getElementById('settingKontakPutri');
+  if (elPutri) elPutri.value = AppState.settings.noKontakPutri || '';
 
   const elKelas = document.getElementById('settingKelasBinnadzorList');
   if (elKelas) {
@@ -8325,6 +8327,8 @@ function simpanPengaturan() {
   AppState.settings.kepalaTahfidz = document.getElementById('settingKepalaTahfidz').value.trim();
   AppState.settings.tahunAjaran = document.getElementById('settingTahunAjaran').value.trim();
   AppState.settings.noKontakPondok = document.getElementById('settingKontak').value.trim();
+  const elKontakPutri = document.getElementById('settingKontakPutri');
+  if (elKontakPutri) AppState.settings.noKontakPutri = elKontakPutri.value.trim();
 
   // Kelas Binnadzor & Halaqah Tahfidz
   const elKelas = document.getElementById('settingKelasBinnadzorList');
@@ -8996,21 +9000,21 @@ function renderAdminBiayaList() {
     <div class="biaya-row-card" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px 14px; box-shadow:0 1px 3px rgba(0,0,0,0.04); display:grid; grid-template-columns: 1fr 180px 1fr auto; gap:10px; align-items:center;">
       <div>
         <label style="font-size:11px; font-weight:700; color:#334155; margin-bottom:3px; display:block;">Nama Komponen Biaya #${idx + 1}</label>
-        <input type="text" id="adminBiayaNama_${idx}" class="form-control" style="font-size:12.5px; font-weight:700;" value="${escapeHtml(item.nama || '')}" placeholder="Contoh: Infaq Formulir & Seleksi">
+        <input type="text" id="adminBiayaNama_${idx}" class="form-control" style="font-size:12.5px; font-weight:700;" value="${escapeHtml(item.nama || '')}" placeholder="Contoh: Infaq Formulir & Seleksi" oninput="syncBiayaInputsToArray()">
       </div>
       <div>
         <label style="font-size:11px; font-weight:700; color:#334155; margin-bottom:3px; display:block;">Nominal (Rp)</label>
-        <input type="text" id="adminBiayaNominal_${idx}" class="form-control" style="font-size:12.5px; font-weight:800; color:#047857;" value="${escapeHtml(item.nominal || '')}" placeholder="Contoh: Rp 150.000">
+        <input type="text" id="adminBiayaNominal_${idx}" class="form-control" style="font-size:12.5px; font-weight:800; color:#047857;" value="${escapeHtml(item.nominal || '')}" placeholder="Contoh: Rp 150.000" oninput="syncBiayaInputsToArray()">
       </div>
       <div>
         <label style="font-size:11px; font-weight:700; color:#334155; margin-bottom:3px; display:flex; justify-content:space-between;">
           <span>Keterangan Singkat</span>
           <label style="font-size:10.5px; color:#15803d; cursor:pointer; display:inline-flex; align-items:center; gap:3px;">
-            <input type="checkbox" id="adminBiayaIsBulanan_${idx}" ${item.isBulanan ? 'checked' : ''} style="cursor:pointer;">
+            <input type="checkbox" id="adminBiayaIsBulanan_${idx}" ${item.isBulanan ? 'checked' : ''} style="cursor:pointer;" onchange="syncBiayaInputsToArray()">
             <span>Iuran Bulanan</span>
           </label>
         </label>
-        <input type="text" id="adminBiayaKet_${idx}" class="form-control" style="font-size:12px;" value="${escapeHtml(item.keterangan || '')}" placeholder="Contoh: Dibayar 1 kali saat tes">
+        <input type="text" id="adminBiayaKet_${idx}" class="form-control" style="font-size:12px;" value="${escapeHtml(item.keterangan || '')}" placeholder="Contoh: Dibayar 1 kali saat tes" oninput="syncBiayaInputsToArray()">
       </div>
       <div style="padding-top:16px;">
         <button type="button" class="btn btn-secondary btn-sm" onclick="hapusBiayaItem(${idx})" style="color:#dc2626; border-color:#fca5a5; background:#fff; padding:6px 10px;" title="Hapus komponen biaya ini">
@@ -9077,12 +9081,36 @@ function syncBiayaInputsToArray() {
     const ketEl = document.getElementById(`adminBiayaKet_${i}`);
     const bulananEl = document.getElementById(`adminBiayaIsBulanan_${i}`);
 
-    if (namaEl) list[i].nama = namaEl.value.trim() || list[i].nama;
-    if (nomEl) list[i].nominal = nomEl.value.trim() || list[i].nominal;
+    if (namaEl) list[i].nama = namaEl.value.trim();
+    if (nomEl) list[i].nominal = nomEl.value.trim();
     if (ketEl) list[i].keterangan = ketEl.value.trim();
     if (bulananEl) list[i].isBulanan = bulananEl.checked;
   }
   saveStoredBiayaAdmin(list);
+}
+
+function simpanBiayaDanRekeningLangsung() {
+  syncBiayaInputsToArray();
+  syncRekeningInputsToArray();
+
+  const biayaList = getStoredBiayaAdmin();
+  const rekeningList = getStoredRekeningAdmin();
+  const content = getStoredWebContent();
+
+  content.biayaList = biayaList;
+  content.rekeningList = rekeningList;
+  if (biayaList[0]) content.biayaFormulir = biayaList[0].nominal;
+  if (biayaList[1]) content.biayaGedung = biayaList[1].nominal;
+  if (biayaList[2]) content.biayaSeragam = biayaList[2].nominal;
+  if (biayaList[3]) content.biayaKitab = biayaList[3].nominal;
+  if (biayaList[4]) content.biayaBulanan = biayaList[4].nominal;
+
+  localStorage.setItem('sitahfidz_web_biaya', JSON.stringify(biayaList));
+  localStorage.setItem('sitahfidz_web_rekening', JSON.stringify(rekeningList));
+  localStorage.setItem('sitahfidz_website_content', JSON.stringify(content));
+
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  showToast("✓ Seluruh rincian biaya & rekening berhasil disimpan & disinkronkan ke Cloud!", "success");
 }
 
 function getStoredRekeningAdmin() {
@@ -9140,19 +9168,19 @@ function renderAdminRekeningList() {
     <div class="rekening-row-card" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:14px; box-shadow:0 1px 3px rgba(0,0,0,0.04); display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap:10px; align-items:center;">
       <div>
         <label style="font-size:11px; font-weight:700; color:#334155; margin-bottom:3px; display:block;">Nama Bank / E-Wallet</label>
-        <input type="text" id="adminRekBank_${idx}" class="form-control" style="font-size:12.5px; font-weight:700;" value="${escapeHtml(item.bank || '')}" placeholder="Contoh: Bank Syariah Indonesia (BSI)">
+        <input type="text" id="adminRekBank_${idx}" class="form-control" style="font-size:12.5px; font-weight:700;" value="${escapeHtml(item.bank || '')}" placeholder="Contoh: Bank Syariah Indonesia (BSI)" oninput="syncRekeningInputsToArray()">
       </div>
       <div>
         <label style="font-size:11px; font-weight:700; color:#334155; margin-bottom:3px; display:block;">Nomor Rekening / VA</label>
-        <input type="text" id="adminRekNomor_${idx}" class="form-control" style="font-size:13px; font-weight:800; font-family:monospace; color:#047857;" value="${escapeHtml(item.nomor || '')}" placeholder="Contoh: 7123456789">
+        <input type="text" id="adminRekNomor_${idx}" class="form-control" style="font-size:13px; font-weight:800; font-family:monospace; color:#047857;" value="${escapeHtml(item.nomor || '')}" placeholder="Contoh: 7123456789" oninput="syncRekeningInputsToArray()">
       </div>
       <div>
         <label style="font-size:11px; font-weight:700; color:#334155; margin-bottom:3px; display:block;">Atas Nama (A/N)</label>
-        <input type="text" id="adminRekAtasNama_${idx}" class="form-control" style="font-size:12px;" value="${escapeHtml(item.atasNama || '')}" placeholder="Contoh: PP Tahfidz Al-Barokah">
+        <input type="text" id="adminRekAtasNama_${idx}" class="form-control" style="font-size:12px;" value="${escapeHtml(item.atasNama || '')}" placeholder="Contoh: PP Tahfidz Al-Barokah" oninput="syncRekeningInputsToArray()">
       </div>
       <div>
         <label style="font-size:11px; font-weight:700; color:#334155; margin-bottom:3px; display:block;">Peruntukan / Catatan</label>
-        <input type="text" id="adminRekCatatan_${idx}" class="form-control" style="font-size:12px;" value="${escapeHtml(item.catatan || '')}" placeholder="Contoh: Biaya Pendaftaran & Infaq">
+        <input type="text" id="adminRekCatatan_${idx}" class="form-control" style="font-size:12px;" value="${escapeHtml(item.catatan || '')}" placeholder="Contoh: Biaya Pendaftaran & Infaq" oninput="syncRekeningInputsToArray()">
       </div>
       <div style="padding-top:16px;">
         <button type="button" class="btn btn-secondary btn-sm" onclick="hapusRekeningItem(${idx})" style="color:#dc2626; border-color:#fca5a5; background:#fff; padding:6px 10px;" title="Hapus rekening ini">
@@ -9217,7 +9245,7 @@ function syncRekeningInputsToArray() {
     const anEl = document.getElementById(`adminRekAtasNama_${i}`);
     const catEl = document.getElementById(`adminRekCatatan_${i}`);
 
-    if (bankEl) list[i].bank = bankEl.value.trim() || list[i].bank;
+    if (bankEl) list[i].bank = bankEl.value.trim();
     if (noEl) list[i].nomor = noEl.value.trim();
     if (anEl) list[i].atasNama = anEl.value.trim();
     if (catEl) list[i].catatan = catEl.value.trim();

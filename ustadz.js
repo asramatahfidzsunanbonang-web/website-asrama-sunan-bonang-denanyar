@@ -336,8 +336,8 @@ function renderAbsensiUstadzChips() {
     </button>
   `;
 
-  // Render chips for active ustadz (count > 0 or currently selected)
-  const activeChips = list.filter(item => item.count > 0 || item.name === current);
+  // Tampilkan seluruh chip: halaqah yang memiliki santri + seluruh halaqah resmi dari Pengaturan
+  const activeChips = list;
   activeChips.forEach(item => {
     const isActive = item.name === current;
     const isPutri = item.name.toLowerCase().includes('putri') || item.name.toLowerCase().includes('ustdzh');

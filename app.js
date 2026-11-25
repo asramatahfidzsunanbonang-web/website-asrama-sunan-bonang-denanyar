@@ -703,7 +703,8 @@ function renderAbsensiUstadzChips() {
     </button>
   `;
 
-  const activeChipsList = list.filter(item => item.count > 0 || item.name === current);
+  // Tampilkan seluruh chip: halaqah yang memiliki santri + seluruh halaqah resmi dari Pengaturan
+  const activeChipsList = list;
   activeChipsList.forEach(item => {
     const isActive = item.name === current;
     const isPutri = item.name.toLowerCase().includes('putri') || item.name.toLowerCase().includes('ustdzh');
@@ -1640,7 +1641,8 @@ function renderSetoranUstadzChips() {
     </button>
   `;
 
-  const activeChipsList = list.filter(item => item.count > 0 || item.name === current);
+  // Tampilkan seluruh chip: halaqah yang memiliki santri + seluruh halaqah resmi dari Pengaturan
+  const activeChipsList = list;
   activeChipsList.forEach(item => {
     const isActive = item.name === current;
     const isPutri = item.name.toLowerCase().includes('putri') || item.name.toLowerCase().includes('ustdzh');

@@ -886,13 +886,13 @@ body::before {
   mix-blend-mode: screen !important;
 }
 
-/* Toolbar Geser & Kendali Posisi Foto (KHUSUS ADMIN - Default Tersembunyi untuk Umum) */
+/* Toolbar Geser & Kendali Posisi Foto (KHUSUS ADMIN - Default Tersembunyi, Hanya Muncul Saat Foto Diklik) */
 .hero-photo-controls {
   position: absolute;
   bottom: -46px;
   left: 50%;
   transform: translateX(-50%);
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 4px;
   background: rgba(15, 23, 42, 0.94);
@@ -903,7 +903,7 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   white-space: nowrap;
-  opacity: 0.96;
+  opacity: 0.98;
   transition: opacity 0.2s ease;
   z-index: 40;
 }

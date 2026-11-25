@@ -238,8 +238,8 @@
       <div class="hero-floating-photo" id="webHeroFloatingPhoto">
         <img id="webHeroFloatingImg" src="foto-masyayikh.png" alt="Foto Masyayikh Pondok" draggable="false">
         
-        <!-- Toolbar Geser & Atur Posisi Foto (KHUSUS SUPER ADMIN - Tersembunyi untuk Publik, Wali Santri & Asatidz) -->
-        <div class="hero-photo-controls" id="heroPhotoControls">
+        <!-- Toolbar Geser & Atur Posisi Foto (KHUSUS SUPER ADMIN - Hanya Muncul Saat Foto Diklik Admin) -->
+        <div class="hero-photo-controls" id="heroPhotoControls" style="display:none;">
           <span class="hpc-drag-handle" id="hpcDragHandleText">✋ Tahan &amp; Geser</span>
           <button type="button" class="hpc-btn hpc-lock" id="btnTogglePhotoLock" onclick="toggleHeroPhotoLock()" title="Kunci posisi foto agar tidak bergeser lagi">🔒 Kunci Posisi</button>
           <button type="button" class="hpc-btn hpc-accent" onclick="setHeroPhotoPreset('top-right')" title="Posisikan ke Kanan Atas">↗ Kanan Atas</button>
@@ -253,6 +253,7 @@
           <button type="button" class="hpc-btn" onclick="toggleHeroPhotoBlend()" title="Beralih Efek Transparan / Bingkai Solid" id="btnToggleBlend">✨ Efek</button>
           <button type="button" class="hpc-btn" onclick="document.getElementById('floatingPhotoUploadInput').click()" title="Ganti Foto">📷 Ganti Foto</button>
           <button type="button" class="hpc-btn hpc-reset" onclick="resetHeroPhotoPosition()" title="Kembalikan Posisi Semula">↺ Reset</button>
+          <button type="button" class="hpc-btn hpc-close" onclick="toggleHeroPhotoControls(false, event)" title="Tutup Menu Toolbar (Sembunyikan)" style="background:rgba(239,68,68,0.25); border-color:rgba(239,68,68,0.45); color:#fca5a5; margin-left:3px; font-weight:700;">✕ Tutup</button>
         </div>
         <input type="file" id="floatingPhotoUploadInput" accept="image/*" style="display:none;" onchange="uploadFloatingPhotoDirect(event)">
       </div>

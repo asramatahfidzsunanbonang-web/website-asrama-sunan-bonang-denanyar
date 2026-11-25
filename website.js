@@ -3494,11 +3494,11 @@ function checkAdminQuickControls() {
       btn.style.display = isSuperAdmin ? 'inline-flex' : 'none';
     }
 
-    // Tombol toolbar kontrol foto HANYA BISA DILIHAT OLEH ADMIN (Wali Santri & Asatidz tidak bisa lihat)
+    // Tombol toolbar kontrol foto tersembunyi secara default; hanya muncul saat foto diklik oleh Admin
     const photoControls = document.getElementById('heroPhotoControls');
     const photoWrap = document.getElementById('webHeroFloatingPhoto');
-    if (photoControls) {
-      photoControls.style.display = isSuperAdmin ? 'inline-flex' : 'none';
+    if (photoControls && !isSuperAdmin) {
+      photoControls.style.display = 'none';
     }
     if (photoWrap) {
       if (isSuperAdmin && !isHeroPhotoLocked) {
@@ -3519,12 +3519,20 @@ function checkAdminQuickControls() {
 // ================= FOTO 2 FLOATING / MOVEABLE HERO PHOTO =================
 const DEFAULT_HERO_PHOTO2_POS = { x: 82, y: 24, size: 420 };
 let heroPhoto2Pos = { ...DEFAULT_HERO_PHOTO2_POS };
-let isHeroPhotoLocked = false;
 
-// Pastikan kunci terbuka (unlocked) agar foto Mbah Yai langsung bebas digeser oleh Admin
+// Default: TERKUNCI (true) agar foto tidak bergeser tanpa sengaja.
+// Disimpan di localStorage sehingga kalau dikunci ya dikunci terus sampai admin membukanya kembali.
+let isHeroPhotoLocked = true;
 try {
-  localStorage.setItem('sitahfidz_hero_photo_locked', 'false');
-} catch (e) {}
+  const savedLock = localStorage.getItem('sitahfidz_hero_photo_locked');
+  if (savedLock !== null) {
+    isHeroPhotoLocked = (savedLock === 'true');
+  } else {
+    localStorage.setItem('sitahfidz_hero_photo_locked', 'true');
+  }
+} catch (e) {
+  isHeroPhotoLocked = true;
+}
 
 try {
   const savedHeroPhotoPos = localStorage.getItem('sitahfidz_hero_photo2_pos');
@@ -3563,7 +3571,8 @@ function updateHeroPhotoLockUI() {
     }
     if (photo) {
       photo.classList.remove('admin-draggable');
-      photo.style.cursor = 'default';
+      photo.style.cursor = isUserSuperAdmin() ? 'pointer' : 'default';
+      photo.title = isUserSuperAdmin() ? 'Klik foto untuk membuka menu pengaturan posisi' : 'Foto Masyayikh Pondok';
     }
   } else {
     if (btnLock) {
@@ -3580,9 +3589,16 @@ function updateHeroPhotoLockUI() {
       handleTxt.innerHTML = '✋ Tahan &amp; Geser';
       handleTxt.style.color = '#fde047';
     }
-    if (photo && isUserSuperAdmin()) {
-      photo.classList.add('admin-draggable');
-      photo.style.cursor = 'grab';
+    if (photo) {
+      if (isUserSuperAdmin()) {
+        photo.classList.add('admin-draggable');
+        photo.style.cursor = 'grab';
+        photo.title = 'Tahan & geser foto ke posisi mana saja, atau klik untuk buka menu pengaturan';
+      } else {
+        photo.classList.remove('admin-draggable');
+        photo.style.cursor = 'default';
+        photo.title = 'Foto Masyayikh Pondok';
+      }
     }
   }
 }
@@ -3596,10 +3612,26 @@ function toggleHeroPhotoLock(forceState = null) {
   updateHeroPhotoLockUI();
   if (typeof showToast === 'function') {
     if (isHeroPhotoLocked) {
-      showToast("🔒 Letak foto BERHASIL DIKUNCI! Posisi tersimpan aman (Klik 'Buka Kunci' jika ingin geser lagi).", "success");
+      showToast("🔒 Posisi foto berhasil DIKUNCI! Foto akan terkunci aman sampai Anda melepas kuncinya lagi.", "success");
     } else {
       showToast("🔓 Kunci letak foto DIBUKA! Anda sekarang dapat menggeser foto bebas ke mana saja.", "info");
     }
+  }
+}
+
+function toggleHeroPhotoControls(forceState = null, event = null) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  if (!isUserSuperAdmin()) return;
+  const controls = document.getElementById('heroPhotoControls');
+  if (!controls) return;
+  const isCurrentlyVisible = controls.style.display !== 'none' && controls.style.display !== '';
+  const shouldShow = (forceState !== null) ? forceState : !isCurrentlyVisible;
+  controls.style.display = shouldShow ? 'inline-flex' : 'none';
+  if (shouldShow) {
+    updateHeroPhotoLockUI();
   }
 }
 
@@ -3798,38 +3830,45 @@ function initHeroFloatingPhoto() {
   updateHeroPhotoLockUI();
 
   let isDragging = false;
+  let hasMoved = false;
   let startX = 0;
   let startY = 0;
   let startPosX = heroPhoto2Pos.x;
   let startPosY = heroPhoto2Pos.y;
 
   function onPointerDown(e) {
-    // Sembunyikan kontrol geser untuk Wali Santri & Asatidz
     if (!isUserSuperAdmin()) return;
 
-    // Abaikan jika klik tombol kontrol atau input
-    if (e.target.closest('button') || e.target.closest('input') || e.target.closest('a')) return;
+    // Abaikan jika klik tombol kontrol atau input di dalam toolbar
+    if (e.target.closest('#heroPhotoControls') || e.target.closest('button') || e.target.closest('input') || e.target.closest('a')) return;
 
-    // Jika letak foto sedang dikunci, beri tahu pengguna cara membuka kuncinya
-    if (isHeroPhotoLocked) {
-      if (typeof showToast === 'function') {
-        showToast("🔒 Letak foto sedang dikunci. Klik tombol '🔓 Buka Kunci' di bawah foto (atau klik 2x foto) untuk menggeser.", "warning");
-      }
-      return;
-    }
-
-    isDragging = true;
-    photo.classList.add('is-moving');
-
+    hasMoved = false;
     const pt = e.touches ? e.touches[0] : e;
     startX = pt.clientX;
     startY = pt.clientY;
     startPosX = heroPhoto2Pos.x;
     startPosY = heroPhoto2Pos.y;
+
+    // Jika posisi sedang terkunci, jangan aktifkan dragging
+    if (isHeroPhotoLocked) {
+      isDragging = false;
+      return;
+    }
+
+    isDragging = true;
+    photo.classList.add('is-moving');
   }
 
   function onPointerMove(e) {
-    if (!isDragging) return;
+    const pt = e.touches ? e.touches[0] : e;
+    const dx = pt.clientX - startX;
+    const dy = pt.clientY - startY;
+
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+      hasMoved = true;
+    }
+
+    if (!isDragging || isHeroPhotoLocked) return;
 
     const wrapRect = wrap.getBoundingClientRect();
     if (wrapRect.width <= 0 || wrapRect.height <= 0) return;
@@ -3837,10 +3876,6 @@ function initHeroFloatingPhoto() {
     if (e.cancelable && e.type.startsWith('touch')) {
       e.preventDefault();
     }
-
-    const pt = e.touches ? e.touches[0] : e;
-    const dx = pt.clientX - startX;
-    const dy = pt.clientY - startY;
 
     const dxPct = (dx / wrapRect.width) * 100;
     const dyPct = (dy / wrapRect.height) * 100;
@@ -3858,10 +3893,11 @@ function initHeroFloatingPhoto() {
   }
 
   function onPointerUp(e) {
-    if (!isDragging) return;
-    isDragging = false;
-    photo.classList.remove('is-moving');
-    saveHeroPhotoPosition();
+    if (isDragging) {
+      isDragging = false;
+      photo.classList.remove('is-moving');
+      saveHeroPhotoPosition();
+    }
   }
 
   // Mouse events
@@ -3875,10 +3911,21 @@ function initHeroFloatingPhoto() {
   window.addEventListener('touchend', onPointerUp);
   window.addEventListener('touchcancel', onPointerUp);
 
-  // Klik 2x pada foto untuk membuka / mengunci posisi secara cepat
-  photo.addEventListener('dblclick', (e) => {
-    if (e.target.closest('button') || e.target.closest('input')) return;
-    toggleHeroPhotoLock();
+  // Klik foto: Munculkan / sembunyikan toolbar controls hanya saat foto diklik oleh Admin (dan bukan drag)
+  photo.addEventListener('click', (e) => {
+    if (e.target.closest('#heroPhotoControls') || e.target.closest('button') || e.target.closest('input')) return;
+    if (!hasMoved && isUserSuperAdmin()) {
+      toggleHeroPhotoControls();
+    }
+  });
+
+  // Klik di luar foto & toolbar: sembunyikan toolbar secara otomatis agar tampilan bersih
+  document.addEventListener('click', (e) => {
+    const controls = document.getElementById('heroPhotoControls');
+    if (!controls || controls.style.display === 'none') return;
+    if (!photo.contains(e.target) && !controls.contains(e.target)) {
+      controls.style.display = 'none';
+    }
   });
 
   // Adapt on screen resize

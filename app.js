@@ -9124,13 +9124,26 @@ function syncBiayaInputsToArray() {
     const ketEl = document.getElementById(`adminBiayaKet_${i}`);
     const bulananEl = document.getElementById(`adminBiayaIsBulanan_${i}`);
 
-    if (namaEl) list[i].nama = namaEl.value.trim();
-    if (nomEl) list[i].nominal = nomEl.value.trim();
-    if (ketEl) list[i].keterangan = ketEl.value.trim();
+    if (namaEl) list[i].nama = namaEl.value; // Tidak di-trim saat mengetik agar bisa spasi bebas
+    if (nomEl) list[i].nominal = nomEl.value;
+    if (ketEl) list[i].keterangan = ketEl.value;
     if (bulananEl) list[i].isBulanan = bulananEl.checked;
   }
-  saveStoredBiayaAdmin(list, false);
+  localStorage.setItem('sitahfidz_web_biaya', JSON.stringify(list));
+  try {
+    const raw = localStorage.getItem('sitahfidz_website_content');
+    const content = raw ? JSON.parse(raw) : {};
+    content.biayaList = list;
+    if (list[0]) content.biayaFormulir = list[0].nominal;
+    if (list[1]) content.biayaGedung = list[1].nominal;
+    if (list[2]) content.biayaSeragam = list[2].nominal;
+    if (list[3]) content.biayaKitab = list[3].nominal;
+    if (list[4]) content.biayaBulanan = list[4].nominal;
+    localStorage.setItem('sitahfidz_website_content', JSON.stringify(content));
+  } catch (e) {}
+
   updateAdminBiayaTotalSummary(list);
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(false);
 }
 
 function simpanBiayaDanRekeningLangsung() {
@@ -9289,12 +9302,19 @@ function syncRekeningInputsToArray() {
     const anEl = document.getElementById(`adminRekAtasNama_${i}`);
     const catEl = document.getElementById(`adminRekCatatan_${i}`);
 
-    if (bankEl) list[i].bank = bankEl.value.trim();
-    if (noEl) list[i].nomor = noEl.value.trim();
-    if (anEl) list[i].atasNama = anEl.value.trim();
-    if (catEl) list[i].catatan = catEl.value.trim();
+    if (bankEl) list[i].bank = bankEl.value; // Jangan di-trim agar bisa mengetik spasi
+    if (noEl) list[i].nomor = noEl.value;
+    if (anEl) list[i].atasNama = anEl.value;
+    if (catEl) list[i].catatan = catEl.value;
   }
-  saveStoredRekeningAdmin(list);
+  localStorage.setItem('sitahfidz_web_rekening', JSON.stringify(list));
+  try {
+    const raw = localStorage.getItem('sitahfidz_website_content');
+    const content = raw ? JSON.parse(raw) : {};
+    content.rekeningList = list;
+    localStorage.setItem('sitahfidz_website_content', JSON.stringify(content));
+  } catch (e) {}
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(false);
 }
 // 9.B. FACILITY CMS CONTROLLER FOR ADMIN
 // ========================================================

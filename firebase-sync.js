@@ -54,6 +54,15 @@ function initFirebaseSync() {
       console.warn('Firestore snapshot notice:', error);
       updateSyncStatusBadge('offline', 'Koneksi Cloud Terputus');
     });
+
+    // Real-Time Listener untuk Media (Foto/Logo Pondok Terpisah)
+    cloudDb.collection(CLOUD_COLLECTION).doc('media').onSnapshot((doc) => {
+      if (doc.exists) {
+        applyMediaToLocal(doc.data());
+      }
+    }, (error) => {
+      console.warn('Firestore media snapshot notice:', error);
+    });
   } catch (err) {
     console.error('Firebase init error:', err);
     updateSyncStatusBadge('offline', 'Gagal Inisialisasi Cloud');
@@ -108,6 +117,31 @@ function updateSyncStatusBadge(status, text) {
   }
 }
 
+function applyMediaToLocal(media) {
+  if (!media) return;
+  try {
+    const sRaw = localStorage.getItem('sitahfidz_settings');
+    const s = sRaw ? JSON.parse(sRaw) : {};
+    let sChanged = false;
+    ['logoPondok', 'heroBannerPhoto', 'fotoPengasuh'].forEach(k => {
+      if (media[k] && s[k] !== media[k]) {
+        s[k] = media[k];
+        sChanged = true;
+      }
+    });
+    if (sChanged) localStorage.setItem('sitahfidz_settings', JSON.stringify(s));
+
+    const wcRaw = localStorage.getItem('sitahfidz_website_content');
+    const wc = wcRaw ? JSON.parse(wcRaw) : {};
+    if (media.fotoProfilPesantren && wc.fotoProfilPesantren !== media.fotoProfilPesantren) {
+      wc.fotoProfilPesantren = media.fotoProfilPesantren;
+      localStorage.setItem('sitahfidz_website_content', JSON.stringify(wc));
+    }
+  } catch (e) {
+    console.warn('Error applying media to local:', e);
+  }
+}
+
 function applyCloudDataToLocal(cloudData) {
   if (!cloudData) return;
   isApplyingCloudUpdate = true;
@@ -140,26 +174,45 @@ function applyCloudDataToLocal(cloudData) {
 
     for (const [cloudKey, localKey] of Object.entries(syncMap)) {
       if (cloudData[cloudKey] !== undefined) {
+        let incomingData = cloudData[cloudKey];
         const localRaw = localStorage.getItem(localKey);
-        const cloudRaw = JSON.stringify(cloudData[cloudKey]);
+
+        // Pertahankan foto/logo lokal jika di incoming cloud kosong (karena tersimpan di doc media)
+        if (cloudKey === 'settings' && incomingData && typeof incomingData === 'object') {
+          try {
+            const localSettings = localRaw ? JSON.parse(localRaw) : {};
+            ['logoPondok', 'heroBannerPhoto', 'fotoPengasuh'].forEach(k => {
+              if (!incomingData[k] && localSettings[k]) {
+                incomingData[k] = localSettings[k];
+              }
+            });
+          } catch (e) {}
+        }
+        if (cloudKey === 'websiteContent' && incomingData && typeof incomingData === 'object') {
+          try {
+            const localWc = localRaw ? JSON.parse(localRaw) : {};
+            if (!incomingData.fotoProfilPesantren && localWc.fotoProfilPesantren) {
+              incomingData.fotoProfilPesantren = localWc.fotoProfilPesantren;
+            }
+          } catch (e) {}
+        }
+
+        const cloudRaw = JSON.stringify(incomingData);
         if (localRaw !== cloudRaw) {
           // Jangan menimpa data default lokal dengan array/object kosong dari cloud baru
-          const isCloudEmpty = Array.isArray(cloudData[cloudKey]) ? cloudData[cloudKey].length === 0 : (cloudData[cloudKey] && typeof cloudData[cloudKey] === 'object' && Object.keys(cloudData[cloudKey]).length === 0);
+          const isCloudEmpty = Array.isArray(incomingData) ? incomingData.length === 0 : (incomingData && typeof incomingData === 'object' && Object.keys(incomingData).length === 0);
           const hasLocalPopulated = localRaw && localRaw !== '[]' && localRaw !== '{}' && localRaw !== 'null';
           if (isCloudEmpty && hasLocalPopulated) {
-            // Biarkan data lokal tetap ada, lalu sync data lokal ini ke cloud
-            pushLocalToCloud(false);
             continue;
           }
 
           // Proteksi cerdas untuk daftar data (biaya, rekening, santri):
           // Jika lokal memiliki data yang lebih banyak/lengkap dari Cloud, pertahankan lokal dan perbarui Cloud!
-          if (Array.isArray(cloudData[cloudKey]) && hasLocalPopulated) {
+          if (Array.isArray(incomingData) && hasLocalPopulated) {
             try {
               const localArr = JSON.parse(localRaw);
-              if (Array.isArray(localArr) && localArr.length > cloudData[cloudKey].length) {
-                console.log(`[CloudSync] Data lokal ${localKey} memiliki ${localArr.length} item (Cloud: ${cloudData[cloudKey].length}). Mempertahankan lokal & sinkron ke Cloud.`);
-                pushLocalToCloud(true);
+              if (Array.isArray(localArr) && localArr.length > incomingData.length) {
+                console.log(`[CloudSync] Data lokal ${localKey} memiliki ${localArr.length} item (Cloud: ${incomingData.length}). Mempertahankan lokal.`);
                 continue;
               }
             } catch (e) {}
@@ -172,8 +225,12 @@ function applyCloudDataToLocal(cloudData) {
     }
 
     if (hasChanges) {
-      // 1. Update Admin Panel jika sedang terbuka
-      if (typeof initStorage === 'function' && typeof renderAll === 'function') {
+      // Cek apakah admin sedang aktif mengetik di input atau form
+      const isUserTyping = document.activeElement && 
+        (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA');
+
+      // 1. Update Admin Panel jika sedang terbuka (hanya jika pengguna tidak sedang mengetik agar input tidak ter-reset!)
+      if (typeof initStorage === 'function' && typeof renderAll === 'function' && !isUserTyping) {
         initStorage();
         renderAll();
         if (typeof initHeader === 'function') initHeader();
@@ -183,13 +240,13 @@ function applyCloudDataToLocal(cloudData) {
       }
 
       // 2. Update Panel Ustadz jika sedang terbuka
-      if (typeof initUstadzStorage === 'function' && typeof renderUstadzAll === 'function') {
+      if (typeof initUstadzStorage === 'function' && typeof renderUstadzAll === 'function' && !isUserTyping) {
         initUstadzStorage();
         renderUstadzAll();
       }
 
       // 3. Update Portal Wali jika sedang terbuka
-      if (typeof initPortalSettings === 'function' && typeof cariDataSantriWali === 'function') {
+      if (typeof initPortalSettings === 'function' && typeof cariDataSantriWali === 'function' && !isUserTyping) {
         initPortalSettings();
         cariDataSantriWali();
       }
@@ -227,8 +284,29 @@ function pushLocalToCloud(force = false) {
       }
     };
 
+    const rawSettings = parseOr('sitahfidz_settings', {});
+    const rawWebsiteContent = parseOr('sitahfidz_website_content', {});
+
+    // Pisahkan foto/media besar ke dokumen 'media' agar dokumen 'main' selalu sangat ringan (< 150 KB)
+    // dan tidak pernah mentok batas 1 MB Firestore!
+    const mediaPayload = {};
+    const lightSettings = { ...rawSettings };
+    const lightWebsiteContent = { ...rawWebsiteContent };
+
+    ['logoPondok', 'heroBannerPhoto', 'fotoPengasuh'].forEach(k => {
+      if (rawSettings[k] && typeof rawSettings[k] === 'string' && rawSettings[k].startsWith('data:')) {
+        mediaPayload[k] = rawSettings[k];
+        lightSettings[k] = '';
+      }
+    });
+
+    if (rawWebsiteContent.fotoProfilPesantren && typeof rawWebsiteContent.fotoProfilPesantren === 'string' && rawWebsiteContent.fotoProfilPesantren.startsWith('data:')) {
+      mediaPayload.fotoProfilPesantren = rawWebsiteContent.fotoProfilPesantren;
+      lightWebsiteContent.fotoProfilPesantren = '';
+    }
+
     const payload = {
-      settings: parseOr('sitahfidz_settings', {}),
+      settings: lightSettings,
       santri: parseOr('sitahfidz_santri', []),
       setoran: parseOr('sitahfidz_setoran', []),
       absensi: parseOr('sitahfidz_absensi', []),
@@ -239,7 +317,7 @@ function pushLocalToCloud(force = false) {
       perizinan: parseOr('sitahfidz_perizinan', []),
       ubudiyahJamaah: parseOr('sitahfidz_ubudiyah_jamaah', []),
       ubudiyahEkskul: parseOr('sitahfidz_ubudiyah_ekskul', []),
-      websiteContent: parseOr('sitahfidz_website_content', {}),
+      websiteContent: lightWebsiteContent,
       webFacilities: parseOr('sitahfidz_web_facilities', []),
       sekolahFormal: parseOr('sitahfidz_sekolah_formal', []),
       ekstrakurikuler: parseOr('sitahfidz_ekstrakurikuler', []),
@@ -252,7 +330,17 @@ function pushLocalToCloud(force = false) {
       updatedDevice: navigator.userAgent.includes('Mobile') ? 'HP' : 'Laptop'
     };
 
-    cloudDb.collection(CLOUD_COLLECTION).doc(CLOUD_DOC_ID).set(payload, { merge: true })
+    const promises = [
+      cloudDb.collection(CLOUD_COLLECTION).doc(CLOUD_DOC_ID).set(payload, { merge: true })
+    ];
+
+    if (Object.keys(mediaPayload).length > 0) {
+      promises.push(
+        cloudDb.collection(CLOUD_COLLECTION).doc('media').set(mediaPayload, { merge: true })
+      );
+    }
+
+    Promise.all(promises)
       .then(() => {
         updateSyncStatusBadge('online', 'Tersinkron Cloud');
       })
@@ -270,7 +358,7 @@ function pushLocalToCloud(force = false) {
   if (force) {
     doPush();
   } else {
-    cloudDebounceTimer = setTimeout(doPush, 400);
+    cloudDebounceTimer = setTimeout(doPush, 1000);
   }
 }
 

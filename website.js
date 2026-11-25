@@ -967,7 +967,7 @@ function getActiveFormalSchools() {
       if (Array.isArray(parsed) && parsed.length > 0) {
         parsed.forEach(s => {
           s.image = '';
-          s.brosurImage = '';
+          s.brosurImage = s.brosurImage || '';
         });
         return parsed;
       }
@@ -976,7 +976,7 @@ function getActiveFormalSchools() {
   const list = (typeof DEFAULT_FORMAL_SCHOOLS !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_FORMAL_SCHOOLS)) : [];
   list.forEach(s => {
     s.image = '';
-    s.brosurImage = '';
+    s.brosurImage = s.brosurImage || '';
   });
   return list;
 }
@@ -1024,9 +1024,16 @@ function renderFormalSchools(filterCategory = currentSchoolFilter) {
         </div>
         <div class="school-card-body" style="display:flex; flex-direction:column; flex:1;">
           <h3 class="school-name">${escapeHtml(item.name)}</h3>
-          <span class="school-level-tag">
-            <span>🏷️</span> <span>${escapeHtml(item.level || '')}</span>
-          </span>
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+            <span class="school-level-tag" style="margin-bottom:0;">
+              <span>🏷️</span> <span>${escapeHtml(item.level || '')}</span>
+            </span>
+            ${item.brosurImage ? `
+              <span style="display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:800; background:#ecfdf5; color:#047857; padding:2px 8px; border-radius:999px; border:1px solid #a7f3d0;">
+                <span>📄</span> Brosur Resmi Siap
+              </span>
+            ` : ''}
+          </div>
           <p class="school-desc">${escapeHtml(item.desc || '')}</p>
 
           <ul class="school-highlight-list">
@@ -1035,7 +1042,7 @@ function renderFormalSchools(filterCategory = currentSchoolFilter) {
 
           <div class="school-card-footer" style="margin-top:auto; padding-top:14px; border-top:1px solid #f1f5f9;">
             <button type="button" class="btn btn-gold btn-sm" onclick="event.stopPropagation(); openModalBrosurSekolah(${idx})" style="width:100%; font-weight:800; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 10px rgba(245,158,11,0.25);">
-              <span>📋</span> Lihat Profil &amp; Syarat PPDB
+              <span>📋</span> ${item.brosurImage ? 'Lihat Brosur &amp; Syarat PPDB' : 'Lihat Profil &amp; Syarat PPDB'}
             </button>
           </div>
         </div>
@@ -1098,6 +1105,32 @@ function openModalBrosurSekolah(index) {
 
   const contentHtml = `
     <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+      
+      ${school.brosurImage ? `
+        <!-- Brosur Resmi Lembaga Display -->
+        <div style="background:#0f172a; border-radius:12px; overflow:hidden; margin-bottom:18px; box-shadow:0 6px 20px rgba(0,0,0,0.12); position:relative; text-align:center;">
+          <div style="padding:10px 14px; background:rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); flex-wrap:wrap; gap:8px;">
+            <span style="color:#f8fafc; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px;">
+              <span>📄</span> Brosur Resmi PPDB ${escapeHtml(school.name)}
+            </span>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn btn-gold btn-sm" onclick="zoomBrosurSekolah('${school.brosurImage}', '${escapeHtml(school.name)}')" style="font-size:11px; padding:3px 10px; font-weight:700;">
+                🔍 Perbesar
+              </button>
+              <a href="${school.brosurImage}" download="Brosur_${escapeHtml(school.name.replace(/\s+/g, '_'))}.jpg" class="btn btn-secondary btn-sm" style="font-size:11px; padding:3px 10px; background:rgba(255,255,255,0.15); color:#fff; border-color:rgba(255,255,255,0.3); font-weight:600;">
+                📥 Unduh
+              </a>
+            </div>
+          </div>
+          <div style="padding:12px; display:flex; justify-content:center; background:#020617; cursor:pointer;" onclick="zoomBrosurSekolah('${school.brosurImage}', '${escapeHtml(school.name)}')">
+            <img src="${school.brosurImage}" alt="Brosur Resmi ${escapeHtml(school.name)}" style="max-height:360px; max-width:100%; object-fit:contain; border-radius:6px; box-shadow:0 4px 16px rgba(0,0,0,0.4);" title="Klik untuk memperbesar gambar brosur">
+          </div>
+          <div style="padding:6px; font-size:11px; color:#94a3b8; background:rgba(0,0,0,0.3);">
+            Klik gambar untuk melihat tampilan layar penuh (zoom)
+          </div>
+        </div>
+      ` : ''}
+
       <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:12px;">
         <div>
           <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;">

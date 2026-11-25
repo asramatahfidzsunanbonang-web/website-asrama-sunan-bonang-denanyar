@@ -10277,7 +10277,7 @@ function getStoredFormalSchools() {
       if (Array.isArray(parsed) && parsed.length > 0) {
         parsed.forEach(s => {
           s.image = '';
-          s.brosurImage = '';
+          s.brosurImage = s.brosurImage || '';
         });
         return parsed;
       }
@@ -10286,7 +10286,7 @@ function getStoredFormalSchools() {
   const list = (typeof DEFAULT_FORMAL_SCHOOLS !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_FORMAL_SCHOOLS)) : [];
   list.forEach(s => {
     s.image = '';
-    s.brosurImage = '';
+    s.brosurImage = s.brosurImage || '';
   });
   return list;
 }
@@ -10314,6 +10314,7 @@ function renderAdminFormalSchools() {
   container.innerHTML = schools.map((sch, idx) => {
     const highlightsText = (sch.highlights || []).join('\n');
     const colorVal = sch.tagColor || '#059669';
+    const hasBrosur = !!(sch.brosurImage && sch.brosurImage.trim() !== '');
 
     return `
       <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:18px; box-shadow:0 4px 14px rgba(0,0,0,0.03); display:flex; flex-direction:column; gap:12px; transition:border-color 0.2s;" onfocusin="this.style.borderColor='#10b981'" onfocusout="this.style.borderColor='#e2e8f0'">
@@ -10402,6 +10403,57 @@ function renderAdminFormalSchools() {
           </div>
         </div>
 
+        <!-- Row 7: Upload Brosur Resmi Sekolah -->
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-top:2px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label style="font-size:11.5px; font-weight:700; color:#1e293b; margin:0; display:flex; align-items:center; gap:6px;">
+              <span>📄</span> Brosur Resmi Lembaga
+            </label>
+            ${hasBrosur ? `
+              <span style="font-size:10.5px; background:#ecfdf5; color:#047857; font-weight:700; padding:2px 8px; border-radius:999px; border:1px solid #a7f3d0;">
+                ✓ Brosur Siap &amp; Aktif
+              </span>
+            ` : `
+              <span style="font-size:10.5px; background:#f1f5f9; color:#64748b; font-weight:600; padding:2px 8px; border-radius:999px;">
+                Belum ada brosur
+              </span>
+            `}
+          </div>
+
+          ${hasBrosur ? `
+            <div style="display:flex; gap:12px; align-items:center; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px;">
+              <img src="${sch.brosurImage}" alt="Brosur ${escapeHtml(sch.name)}" style="width:68px; height:92px; object-fit:cover; border-radius:6px; border:1px solid #e2e8f0; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.06);" onclick="zoomBrosurSekolah('${sch.brosurImage}', '${escapeHtml(sch.name)}')" title="Klik untuk memperbesar brosur">
+              <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+                <p style="font-size:11.5px; color:#334155; margin:0; line-height:1.4;">
+                  Brosur resmi aktif dan otomatis tampil di website &amp; modal rincian calon wali santri.
+                </p>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button type="button" class="btn btn-gold btn-sm" onclick="zoomBrosurSekolah('${sch.brosurImage}', '${escapeHtml(sch.name)}')" style="font-size:11px; padding:3px 8px; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
+                    <span>🔍</span> Lihat
+                  </button>
+                  <label class="btn btn-secondary btn-sm" style="font-size:11px; padding:3px 8px; cursor:pointer; font-weight:600; display:inline-flex; align-items:center; gap:4px; margin:0;">
+                    <span>🔄</span> Ganti Brosur
+                    <input type="file" accept="image/*" style="display:none;" onchange="handleUploadBrosurSekolah(${idx}, event)">
+                  </label>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="hapusBrosurSekolah(${idx})" style="font-size:11px; padding:3px 8px; color:#ef4444; border-color:#fca5a5; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+                    <span>🗑️</span> Hapus
+                  </button>
+                </div>
+              </div>
+            </div>
+          ` : `
+            <div style="border:1.5px dashed #cbd5e1; border-radius:8px; padding:14px; text-align:center; background:#ffffff;">
+              <p style="font-size:11.5px; color:#64748b; margin:0 0 8px 0;">
+                Unggah gambar brosur / pamflet resmi PPDB sekolah mitra (${escapeHtml(sch.name)}).
+              </p>
+              <label class="btn btn-primary btn-sm" style="font-size:11.5px; padding:6px 14px; cursor:pointer; font-weight:700; display:inline-flex; align-items:center; gap:6px; margin:0;">
+                <span>📤</span> Upload Brosur Sekolah
+                <input type="file" accept="image/*" style="display:none;" onchange="handleUploadBrosurSekolah(${idx}, event)">
+              </label>
+            </div>
+          `}
+        </div>
+
       </div>
     `;
   }).join('');
@@ -10438,7 +10490,7 @@ function readSchoolFormData(idx, schools) {
     sch.highlights = hlEl.value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
   }
   sch.image = '';
-  sch.brosurImage = '';
+  sch.brosurImage = sch.brosurImage || '';
 }
 
 function simpanSingleAdminFormalSchool(index) {
@@ -10512,12 +10564,133 @@ function resetAdminFormalSchools() {
   const defaults = (typeof DEFAULT_FORMAL_SCHOOLS !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_FORMAL_SCHOOLS)) : [];
   defaults.forEach(s => {
     s.image = '';
-    s.brosurImage = '';
+    s.brosurImage = s.brosurImage || '';
   });
   localStorage.setItem('sitahfidz_sekolah_formal', JSON.stringify(defaults));
   if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
   renderAdminFormalSchools();
   showToast("Data sekolah formal dikembalikan ke standar awal.", "info");
+}
+
+function handleUploadBrosurSekolah(index, event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const schools = getStoredFormalSchools();
+  const sch = schools[index];
+  if (!sch) return;
+
+  const schoolName = sch.name || `Sekolah #${index + 1}`;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const rawSrc = e.target.result;
+
+    const processBrochure = function(dataUrl) {
+      sch.brosurImage = dataUrl;
+      localStorage.setItem('sitahfidz_sekolah_formal', JSON.stringify(schools));
+      if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+      renderAdminFormalSchools();
+      showToast(`✓ Brosur resmi "${schoolName}" berhasil diunggah & disimpan ke cloud!`, "success");
+    };
+
+    if (typeof openImageCropper === 'function') {
+      openImageCropper({
+        imageSrc: rawSrc,
+        title: `Sesuaikan Brosur PPDB: ${schoolName}`,
+        aspectRatio: 'free',
+        maxWidth: 900,
+        maxHeight: 1200,
+        quality: 0.75,
+        onSave: function(croppedDataUrl) {
+          processBrochure(croppedDataUrl);
+        }
+      });
+    } else {
+      // Fallback kompresi canvas mandiri
+      const img = new Image();
+      img.onload = function() {
+        let w = img.width;
+        let h = img.height;
+        const maxW = 900;
+        const maxH = 1200;
+        if (w > maxW || h > maxH) {
+          if (w / maxW > h / maxH) {
+            h = Math.round((h * maxW) / w);
+            w = maxW;
+          } else {
+            w = Math.round((w * maxH) / h);
+            h = maxH;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const compressed = canvas.toDataURL('image/jpeg', 0.75);
+        processBrochure(compressed);
+      };
+      img.src = rawSrc;
+    }
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function hapusBrosurSekolah(index) {
+  const schools = getStoredFormalSchools();
+  const sch = schools[index];
+  if (!sch) return;
+  const schoolName = sch.name || `Sekolah #${index + 1}`;
+
+  if (!confirm(`Hapus brosur sekolah "${schoolName}"? Brosur yang dihapus tidak akan lagi muncul di website.`)) return;
+
+  sch.brosurImage = '';
+  localStorage.setItem('sitahfidz_sekolah_formal', JSON.stringify(schools));
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  renderAdminFormalSchools();
+  showToast(`Brosur "${schoolName}" telah dihapus.`, "info");
+}
+
+function zoomBrosurSekolah(imgSrc, title) {
+  let zoomModal = document.getElementById('modalBrosurZoom');
+  let imgEl = document.getElementById('zoomBrosurImg');
+  let titleEl = document.getElementById('zoomBrosurTitle');
+
+  if (!zoomModal) {
+    const div = document.createElement('div');
+    div.id = 'modalBrosurZoom';
+    div.className = 'modal-overlay';
+    div.style.cssText = 'display:none; z-index:999999; position:fixed; inset:0; background:rgba(0,0,0,0.92); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;';
+    div.onclick = closeModalBrosurZoom;
+    div.innerHTML = `
+      <div style="position:relative; max-width:95vw; max-height:95vh; display:flex; flex-direction:column; align-items:center;" onclick="event.stopPropagation()">
+        <div style="position:absolute; top:-40px; right:0; display:flex; gap:12px; align-items:center;">
+          <span id="zoomBrosurTitle" style="color:#fff; font-size:14px; font-weight:700;">Brosur</span>
+          <button type="button" onclick="closeModalBrosurZoom()" style="background:#ef4444; border:none; color:#fff; font-size:18px; font-weight:800; border-radius:50%; width:32px; height:32px; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+        </div>
+        <img id="zoomBrosurImg" src="" alt="Brosur Fullscreen" style="max-width:92vw; max-height:88vh; object-fit:contain; border-radius:8px; box-shadow:0 20px 50px rgba(0,0,0,0.8);">
+      </div>
+    `;
+    document.body.appendChild(div);
+    zoomModal = div;
+    imgEl = document.getElementById('zoomBrosurImg');
+    titleEl = document.getElementById('zoomBrosurTitle');
+  }
+
+  if (zoomModal && imgEl) {
+    imgEl.src = imgSrc;
+    if (titleEl) titleEl.textContent = `Brosur ${title || ''}`;
+    zoomModal.style.display = 'flex';
+  }
+}
+
+function closeModalBrosurZoom() {
+  const zoomModal = document.getElementById('modalBrosurZoom');
+  if (zoomModal) {
+    zoomModal.style.display = 'none';
+  }
 }
 
 // ========================================================

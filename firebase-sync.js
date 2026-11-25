@@ -103,6 +103,15 @@ function initFirebaseSync() {
       console.warn('Firestore media snapshot notice:', error);
     });
 
+    // Real-Time Listener untuk Foto Profil Pesantren
+    cloudDb.collection(CLOUD_COLLECTION).doc('media_profil').onSnapshot((doc) => {
+      if (doc.exists) {
+        applyProfilMediaToLocal(doc.data());
+      }
+    }, (error) => {
+      console.warn('Firestore media_profil snapshot notice:', error);
+    });
+
     // Real-Time Listener untuk Media Sekolah Formal (Foto Gedung & Brosur)
     cloudDb.collection(CLOUD_COLLECTION).doc('media_sekolah').onSnapshot((doc) => {
       if (doc.exists) {
@@ -196,6 +205,21 @@ function applyMediaToLocal(media) {
     }
   } catch (e) {
     console.warn('Error applying media to local:', e);
+  }
+}
+
+function applyProfilMediaToLocal(media) {
+  if (!media) return;
+  try {
+    const wcRaw = localStorage.getItem('sitahfidz_website_content');
+    const wc = wcRaw ? JSON.parse(wcRaw) : {};
+    if (media.fotoProfilPesantren && wc.fotoProfilPesantren !== media.fotoProfilPesantren) {
+      wc.fotoProfilPesantren = media.fotoProfilPesantren;
+      localStorage.setItem('sitahfidz_website_content', JSON.stringify(wc));
+      if (typeof renderDynamicWebContent === 'function') renderDynamicWebContent();
+    }
+  } catch (e) {
+    console.warn('Error applying profil media to local:', e);
   }
 }
 
@@ -496,8 +520,12 @@ function pushLocalToCloud(force = false) {
       }
     });
 
+    let mediaProfilPayload = null;
     if (rawWebsiteContent.fotoProfilPesantren && typeof rawWebsiteContent.fotoProfilPesantren === 'string' && rawWebsiteContent.fotoProfilPesantren.startsWith('data:')) {
-      mediaPayload.fotoProfilPesantren = rawWebsiteContent.fotoProfilPesantren;
+      mediaProfilPayload = {
+        fotoProfilPesantren: rawWebsiteContent.fotoProfilPesantren,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
       lightWebsiteContent.fotoProfilPesantren = '';
     }
 
@@ -565,6 +593,12 @@ function pushLocalToCloud(force = false) {
     if (Object.keys(mediaPayload).length > 0) {
       promises.push(
         cloudDb.collection(CLOUD_COLLECTION).doc('media').set(mediaPayload, { merge: true })
+      );
+    }
+
+    if (mediaProfilPayload) {
+      promises.push(
+        cloudDb.collection(CLOUD_COLLECTION).doc('media_profil').set(mediaProfilPayload, { merge: true })
       );
     }
 

@@ -149,10 +149,24 @@ function applyCloudDataToLocal(cloudData) {
           if (isCloudEmpty && hasLocalPopulated) {
             // Biarkan data lokal tetap ada, lalu sync data lokal ini ke cloud
             pushLocalToCloud(false);
-          } else {
-            localStorage.setItem(localKey, cloudRaw);
-            hasChanges = true;
+            continue;
           }
+
+          // Proteksi cerdas untuk daftar data (biaya, rekening, santri):
+          // Jika lokal memiliki data yang lebih banyak/lengkap dari Cloud, pertahankan lokal dan perbarui Cloud!
+          if (Array.isArray(cloudData[cloudKey]) && hasLocalPopulated) {
+            try {
+              const localArr = JSON.parse(localRaw);
+              if (Array.isArray(localArr) && localArr.length > cloudData[cloudKey].length) {
+                console.log(`[CloudSync] Data lokal ${localKey} memiliki ${localArr.length} item (Cloud: ${cloudData[cloudKey].length}). Mempertahankan lokal & sinkron ke Cloud.`);
+                pushLocalToCloud(true);
+                continue;
+              }
+            } catch (e) {}
+          }
+
+          localStorage.setItem(localKey, cloudRaw);
+          hasChanges = true;
         }
       }
     }

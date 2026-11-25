@@ -8965,7 +8965,7 @@ function getStoredBiayaAdmin() {
   return [];
 }
 
-function saveStoredBiayaAdmin(list) {
+function saveStoredBiayaAdmin(list, forceCloud = false) {
   localStorage.setItem('sitahfidz_web_biaya', JSON.stringify(list));
   try {
     const raw = localStorage.getItem('sitahfidz_website_content');
@@ -8978,7 +8978,7 @@ function saveStoredBiayaAdmin(list) {
     if (list[4]) content.biayaBulanan = list[4].nominal;
     localStorage.setItem('sitahfidz_website_content', JSON.stringify(content));
   } catch (e) {}
-  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(forceCloud);
 }
 
 function renderAdminBiayaList() {
@@ -9080,7 +9080,7 @@ function tambahBiayaAdmin() {
     keterangan: 'Keterangan pembayaran',
     isBulanan: false
   });
-  saveStoredBiayaAdmin(list);
+  saveStoredBiayaAdmin(list, true);
   renderAdminBiayaList();
   showToast("✓ Komponen biaya baru berhasil ditambahkan!", "success");
 
@@ -9101,7 +9101,7 @@ function hapusBiayaItem(index) {
   if (!confirm(`Hapus komponen "${name}" dari rincian biaya?`)) return;
 
   list.splice(index, 1);
-  saveStoredBiayaAdmin(list);
+  saveStoredBiayaAdmin(list, true);
   renderAdminBiayaList();
   showToast(`Komponen biaya "${name}" telah dihapus.`, "info");
 }
@@ -9111,7 +9111,7 @@ function resetAdminBiayaList() {
   const defaultList = (typeof DEFAULT_BIAYA_PEMBAYARAN !== 'undefined')
     ? JSON.parse(JSON.stringify(DEFAULT_BIAYA_PEMBAYARAN))
     : [];
-  saveStoredBiayaAdmin(defaultList);
+  saveStoredBiayaAdmin(defaultList, true);
   renderAdminBiayaList();
   showToast("Komponen biaya dikembalikan ke standar awal.", "info");
 }
@@ -9129,7 +9129,7 @@ function syncBiayaInputsToArray() {
     if (ketEl) list[i].keterangan = ketEl.value.trim();
     if (bulananEl) list[i].isBulanan = bulananEl.checked;
   }
-  saveStoredBiayaAdmin(list);
+  saveStoredBiayaAdmin(list, false);
   updateAdminBiayaTotalSummary(list);
 }
 

@@ -4571,6 +4571,11 @@ function openModalInputUjian(examId) {
   const form = document.getElementById('formInputUjian');
   if (form) form.reset();
 
+  const searchInput = document.getElementById('formUjianSearchNama');
+  if (searchInput) searchInput.value = '';
+  const filterHalaqah = document.getElementById('formUjianFilterHalaqah');
+  if (filterHalaqah) filterHalaqah.value = '';
+
   document.getElementById('formUjianId').value = examId || '';
   document.getElementById('formUjianTanggal').value = new Date().toISOString().split('T')[0];
   document.getElementById('formUjianTahunAjaran').value = '2024/2025';
@@ -4580,8 +4585,7 @@ function openModalInputUjian(examId) {
     if (exam) {
       document.getElementById('modalInputUjianTitle').textContent = `✏️ Edit Nilai Ujian Semester (${exam.santriNama})`;
       document.getElementById('formUjianProgram').value = exam.program;
-      onProgramUjianChange();
-      document.getElementById('formUjianSantriId').value = exam.santriId;
+      onProgramUjianChange(exam.santriId);
       document.getElementById('formUjianSemester').value = exam.semester;
       document.getElementById('formUjianTahunAjaran').value = exam.tahunAjaran || '2024/2025';
       document.getElementById('formUjianTanggal').value = exam.tanggal || new Date().toISOString().split('T')[0];
@@ -4615,11 +4619,11 @@ function closeModalInputUjian() {
   if (modal) modal.classList.remove('active');
 }
 
-function onProgramUjianChange() {
-  const prog = document.getElementById('formUjianProgram').value;
+function onProgramUjianChange(preselectedSantriId) {
+  const prog = document.getElementById('formUjianProgram')?.value || 'Binnadzor';
   const secBnz = document.getElementById('formSectionBinnadzor');
   const secThf = document.getElementById('formSectionTahfidz');
-  const selectSantri = document.getElementById('formUjianSantriId');
+  const selectHalaqah = document.getElementById('formUjianFilterHalaqah');
 
   if (prog === 'Tahfidz') {
     if (secBnz) secBnz.style.display = 'none';
@@ -4629,25 +4633,97 @@ function onProgramUjianChange() {
     if (secThf) secThf.style.display = 'none';
   }
 
-  if (selectSantri) {
-    selectSantri.innerHTML = '';
-    const santriList = AppState.santri.filter(s => {
-      if (prog === 'Tahfidz') return s.program === 'Tahfidz';
-      return s.program === 'Binnadzor' || s.program === 'Program Maqbul';
+  // Isi dropdown filter halaqah / kelas
+  if (selectHalaqah) {
+    selectHalaqah.innerHTML = '';
+    const optAll = document.createElement('option');
+    optAll.value = '';
+    optAll.textContent = prog === 'Tahfidz' ? '🌟 Semua Halaqah Tahfidz' : '📚 Semua Kelas Binnadzor';
+    selectHalaqah.appendChild(optAll);
+
+    const listHalaqah = prog === 'Tahfidz'
+      ? (AppState.settings?.daftarHalaqahTahfidz || DEFAULT_SETTINGS?.daftarHalaqahTahfidz || [])
+      : (AppState.settings?.daftarKelasBinnadzor || DEFAULT_SETTINGS?.daftarKelasBinnadzor || []);
+
+    listHalaqah.forEach(h => {
+      const opt = document.createElement('option');
+      opt.value = h;
+      opt.textContent = h;
+      selectHalaqah.appendChild(opt);
     });
 
-    if (santriList.length === 0) {
-      const opt = document.createElement('option');
-      opt.value = "";
-      opt.textContent = "Tidak ada santri di program ini";
-      selectSantri.appendChild(opt);
+    if (preselectedSantriId) {
+      const santri = AppState.santri.find(s => s.id === preselectedSantriId);
+      if (santri && santri.halaqah) {
+        const matched = listHalaqah.find(h => isSameHalaqah(h, santri.halaqah));
+        if (matched) {
+          selectHalaqah.value = matched;
+        }
+      }
+    }
+  }
+
+  onFilterSantriUjianChange(preselectedSantriId);
+}
+
+function onFilterSantriUjianChange(forcedSantriId) {
+  const prog = document.getElementById('formUjianProgram')?.value || 'Binnadzor';
+  const keyword = (document.getElementById('formUjianSearchNama')?.value || '').trim().toLowerCase();
+  const filterHalaqah = document.getElementById('formUjianFilterHalaqah')?.value || '';
+  const selectSantri = document.getElementById('formUjianSantriId');
+  const countBadge = document.getElementById('formUjianSantriCount');
+
+  if (!selectSantri) return;
+
+  let list = AppState.santri.filter(s => {
+    if (prog === 'Tahfidz') {
+      if (s.program !== 'Tahfidz' && s.program !== 'Pasca Tahfidz') return false;
     } else {
-      santriList.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = `${s.nama} (${s.nis}) • ${s.halaqah || '-'}`;
-        selectSantri.appendChild(opt);
-      });
+      if (s.program !== 'Binnadzor' && s.program !== 'Program Maqbul') return false;
+    }
+
+    if (filterHalaqah) {
+      if (!isSameHalaqah(s.halaqah, filterHalaqah)) return false;
+    }
+
+    if (keyword) {
+      const matchNama = (s.nama || '').toLowerCase().includes(keyword);
+      const matchNis = (s.nis || '').toLowerCase().includes(keyword);
+      if (!matchNama && !matchNis) return false;
+    }
+
+    return true;
+  });
+
+  list.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
+
+  if (forcedSantriId && !list.some(s => s.id === forcedSantriId)) {
+    const forced = AppState.santri.find(s => s.id === forcedSantriId);
+    if (forced) list.unshift(forced);
+  }
+
+  const prevSelected = forcedSantriId || selectSantri.value;
+  selectSantri.innerHTML = '';
+
+  if (list.length === 0) {
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = '-- Tidak ada santri yang sesuai filter --';
+    selectSantri.appendChild(opt);
+    if (countBadge) countBadge.textContent = '(0 santri)';
+  } else {
+    list.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = `${s.nama} (${s.nis}) • ${s.halaqah || '-'}`;
+      selectSantri.appendChild(opt);
+    });
+    if (countBadge) countBadge.textContent = `(${list.length} santri ditemukan)`;
+
+    if (prevSelected && list.some(s => s.id === prevSelected)) {
+      selectSantri.value = prevSelected;
+    } else {
+      selectSantri.selectedIndex = 0;
     }
   }
 
@@ -4655,6 +4731,20 @@ function onProgramUjianChange() {
 }
 
 function onSantriUjianSelected() {
+  const santriId = document.getElementById('formUjianSantriId')?.value;
+  const santri = AppState.santri.find(s => s.id === santriId);
+  const infoEl = document.getElementById('formUjianSantriSelectedInfo');
+
+  if (infoEl) {
+    if (santri) {
+      infoEl.style.display = 'block';
+      infoEl.innerHTML = `👤 <strong>${escapeHtml(santri.nama)}</strong> (NIS: <code>${escapeHtml(santri.nis)}</code>) • Halaqah/Kelas: <span class="badge" style="background:#0284c7; color:#fff; font-size:10.5px;">${escapeHtml(santri.halaqah || '-')}</span> • Status: <strong>${escapeHtml(santri.program || '-')}</strong>`;
+    } else {
+      infoEl.style.display = 'none';
+      infoEl.innerHTML = '';
+    }
+  }
+
   hitungNilaiAkhirBinnadzor();
   hitungNilaiAkhirTahfidz();
 }
@@ -4802,6 +4892,9 @@ function simpanNilaiUjian(e) {
   }
 
   saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
   closeModalInputUjian();
   renderAll();
   showToast(`💾 Nilai ujian semester ananda ${santri.nama} berhasil disimpan!`, "success");
@@ -5223,12 +5316,69 @@ function cetakRaportUjianTahfidz(examId) {
 }
 
 // ================= 5. WISUDA BINNADZOR (PROMOSI KE TAHFIDZ) =================
+let currentWisudaPanel = 'binnadzor';
+
+function switchWisudaPanel(panelKey) {
+  currentWisudaPanel = panelKey || 'binnadzor';
+  const panels = {
+    'binnadzor': document.getElementById('panelWisudaBinnadzor'),
+    'maqbul': document.getElementById('panelWisudaMaqbul'),
+    'alumni-bnz': document.getElementById('panelWisudaAlumniBnz'),
+    'calon-30juz': document.getElementById('panelWisudaCalon30Juz'),
+    'pasca-tahfidz': document.getElementById('panelWisudaPascaTahfidz')
+  };
+  const buttons = {
+    'binnadzor': document.getElementById('tabBtnWisudaBinnadzor'),
+    'maqbul': document.getElementById('tabBtnWisudaMaqbul'),
+    'alumni-bnz': document.getElementById('tabBtnWisudaAlumniBnz'),
+    'calon-30juz': document.getElementById('tabBtnWisudaCalon30Juz'),
+    'pasca-tahfidz': document.getElementById('tabBtnWisudaPascaTahfidz'),
+    'semua': document.getElementById('tabBtnWisudaSemua')
+  };
+  const badges = {
+    'binnadzor': document.getElementById('badgeWisudaBinnadzor'),
+    'maqbul': document.getElementById('badgeWisudaMaqbul'),
+    'alumni-bnz': document.getElementById('badgeWisudaAlumniBnz'),
+    'calon-30juz': document.getElementById('badgeWisudaCalon30Juz'),
+    'pasca-tahfidz': document.getElementById('badgeWisudaPascaTahfidz')
+  };
+
+  Object.keys(panels).forEach(key => {
+    if (panels[key]) {
+      panels[key].style.display = (panelKey === 'semua' || panelKey === key) ? 'block' : 'none';
+    }
+  });
+
+  Object.keys(buttons).forEach(key => {
+    if (buttons[key]) {
+      const isActive = (key === panelKey);
+      buttons[key].className = 'btn btn-sm ' + (isActive ? 'btn-primary' : 'btn-secondary');
+      if (key === 'semua') {
+        buttons[key].className = 'btn btn-sm ' + (isActive ? 'btn-primary' : 'btn-outline-secondary');
+      }
+      buttons[key].style.background = isActive ? '#0284c7' : (key === 'semua' ? 'transparent' : '#f1f5f9');
+      buttons[key].style.borderColor = isActive ? '#0284c7' : '#cbd5e1';
+      buttons[key].style.color = isActive ? '#ffffff' : '#334155';
+    }
+  });
+
+  Object.keys(badges).forEach(key => {
+    if (badges[key]) {
+      const isActive = (key === panelKey);
+      badges[key].style.background = isActive ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.08)';
+      badges[key].style.color = isActive ? '#ffffff' : '#334155';
+    }
+  });
+}
+
 function renderWisudaTables() {
   // 1. Table 1: Peserta Sidang Tes Maqbul (Evaluasi 3 Bulanan Binnadzor)
   const tbodyMaqbul = document.getElementById('tableTesMaqbulBody');
   if (tbodyMaqbul) {
     tbodyMaqbul.innerHTML = '';
     const bnzList = AppState.santri.filter(s => s.program === 'Binnadzor');
+    const badgeBnz = document.getElementById('badgeWisudaBinnadzor');
+    if (badgeBnz) badgeBnz.textContent = bnzList.length;
 
     if (bnzList.length === 0) {
       tbodyMaqbul.innerHTML = `<tr><td colspan="8" class="empty-state">Belum ada santri di program Binnadzor.</td></tr>`;
@@ -5298,6 +5448,9 @@ function renderWisudaTables() {
       (s.program === 'Binnadzor' && s.binnadzorProgress?.statusWisuda === 'Siap Wisuda')
     );
 
+    const badgeMaqbul = document.getElementById('badgeWisudaMaqbul');
+    if (badgeMaqbul) badgeMaqbul.textContent = maqbulList.length;
+
     // Update notification badge
     const pillSiap = document.getElementById('pillSiapWisuda');
     if (pillSiap) pillSiap.textContent = `${maqbulList.length} Maqbul/Siap`;
@@ -5331,6 +5484,8 @@ function renderWisudaTables() {
   if (tbodyAlumni) {
     tbodyAlumni.innerHTML = '';
     const alumniList = AppState.santri.filter(s => s.program === 'Tahfidz' && s.binnadzorProgress?.statusWisuda === 'Sudah Wisuda');
+    const badgeAlumni = document.getElementById('badgeWisudaAlumniBnz');
+    if (badgeAlumni) badgeAlumni.textContent = alumniList.length;
 
     if (alumniList.length === 0) {
       tbodyAlumni.innerHTML = `<tr><td colspan="8" class="empty-state">Belum ada riwayat santri wisuda binnadzor.</td></tr>`;
@@ -5366,6 +5521,8 @@ function renderWisudaTables() {
       s.program === 'Tahfidz' && 
       ((s.tahfidzProgress?.totalJuzHafal || 0) >= 30 || (s.tahfidzProgress?.juzZiyadahList?.length || 0) >= 30)
     );
+    const badgeCalon = document.getElementById('badgeWisudaCalon30Juz');
+    if (badgeCalon) badgeCalon.textContent = calonList.length;
 
     if (calonList.length === 0) {
       tbodyCalonTahfidz.innerHTML = `<tr><td colspan="7" class="empty-state">Saat ini belum ada santri Tahfidz yang mencapai 30 Juz khatam.</td></tr>`;
@@ -5396,6 +5553,8 @@ function renderWisudaTables() {
   if (tbodyPasca) {
     tbodyPasca.innerHTML = '';
     const pascaList = AppState.santri.filter(s => s.program === 'Pasca Tahfidz');
+    const badgePasca = document.getElementById('badgeWisudaPascaTahfidz');
+    if (badgePasca) badgePasca.textContent = pascaList.length;
 
     if (pascaList.length === 0) {
       tbodyPasca.innerHTML = `<tr><td colspan="8" class="empty-state">Belum ada mahasantri di Kelas Pasca Tahfidz.</td></tr>`;
@@ -5437,6 +5596,11 @@ function renderWisudaTables() {
         tbodyPasca.appendChild(tr);
       });
     }
+  }
+
+  // Jaga tab panel aktif tetap sinkron saat render ulang
+  if (typeof switchWisudaPanel === 'function') {
+    switchWisudaPanel(currentWisudaPanel);
   }
 }
 

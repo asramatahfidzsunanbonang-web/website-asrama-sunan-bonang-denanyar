@@ -2200,11 +2200,21 @@ body::before {
 .psb-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 36px;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "brosur form"
+    "info   form";
+  gap: 20px 32px;
   align-items: start;
 }
 
+.psb-brosur-banner-card {
+  grid-area: brosur;
+  width: 100%;
+}
+
 .psb-info-card {
+  grid-area: info;
   background: var(--white);
   border: 1px solid var(--light-200);
   border-radius: var(--radius-xl);
@@ -2233,6 +2243,7 @@ body::before {
 }
 
 .psb-form-card {
+  grid-area: form;
   background: var(--white);
   border: 1px solid var(--light-200);
   border-radius: var(--radius-xl);
@@ -2979,7 +2990,21 @@ body::before {
     grid-template-columns: repeat(2, 1fr);
   }
   .psb-grid {
-    grid-template-columns: 1fr;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .psb-brosur-banner-card {
+    order: 1 !important;
+    width: 100% !important;
+  }
+  .psb-form-card {
+    order: 2 !important;
+    width: 100% !important;
+  }
+  .psb-info-card {
+    order: 3 !important;
+    width: 100% !important;
   }
   .footer-container {
     grid-template-columns: 1fr 1fr;
@@ -4453,9 +4478,25 @@ body.portal-mode-simple .view-return-bar {
     gap: 8px !important;
   }
 
-  /* PSB Form Rows Stack */
+  /* PSB Form Rows Stack & Mobile Ordering */
   .psb-grid {
-    gap: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  .psb-brosur-banner-card {
+    order: 1 !important;
+    width: 100% !important;
+  }
+  .psb-form-card {
+    order: 2 !important;
+    width: 100% !important;
+    padding: 20px 16px !important;
+  }
+  .psb-info-card {
+    order: 3 !important;
+    width: 100% !important;
+    padding: 20px 16px !important;
   }
   .form-row {
     flex-direction: column !important;

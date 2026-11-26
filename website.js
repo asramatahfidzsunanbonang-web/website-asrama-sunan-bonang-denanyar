@@ -13,7 +13,8 @@ const STORAGE_KEYS = {
   SEKOLAH_FORMAL: 'sitahfidz_sekolah_formal',
   EKSTRAKURIKULER: 'sitahfidz_ekstrakurikuler',
   BIAYA: 'sitahfidz_web_biaya',
-  REKENING: 'sitahfidz_web_rekening'
+  REKENING: 'sitahfidz_web_rekening',
+  ALUMNI: 'sitahfidz_web_alumni'
 };
 
 // ================= DEFAULT SAMPLE DATA =================
@@ -363,12 +364,166 @@ function getProgramFallbackSvg(index) {
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
 }
 
+
+// ================= DEFAULT ALUMNI DATA =================
+const DEFAULT_ALUMNI_DATA = [
+  {
+    id: "alm-001",
+    name: "Muhammad Fatih Al-Habsyi, S.Ag.",
+    gender: "L",
+    angkatan: "Angkatan I (2022)",
+    tahunLulus: 2022,
+    programTahfidz: "Tahfidz 30 Juz Bersanad",
+    statusTahfidz: "30_juz",
+    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
+    sekolahAsalPondok: "MA Mamba'ul Ma'arif Denanyar",
+    lanjutanStudi: "UIN Sunan Kalijaga Yogyakarta",
+    jurusan: "Ilmu Al-Qur'an dan Tafsir (IAT)",
+    profesiSaatIni: "Kandidat Magister Studi Islam & Pengajar Tahfidz",
+    domisili: "Yogyakarta",
+    foto: "",
+    pesan: "Mondok di Asrama Tahfidz Sunan Bonang membentuk disiplin muroja'ah yang kokoh. Sanad muttashil adalah amanah terindah dalam hidup saya.",
+    kontakWa: ""
+  },
+  {
+    id: "alm-002",
+    name: "dr. Ahmad Zulfikar Rahman",
+    gender: "L",
+    angkatan: "Angkatan I (2022)",
+    tahunLulus: 2022,
+    programTahfidz: "Tahfidz 30 Juz Bersanad",
+    statusTahfidz: "30_juz",
+    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
+    sekolahAsalPondok: "SMK Bisri Syansuri Denanyar",
+    lanjutanStudi: "Fakultas Kedokteran Universitas Airlangga (UNAIR)",
+    jurusan: "Pendidikan Dokter",
+    profesiSaatIni: "Dokter Muda & Relawan Medis Peduli Huffadz",
+    domisili: "Surabaya",
+    foto: "",
+    pesan: "Hafalan Al-Qur'an bukan penghalang kuliah kedokteran, justru menjadi mukjizat daya ingat dan penenang saat menghadapi ujian berat.",
+    kontakWa: ""
+  },
+  {
+    id: "alm-003",
+    name: "Aisyah Nur Lathifah, Lc.",
+    gender: "P",
+    angkatan: "Angkatan II (2023)",
+    tahunLulus: 2023,
+    programTahfidz: "Tahfidz 30 Juz Bersanad",
+    statusTahfidz: "30_juz",
+    sanadSyaikh: "Hj. Mazidatul Faizah, M.Si",
+    sekolahAsalPondok: "MA Mamba'ul Ma'arif Denanyar",
+    lanjutanStudi: "Al-Azhar University, Kairo, Mesir",
+    jurusan: "Fakultas Ushuluddin - Hadits wa Ulumuh",
+    profesiSaatIni: "Mahasiswi Al-Azhar Kairo & Penulis",
+    domisili: "Kairo, Mesir / Jombang",
+    foto: "",
+    pesan: "Bimbingan Ibu Nyai Mazidatul Faizah sangat mendalam. Fashahah dan tajwid yang diajarkan di Denanyar diakui para masyayikh di Kairo.",
+    kontakWa: ""
+  },
+  {
+    id: "alm-004",
+    name: "Farhan Maulana Hakim, S.T.",
+    gender: "L",
+    angkatan: "Angkatan II (2023)",
+    tahunLulus: 2023,
+    programTahfidz: "Wisuda Binnadzor & 15 Juz",
+    statusTahfidz: "binnadzor",
+    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
+    sekolahAsalPondok: "SMK Bisri Syansuri Denanyar",
+    lanjutanStudi: "Institut Teknologi Sepuluh Nopember (ITS)",
+    jurusan: "Teknik Informatika",
+    profesiSaatIni: "Software Engineer & Pengembang Aplikasi",
+    domisili: "Surabaya / Gresik",
+    foto: "",
+    pesan: "Kombinasi ngaji kitab salaf, tahfidz, dan keahlian IT di SMK Bisri Syansuri menjadikan santri siap berkarya nyata di era teknologi.",
+    kontakWa: ""
+  },
+  {
+    id: "alm-005",
+    name: "Muhammad Rizqi Ramadhani",
+    gender: "L",
+    angkatan: "Angkatan III (2024)",
+    tahunLulus: 2024,
+    programTahfidz: "Tahfidz 30 Juz Bersanad",
+    statusTahfidz: "30_juz",
+    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
+    sekolahAsalPondok: "MAN 4 Jombang",
+    lanjutanStudi: "Ma'had Aly Hasyim Asy'ari Tebuireng",
+    jurusan: "Takhassus Hadits & Ilmu Hadits",
+    profesiSaatIni: "Mahasantri Ma'had Aly & Khadim Halaqah",
+    domisili: "Jombang",
+    foto: "",
+    pesan: "Suasana tirakat dan kebersamaan di Asrama Sunan Bonang tak tergantikan. Semoga terus melahirkan para hamalatul Qur'an yang ikhlas.",
+    kontakWa: ""
+  },
+  {
+    id: "alm-006",
+    name: "Zahra Kamilia Putri",
+    gender: "P",
+    angkatan: "Angkatan III (2024)",
+    tahunLulus: 2024,
+    programTahfidz: "Wisuda Binnadzor & 10 Juz",
+    statusTahfidz: "binnadzor",
+    sanadSyaikh: "Hj. Mazidatul Faizah, M.Si",
+    sekolahAsalPondok: "MTs Negeri 4 Jombang",
+    lanjutanStudi: "UIN Maulana Malik Ibrahim Malang",
+    jurusan: "Pendidikan Bahasa Arab (PBA)",
+    profesiSaatIni: "Mahasiswi & Tutor Binnadzor Qur'aniyah",
+    domisili: "Malang / Mojokerto",
+    foto: "",
+    pesan: "Tahsin binnadzor di pondok sangat teliti. Makharijul huruf dan sifatul huruf benar-benar diajarkan talaqqi musyafahah tatap muka.",
+    kontakWa: ""
+  },
+  {
+    id: "alm-007",
+    name: "Habib Burhanuddin, S.Pd.",
+    gender: "L",
+    angkatan: "Angkatan IV (2025)",
+    tahunLulus: 2025,
+    programTahfidz: "Tahfidz 30 Juz Bersanad",
+    statusTahfidz: "30_juz",
+    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
+    sekolahAsalPondok: "MA Mamba'ul Ma'arif Denanyar",
+    lanjutanStudi: "Universitas Negeri Malang (UM)",
+    jurusan: "Bimbingan dan Konseling",
+    profesiSaatIni: "Pendidik & Konselor Pendidikan Pesantren",
+    domisili: "Kediri",
+    foto: "",
+    pesan: "Al-Qur'an adalah lentera penuntun akal dan batin. Bangga pernah ditempa di bumi barokah KH. Bisri Syansuri Denanyar.",
+    kontakWa: ""
+  },
+  {
+    id: "alm-008",
+    name: "Fathurrahman Al-Ghifari",
+    gender: "L",
+    angkatan: "Angkatan IV (2025)",
+    tahunLulus: 2025,
+    programTahfidz: "Tahfidz 30 Juz Bersanad",
+    statusTahfidz: "30_juz",
+    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
+    sekolahAsalPondok: "SMK Bisri Syansuri Denanyar",
+    lanjutanStudi: "Universitas Brawijaya (UB) Malang",
+    jurusan: "Agribisnis / Pertanian",
+    profesiSaatIni: "Mahasiswa Jalur Prestasi Hafidz 30 Juz",
+    domisili: "Malang / Lamongan",
+    foto: "",
+    pesan: "Sertifikat Tahfidz 30 Juz bersanad dari Asrama Bonang mempermudah lolos seleksi beasiswa bibit unggul hafizh Al-Qur'an di perguruan tinggi negeri.",
+    kontakWa: ""
+  }
+];
+
 // ================= APP STATE =================
 let WebState = {
   settings: {},
   articles: [],
   gallery: [],
   psbPendaftar: [],
+  alumni: [],
+  alumniFilterCategory: 'all',
+  alumniFilterYear: 'all',
+  alumniSearchQuery: '',
+  alumniViewMode: 'grid',
   articleFilter: 'Semua',
   galleryFilter: 'Semua'
 };
@@ -381,6 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderDynamicFacilities();
   renderFormalSchools();
   renderEkstrakurikuler();
+  renderAlumni();
   renderWebsitePembayaran();
   renderArticles();
   renderWebsitePhotoSlider();
@@ -465,6 +621,19 @@ function initStorage() {
   WebState.psbPendaftar = Array.isArray(loadedPsb)
     ? loadedPsb.filter(p => p.noRegistrasi !== 'PSB-2025-1024' && p.noRegistrasi !== 'PSB-2025-1025' && p.nama !== 'Muhammad Ilham Pratama' && p.nama !== 'Aisyah Zahira Khairunnisa')
     : [];
+
+
+  // Alumni Data
+  try {
+    const alm = localStorage.getItem(STORAGE_KEYS.ALUMNI);
+    WebState.alumni = alm ? JSON.parse(alm) : DEFAULT_ALUMNI_DATA;
+    if (!Array.isArray(WebState.alumni) || WebState.alumni.length === 0) {
+      WebState.alumni = DEFAULT_ALUMNI_DATA;
+      localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(DEFAULT_ALUMNI_DATA));
+    }
+  } catch (e) {
+    WebState.alumni = DEFAULT_ALUMNI_DATA;
+  }
 
   saveWebStorage();
   updatePendaftarCount();
@@ -2487,6 +2656,19 @@ function handleFormPSB(e) {
   };
 
   WebState.psbPendaftar.unshift(pendaftar);
+
+  // Alumni Data
+  try {
+    const alm = localStorage.getItem(STORAGE_KEYS.ALUMNI);
+    WebState.alumni = alm ? JSON.parse(alm) : DEFAULT_ALUMNI_DATA;
+    if (!Array.isArray(WebState.alumni) || WebState.alumni.length === 0) {
+      WebState.alumni = DEFAULT_ALUMNI_DATA;
+      localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(DEFAULT_ALUMNI_DATA));
+    }
+  } catch (e) {
+    WebState.alumni = DEFAULT_ALUMNI_DATA;
+  }
+
   saveWebStorage();
   updatePendaftarCount();
 
@@ -2695,7 +2877,20 @@ function hapusPendaftar(idx) {
   const p = WebState.psbPendaftar[idx];
   if (confirm(`Apakah Anda yakin ingin menghapus data pendaftaran ananda ${p.nama || ''} (${p.noRegistrasi || ''})?`)) {
     WebState.psbPendaftar.splice(idx, 1);
-    saveWebStorage();
+  
+  // Alumni Data
+  try {
+    const alm = localStorage.getItem(STORAGE_KEYS.ALUMNI);
+    WebState.alumni = alm ? JSON.parse(alm) : DEFAULT_ALUMNI_DATA;
+    if (!Array.isArray(WebState.alumni) || WebState.alumni.length === 0) {
+      WebState.alumni = DEFAULT_ALUMNI_DATA;
+      localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(DEFAULT_ALUMNI_DATA));
+    }
+  } catch (e) {
+    WebState.alumni = DEFAULT_ALUMNI_DATA;
+  }
+
+  saveWebStorage();
     updatePendaftarCount();
     renderTabelPendaftar();
     showToast(`Data pendaftar ${p.nama || ''} berhasil dihapus.`, 'info');
@@ -3103,7 +3298,7 @@ function initPortalViewRouting() {
 
   // Initial Hash check
   const rawHash = (window.location.hash || '').replace('#', '').trim();
-  const validViews = ['beranda', 'profil', 'program', 'ekstrakurikuler', 'sekolah-formal', 'psb', 'artikel', 'galeri', 'kontak'];
+  const validViews = ['beranda', 'profil', 'program', 'ekstrakurikuler', 'sekolah-formal', 'alumni', 'psb', 'artikel', 'galeri', 'kontak'];
   if (rawHash && validViews.includes(rawHash)) {
     navigateToView(rawHash, false);
   } else {
@@ -3157,7 +3352,7 @@ function togglePortalDisplayMode() {
 }
 
 function navigateToView(viewId, updateHistory = true) {
-  const validViews = ['beranda', 'profil', 'program', 'ekstrakurikuler', 'sekolah-formal', 'psb', 'artikel', 'galeri', 'kontak'];
+  const validViews = ['beranda', 'profil', 'program', 'ekstrakurikuler', 'sekolah-formal', 'alumni', 'psb', 'artikel', 'galeri', 'kontak'];
   if (!validViews.includes(viewId)) viewId = 'beranda';
 
   if (updateHistory) {
@@ -3913,3 +4108,439 @@ function initHeroFloatingPhoto() {
   // Adapt on screen resize
   window.addEventListener('resize', applyHeroPhotoPosition);
 }
+
+
+// ================= ALUMNI & DATA LULUSAN CONTROLLER =================
+function getAlumniFallbackSvg(item, index) {
+  const is30Juz = item.statusTahfidz === '30_juz';
+  const bgColors = is30Juz
+    ? ['#065f46', '#047857', '#f59e0b']
+    : ['#1e293b', '#0f172a', '#38bdf8'];
+  const icon = is30Juz ? '👑' : '🎓';
+  const cleanName = (item.name || 'Alumni').replace(/^(dr\.|ust\.|h\.|hj\.)\s*/i, '').trim();
+  const initial = cleanName.charAt(0).toUpperCase();
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+    <defs>
+      <linearGradient id="g_alm_${index}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${bgColors[0]}"/>
+        <stop offset="100%" stop-color="${bgColors[1]}"/>
+      </linearGradient>
+    </defs>
+    <rect width="100%" height="100%" rx="80" fill="url(#g_alm_${index})"/>
+    <circle cx="80" cy="80" r="70" fill="none" stroke="${bgColors[2]}" stroke-width="2.5" opacity="0.6"/>
+    <text x="80" y="88" font-family="system-ui, -apple-system, sans-serif" font-size="46" fill="#ffffff" font-weight="800" text-anchor="middle">${initial}</text>
+    <text x="80" y="126" font-size="22" text-anchor="middle">${icon}</text>
+  </svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+function renderAlumni(filteredList) {
+  const list = filteredList || getFilteredAlumniData();
+  renderAlumniCards(list);
+  renderAlumniTable(list);
+  updateAlumniStats();
+}
+
+function getFilteredAlumniData() {
+  let list = Array.isArray(WebState.alumni) ? [...WebState.alumni] : [];
+
+  // Filter Category
+  if (WebState.alumniFilterCategory === '30_juz') {
+    list = list.filter(a => a.statusTahfidz === '30_juz');
+  } else if (WebState.alumniFilterCategory === 'binnadzor') {
+    list = list.filter(a => a.statusTahfidz === 'binnadzor');
+  } else if (WebState.alumniFilterCategory === 'kampus') {
+    list = list.filter(a => a.lanjutanStudi && a.lanjutanStudi.trim() !== '');
+  }
+
+  // Filter Year
+  if (WebState.alumniFilterYear && WebState.alumniFilterYear !== 'all') {
+    const yr = parseInt(WebState.alumniFilterYear, 10);
+    list = list.filter(a => a.tahunLulus === yr);
+  }
+
+  // Filter Search
+  if (WebState.alumniSearchQuery && WebState.alumniSearchQuery.trim() !== '') {
+    const q = WebState.alumniSearchQuery.toLowerCase().trim();
+    list = list.filter(a =>
+      (a.name && a.name.toLowerCase().includes(q)) ||
+      (a.lanjutanStudi && a.lanjutanStudi.toLowerCase().includes(q)) ||
+      (a.jurusan && a.jurusan.toLowerCase().includes(q)) ||
+      (a.sekolahAsalPondok && a.sekolahAsalPondok.toLowerCase().includes(q)) ||
+      (a.domisili && a.domisili.toLowerCase().includes(q)) ||
+      (a.profesiSaatIni && a.profesiSaatIni.toLowerCase().includes(q))
+    );
+  }
+
+  return list;
+}
+
+function renderAlumniCards(list) {
+  const grid = document.getElementById('alumniCardsGrid');
+  const emptyState = document.getElementById('alumniEmptyState');
+  if (!grid) return;
+
+  if (list.length === 0) {
+    grid.innerHTML = '';
+    if (emptyState) emptyState.style.display = 'block';
+    return;
+  }
+  if (emptyState) emptyState.style.display = 'none';
+
+  grid.innerHTML = list.map((item, idx) => {
+    const is30Juz = item.statusTahfidz === '30_juz';
+    const badgeClass = is30Juz ? 'badge-30juz' : 'badge-binnadzor';
+    const badgeText = is30Juz ? '👑 30 Juz Bersanad' : '📜 Wisuda Binnadzor';
+    const fallbackSvg = getAlumniFallbackSvg(item, idx);
+    const photoSrc = item.foto && item.foto.trim() !== '' ? item.foto : fallbackSvg;
+    const angkatanText = item.angkatan || `Angkatan ${item.tahunLulus || ''}`;
+    const delayClass = `reveal-delay-${(idx % 4) + 1}`;
+
+    return `
+      <div class="alumni-card reveal-on-scroll reveal-up ${delayClass}">
+        <div class="alumni-card-header">
+          <span class="alumni-tahfidz-badge ${badgeClass}">
+            ${badgeText}
+          </span>
+          <span class="alumni-angkatan-tag">${escapeHtml(angkatanText)}</span>
+        </div>
+        <div class="alumni-card-body">
+          <div class="alumni-profile-row">
+            <div class="alumni-avatar-frame">
+              <img src="${photoSrc}" alt="${escapeHtml(item.name)}" class="alumni-avatar-img" onerror="this.onerror=null; this.src='${fallbackSvg}';" loading="lazy">
+            </div>
+            <div class="alumni-name-box">
+              <h4>${escapeHtml(item.name)}</h4>
+              <span class="alumni-status-sub">${escapeHtml(item.profesiSaatIni || 'Alumni Santri')}</span>
+            </div>
+          </div>
+
+          <ul class="alumni-meta-list">
+            ${item.lanjutanStudi ? `
+              <li class="alumni-meta-item">
+                <span class="icon">🏛️</span>
+                <span><strong>Studi:</strong> ${escapeHtml(item.lanjutanStudi)} ${item.jurusan ? `(${escapeHtml(item.jurusan)})` : ''}</span>
+              </li>
+            ` : ''}
+            ${item.sekolahAsalPondok ? `
+              <li class="alumni-meta-item">
+                <span class="icon">🏫</span>
+                <span><strong>Almamater:</strong> ${escapeHtml(item.sekolahAsalPondok)}</span>
+              </li>
+            ` : ''}
+            ${item.domisili ? `
+              <li class="alumni-meta-item">
+                <span class="icon">📍</span>
+                <span><strong>Domisili:</strong> ${escapeHtml(item.domisili)}</span>
+              </li>
+            ` : ''}
+          </ul>
+
+          ${item.pesan ? `
+            <div class="alumni-quote-box">
+              "${escapeHtml(item.pesan)}"
+            </div>
+          ` : ''}
+
+          <div class="alumni-card-footer">
+            <span style="font-size:11.5px; color:#64748b; font-weight:600;">Lulus Thn ${escapeHtml(String(item.tahunLulus || '-'))}</span>
+            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openModalAlumniDetail('${item.id}')" style="font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px;">
+              Lihat Detail →
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAlumniTable(list) {
+  const tbody = document.getElementById('alumniTableBody');
+  if (!tbody) return;
+
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:#64748b;">Tidak ada data alumni yang sesuai filter.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map((item, idx) => {
+    const is30Juz = item.statusTahfidz === '30_juz';
+    const badgeText = is30Juz ? '👑 30 Juz Bersanad' : '📜 Wisuda Binnadzor';
+    const badgeColor = is30Juz ? '#b45309; background:#fef3c7;' : '#1d4ed8; background:#dbeafe;';
+
+    return `
+      <tr>
+        <td style="text-align:center; font-weight:700; color:#64748b;">${idx + 1}</td>
+        <td>
+          <strong style="color:#0f172a; display:block;">${escapeHtml(item.name)}</strong>
+          <span style="font-size:11.5px; color:#64748b;">${escapeHtml(item.profesiSaatIni || '-')}</span>
+        </td>
+        <td><span style="font-weight:700; color:#047857;">${escapeHtml(item.angkatan || String(item.tahunLulus))}</span></td>
+        <td>
+          <span style="display:inline-block; font-size:11px; font-weight:800; padding:3px 8px; border-radius:999px; color:${badgeColor}">
+            ${badgeText}
+          </span>
+        </td>
+        <td><span style="font-size:12px;">${escapeHtml(item.sekolahAsalPondok || '-')}</span></td>
+        <td>
+          <strong style="color:#1e293b; font-size:12.5px; display:block;">${escapeHtml(item.lanjutanStudi || '-')}</strong>
+          ${item.jurusan ? `<span style="font-size:11.5px; color:#64748b;">${escapeHtml(item.jurusan)}</span>` : ''}
+        </td>
+        <td><span style="font-size:12px;">${escapeHtml(item.domisili || '-')}</span></td>
+        <td style="text-align:center;">
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="openModalAlumniDetail('${item.id}')" style="font-size:11.5px; padding:4px 10px; border-radius:999px;">
+            Detail
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function updateAlumniStats() {
+  const all = Array.isArray(WebState.alumni) ? WebState.alumni : [];
+  const elCount = document.getElementById('countAlumniAll');
+  if (elCount) elCount.textContent = all.length;
+}
+
+function switchAlumniFilterPill(category, btnEl) {
+  WebState.alumniFilterCategory = category;
+  document.querySelectorAll('#alumniFilterPills .alumni-pill-btn').forEach(btn => btn.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderAlumni();
+}
+
+function handleAlumniSearch() {
+  const input = document.getElementById('alumniSearchInput');
+  WebState.alumniSearchQuery = input ? input.value : '';
+  renderAlumni();
+}
+
+function handleAlumniAngkatanChange() {
+  const select = document.getElementById('alumniSelectAngkatan');
+  WebState.alumniFilterYear = select ? select.value : 'all';
+  renderAlumni();
+}
+
+function switchAlumniViewMode(mode) {
+  WebState.alumniViewMode = mode;
+  const grid = document.getElementById('alumniCardsGrid');
+  const tableWrap = document.getElementById('alumniTableWrap');
+  const btnGrid = document.getElementById('btnViewAlumniGrid');
+  const btnTable = document.getElementById('btnViewAlumniTable');
+
+  if (mode === 'table') {
+    if (grid) grid.style.display = 'none';
+    if (tableWrap) tableWrap.style.display = 'block';
+    if (btnGrid) btnGrid.classList.remove('active');
+    if (btnTable) btnTable.classList.add('active');
+  } else {
+    if (tableWrap) tableWrap.style.display = 'none';
+    if (grid) grid.style.display = 'grid';
+    if (btnTable) btnTable.classList.remove('active');
+    if (btnGrid) btnGrid.classList.add('active');
+  }
+}
+
+function resetAlumniFilter() {
+  WebState.alumniFilterCategory = 'all';
+  WebState.alumniFilterYear = 'all';
+  WebState.alumniSearchQuery = '';
+
+  const input = document.getElementById('alumniSearchInput');
+  if (input) input.value = '';
+
+  const select = document.getElementById('alumniSelectAngkatan');
+  if (select) select.value = 'all';
+
+  const pills = document.querySelectorAll('#alumniFilterPills .alumni-pill-btn');
+  pills.forEach((p, idx) => {
+    if (idx === 0) p.classList.add('active');
+    else p.classList.remove('active');
+  });
+
+  renderAlumni();
+}
+
+function openModalAlumniDetail(idOrIdx) {
+  const all = Array.isArray(WebState.alumni) ? WebState.alumni : [];
+  let item = null;
+  if (typeof idOrIdx === 'string' && idOrIdx.startsWith('alm-')) {
+    item = all.find(a => a.id === idOrIdx);
+  } else {
+    item = all[idOrIdx];
+  }
+  if (!item) return;
+
+  const modal = document.getElementById('modalAlumniDetail');
+  const body = document.getElementById('modalAlumniBody');
+  const title = document.getElementById('modalAlumniTitle');
+  const badge = document.getElementById('modalAlumniBadge');
+  if (!modal || !body) return;
+
+  if (title) title.textContent = item.name;
+  if (badge) badge.textContent = item.angkatan || `ANGKATAN ${item.tahunLulus}`;
+
+  const is30Juz = item.statusTahfidz === '30_juz';
+  const fallbackSvg = getAlumniFallbackSvg(item, 0);
+  const photoSrc = item.foto && item.foto.trim() !== '' ? item.foto : fallbackSvg;
+
+  body.innerHTML = `
+    <div style="display:flex; align-items:center; gap:18px; margin-bottom:20px; flex-wrap:wrap;">
+      <div style="width:76px; height:76px; border-radius:50%; overflow:hidden; border:3px solid #059669; box-shadow:0 4px 12px rgba(5,150,105,0.25); flex-shrink:0;">
+        <img src="${photoSrc}" alt="${escapeHtml(item.name)}" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null; this.src='${fallbackSvg}';">
+      </div>
+      <div>
+        <h3 style="font-size:18px; font-weight:800; color:#0f172a; margin:0 0 4px 0;">${escapeHtml(item.name)}</h3>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          <span style="font-size:11.5px; font-weight:800; padding:3px 10px; border-radius:999px; background:${is30Juz ? '#fef3c7; color:#92400e;' : '#dbeafe; color:#1e40af;'}">
+            ${is30Juz ? '👑 Khatam 30 Juz Bersanad' : '📜 Wisuda Binnadzor'}
+          </span>
+          <span style="font-size:12px; color:#64748b; font-weight:600;">• ${escapeHtml(item.angkatan || '')}</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:18px; margin-bottom:16px;">
+      <h4 style="font-size:13.5px; font-weight:800; color:#1e293b; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+        <span>📜</span> Riwayat Pendidikan &amp; Sanad di Pondok:
+      </h4>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12.5px;">
+        <div>
+          <span style="color:#64748b; display:block; font-size:11px;">Program Tahfidz:</span>
+          <strong>${escapeHtml(item.programTahfidz || '-')}</strong>
+        </div>
+        <div>
+          <span style="color:#64748b; display:block; font-size:11px;">Sanad / Pembimbing:</span>
+          <strong>${escapeHtml(item.sanadSyaikh || 'KH. Jauharul Afif, Lc. M.Ag')}</strong>
+        </div>
+        <div>
+          <span style="color:#64748b; display:block; font-size:11px;">Sekolah Formal Pondok:</span>
+          <strong>${escapeHtml(item.sekolahAsalPondok || '-')}</strong>
+        </div>
+        <div>
+          <span style="color:#64748b; display:block; font-size:11px;">Tahun Wisuda / Lulus:</span>
+          <strong>Tahun ${escapeHtml(String(item.tahunLulus || '-'))}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:18px; margin-bottom:16px;">
+      <h4 style="font-size:13.5px; font-weight:800; color:#1e293b; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+        <span>🏛️</span> Kiprah &amp; Studi Lanjutan Saat Ini:
+      </h4>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12.5px;">
+        <div>
+          <span style="color:#64748b; display:block; font-size:11px;">Perguruan Tinggi / Lembaga:</span>
+          <strong>${escapeHtml(item.lanjutanStudi || '-')}</strong>
+        </div>
+        <div>
+          <span style="color:#64748b; display:block; font-size:11px;">Program Studi / Jurusan:</span>
+          <strong>${escapeHtml(item.jurusan || '-')}</strong>
+        </div>
+        <div>
+          <span style="color:#64748b; display:block; font-size:11px;">Aktivitas / Profesi:</span>
+          <strong>${escapeHtml(item.profesiSaatIni || '-')}</strong>
+        </div>
+        <div>
+          <span style="color:#64748b; display:block; font-size:11px;">Domisili / Kota:</span>
+          <strong>${escapeHtml(item.domisili || '-')}</strong>
+        </div>
+      </div>
+    </div>
+
+    ${item.pesan ? `
+      <div style="background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:14px; padding:16px;">
+        <h4 style="font-size:13px; font-weight:800; color:#166534; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+          <span>💬</span> Pesan &amp; Motivasi untuk Santri:
+        </h4>
+        <p style="font-size:12.5px; font-style:italic; color:#1e3a8a; margin:0; line-height:1.6;">
+          "${escapeHtml(item.pesan)}"
+        </p>
+      </div>
+    ` : ''}
+  `;
+
+  modal.classList.add('active');
+}
+
+function closeModalAlumniDetail(e) {
+  if (e && e.target !== e.currentTarget && e.target.tagName !== 'BUTTON') return;
+  const modal = document.getElementById('modalAlumniDetail');
+  if (modal) modal.classList.remove('active');
+}
+
+function openModalFormAlumni() {
+  const modal = document.getElementById('modalFormAlumni');
+  if (modal) modal.classList.add('active');
+}
+
+function closeModalFormAlumni(e) {
+  if (e && e.target !== e.currentTarget && e.target.tagName !== 'BUTTON') return;
+  const modal = document.getElementById('modalFormAlumni');
+  if (modal) modal.classList.remove('active');
+}
+
+function submitFormAlumni(e) {
+  e.preventDefault();
+  const nama = document.getElementById('almNama')?.value.trim();
+  const jk = document.getElementById('almJK')?.value || 'L';
+  const tahun = parseInt(document.getElementById('almTahun')?.value || '2025', 10);
+  const capaian = document.getElementById('almCapaian')?.value || '30_juz';
+  const sekolah = document.getElementById('almSekolahFormal')?.value.trim() || 'MA Mamba\'ul Ma\'arif Denanyar';
+  const wa = document.getElementById('almWa')?.value.trim() || '';
+  const kampus = document.getElementById('almKampus')?.value.trim() || '';
+  const jurusan = document.getElementById('almJurusan')?.value.trim() || '';
+  const profesi = document.getElementById('almProfesi')?.value.trim() || '';
+  const domisili = document.getElementById('almDomisili')?.value.trim() || '';
+  const pesan = document.getElementById('almPesan')?.value.trim() || '';
+
+  if (!nama) {
+    showToast('Silakan isi nama lengkap Anda.', 'error');
+    return;
+  }
+
+  const newAlumnus = {
+    id: 'alm-' + Date.now(),
+    name: nama,
+    gender: jk,
+    angkatan: `Angkatan ${tahun}`,
+    tahunLulus: tahun,
+    programTahfidz: capaian === '30_juz' ? 'Tahfidz 30 Juz Bersanad' : (capaian === 'binnadzor' ? 'Wisuda Binnadzor Fashahah' : 'Tahfidz Al-Qur\'an'),
+    statusTahfidz: capaian,
+    sanadSyaikh: 'KH. Jauharul Afif, Lc. M.Ag / Hj. Mazidatul Faizah, M.Si',
+    sekolahAsalPondok: sekolah,
+    lanjutanStudi: kampus,
+    jurusan: jurusan,
+    profesiSaatIni: profesi || 'Alumni Santri',
+    domisili: domisili,
+    foto: '',
+    pesan: pesan,
+    kontakWa: wa
+  };
+
+  if (!Array.isArray(WebState.alumni)) WebState.alumni = [];
+  WebState.alumni.unshift(newAlumnus);
+
+  try {
+    localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(WebState.alumni));
+  } catch (err) {}
+
+  renderAlumni();
+  closeModalFormAlumni();
+  showToast('Alhamdulillah, data alumni Anda berhasil dicatat!', 'success');
+  document.getElementById('formUpdateAlumni')?.reset();
+}
+
+window.renderAlumni = renderAlumni;
+window.switchAlumniFilterPill = switchAlumniFilterPill;
+window.handleAlumniSearch = handleAlumniSearch;
+window.handleAlumniAngkatanChange = handleAlumniAngkatanChange;
+window.switchAlumniViewMode = switchAlumniViewMode;
+window.resetAlumniFilter = resetAlumniFilter;
+window.openModalAlumniDetail = openModalAlumniDetail;
+window.closeModalAlumniDetail = closeModalAlumniDetail;
+window.openModalFormAlumni = openModalFormAlumni;
+window.closeModalFormAlumni = closeModalFormAlumni;
+window.submitFormAlumni = submitFormAlumni;

@@ -7,7 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Asrama Tahfidz Sunan Bonang - Yayasan PP. Mamba'ul Ma'arif Denanyar Jombang</title>
-  <link rel="stylesheet" href="website.css?v=20261126-v5">
+  <link rel="stylesheet" href="website.css?v=20261126-v6">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
   <script>
     // Global standalone SVG Fallbacks (Offline & Instant Error Safe)
@@ -148,6 +148,7 @@
             <li><a href="#program" class="nav-link" onclick="navigateToView('program'); return false;">Program Tahfidz</a></li>
             <li><a href="#ekstrakurikuler" class="nav-link" onclick="navigateToView('ekstrakurikuler'); return false;">Ekstrakurikuler</a></li>
             <li><a href="#sekolah-formal" class="nav-link" onclick="navigateToView('sekolah-formal'); return false;">Sekolah Formal <span class="nav-badge-dot">6</span></a></li>
+            <li><a href="#alumni" class="nav-link" onclick="navigateToView('alumni'); return false;">Data Alumni</a></li>
             <li><a href="#psb" class="nav-link" onclick="navigateToView('psb'); return false;">Pendaftaran (PSB)</a></li>
             <li><a href="#artikel" class="nav-link" onclick="navigateToView('artikel'); return false;">Berita</a></li>
             <li><a href="#galeri" class="nav-link" onclick="navigateToView('galeri'); return false;">Galeri</a></li>
@@ -182,6 +183,7 @@
     <a href="#program" class="mobile-chip" onclick="navigateToView('program'); return false;">📖 Program Tahfidz</a>
     <a href="#ekstrakurikuler" class="mobile-chip" onclick="navigateToView('ekstrakurikuler'); return false;">🎨 Ekstrakurikuler</a>
     <a href="#sekolah-formal" class="mobile-chip" onclick="navigateToView('sekolah-formal'); return false;">🏫 6 Sekolah Formal</a>
+    <a href="#alumni" class="mobile-chip" onclick="navigateToView('alumni'); return false;">🎓 Data Alumni</a>
     <a href="#psb" class="mobile-chip" onclick="navigateToView('psb'); return false;">📝 PSB Online</a>
     <a href="#artikel" class="mobile-chip" onclick="navigateToView('artikel'); return false;">📰 Berita</a>
     <a href="#galeri" class="mobile-chip" onclick="navigateToView('galeri'); return false;">📸 Galeri</a>
@@ -208,6 +210,7 @@
         <li><a href="#program" class="mobile-nav-item" onclick="navigateToView('program'); toggleMobileNav(true); return false;"><span>📖</span> Program Tahfidz</a></li>
         <li><a href="#ekstrakurikuler" class="mobile-nav-item" onclick="navigateToView('ekstrakurikuler'); toggleMobileNav(true); return false;"><span>🎨</span> Ekstrakurikuler Santri</a></li>
         <li><a href="#sekolah-formal" class="mobile-nav-item" onclick="navigateToView('sekolah-formal'); toggleMobileNav(true); return false;"><span>🏫</span> 6 Sekolah Formal &amp; Brosur</a></li>
+        <li><a href="#alumni" class="mobile-nav-item" onclick="navigateToView('alumni'); toggleMobileNav(true); return false;"><span>🎓</span> Data Lulusan / Alumni</a></li>
         <li><a href="#psb" class="mobile-nav-item" onclick="navigateToView('psb'); toggleMobileNav(true); return false;"><span>📝</span> Pendaftaran Santri (PSB)</a></li>
         <li><a href="#artikel" class="mobile-nav-item" onclick="navigateToView('artikel'); toggleMobileNav(true); return false;"><span>📰</span> Berita &amp; Artikel</a></li>
         <li><a href="#galeri" class="mobile-nav-item" onclick="navigateToView('galeri'); toggleMobileNav(true); return false;"><span>📸</span> Galeri Foto</a></li>
@@ -953,6 +956,148 @@
       <!-- Grid 6 Formal Schools -->
       <div class="school-grid" id="formalSchoolsGrid">
         <!-- Rendered dynamically by website.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3.8 DATA LULUSAN & ALUMNI PONDOK ================= -->
+  <section id="alumni" class="section-wrapper alumni-wrapper">
+    <div class="section-container">
+      <!-- Navigasi Pintasan Kembali ke Beranda -->
+      <div class="view-return-bar">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="navigateToView('beranda')">
+          <span>←</span> Kembali ke Beranda Utama
+        </button>
+        <span class="view-indicator-pill">🎓 Direktori Data Lulusan &amp; Alumni</span>
+      </div>
+
+      <div class="section-header reveal-on-scroll reveal-up">
+        <span class="section-tag tag-gold">Jejak Prestasi &amp; Kiprah Santri</span>
+        <h2 class="section-title">Direktori Data Lulusan &amp; Alumni</h2>
+        <p class="section-desc">
+          Mencetak generasi Al-Qur'an bersanad yang mutqin, mandiri, dan berakhlakul karimah. Para alumni melanjutkan studi di berbagai perguruan tinggi negeri terkemuka, Ma'had Aly, hingga universitas luar negeri.
+        </p>
+      </div>
+
+      <!-- Stat Counter Cards -->
+      <div class="alumni-stats-grid reveal-on-scroll reveal-up">
+        <div class="alumni-stat-card">
+          <div class="alumni-stat-icon">🎓</div>
+          <div class="alumni-stat-num" id="alumniStatTotal">285+</div>
+          <div class="alumni-stat-label">Total Wisudawan &amp; Alumni</div>
+        </div>
+        <div class="alumni-stat-card gold">
+          <div class="alumni-stat-icon">👑</div>
+          <div class="alumni-stat-num" id="alumniStat30Juz">142+</div>
+          <div class="alumni-stat-label">Khatam Tahfidz 30 Juz Bersanad</div>
+        </div>
+        <div class="alumni-stat-card">
+          <div class="alumni-stat-icon">📜</div>
+          <div class="alumni-stat-num" id="alumniStatBinnadzor">230+</div>
+          <div class="alumni-stat-label">Wisuda Binnadzor Fashahah</div>
+        </div>
+        <div class="alumni-stat-card gold">
+          <div class="alumni-stat-icon">🏛️</div>
+          <div class="alumni-stat-num" id="alumniStatKampus">38+</div>
+          <div class="alumni-stat-label">Sebaran Kampus &amp; Ma'had Aly</div>
+        </div>
+      </div>
+
+      <!-- Controls Bar (Filter + Search + View Switcher) -->
+      <div class="alumni-controls-bar reveal-on-scroll reveal-up">
+        <!-- Filter Category Pills -->
+        <div class="alumni-filter-pills" id="alumniFilterPills">
+          <button type="button" class="alumni-pill-btn active" onclick="switchAlumniFilterPill('all', this)">
+            Semua Capaian (<span id="countAlumniAll">0</span>)
+          </button>
+          <button type="button" class="alumni-pill-btn" onclick="switchAlumniFilterPill('30_juz', this)">
+            <span>👑</span> Khatam 30 Juz
+          </button>
+          <button type="button" class="alumni-pill-btn" onclick="switchAlumniFilterPill('binnadzor', this)">
+            <span>📜</span> Wisuda Binnadzor
+          </button>
+          <button type="button" class="alumni-pill-btn" onclick="switchAlumniFilterPill('kampus', this)">
+            <span>🏛️</span> Lanjut PTN / Ma'had Aly
+          </button>
+        </div>
+
+        <!-- Right Side: Search + Angkatan Select + View Mode Toggle -->
+        <div class="alumni-tools-right">
+          <div class="alumni-search-box">
+            <span class="alumni-search-icon">🔍</span>
+            <input type="text" id="alumniSearchInput" class="alumni-search-input" placeholder="Cari nama, kampus, kota..." oninput="handleAlumniSearch()">
+          </div>
+
+          <select id="alumniSelectAngkatan" class="alumni-select-angkatan" onchange="handleAlumniAngkatanChange()">
+            <option value="all">Semua Angkatan</option>
+            <option value="2025">Angkatan IV (2025)</option>
+            <option value="2024">Angkatan III (2024)</option>
+            <option value="2023">Angkatan II (2023)</option>
+            <option value="2022">Angkatan I (2022)</option>
+          </select>
+
+          <div class="alumni-view-switch">
+            <button type="button" class="alumni-view-btn active" id="btnViewAlumniGrid" onclick="switchAlumniViewMode('grid')" title="Tampilan Kartu">
+              <span>🎴</span> Kartu
+            </button>
+            <button type="button" class="alumni-view-btn" id="btnViewAlumniTable" onclick="switchAlumniViewMode('table')" title="Tampilan Tabel Direktori">
+              <span>📋</span> Tabel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Container 1: Grid Kartu Profil Alumni -->
+      <div class="alumni-grid" id="alumniCardsGrid">
+        <!-- Rendered dynamically by website.js -->
+      </div>
+
+      <!-- Container 2: Tabel Direktori Lengkap Alumni -->
+      <div class="alumni-table-wrap" id="alumniTableWrap" style="display:none;">
+        <table class="alumni-table">
+          <thead>
+            <tr>
+              <th style="width:40px; text-align:center;">No</th>
+              <th>Nama Alumni &amp; Gelar</th>
+              <th>Angkatan</th>
+              <th>Capaian Tahfidz</th>
+              <th>Sekolah di Pondok</th>
+              <th>Kampus / Lembaga Lanjutan</th>
+              <th>Kota Asal</th>
+              <th style="text-align:center;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="alumniTableBody">
+            <!-- Rendered dynamically by website.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State if search/filter returns 0 -->
+      <div id="alumniEmptyState" style="display:none; text-align:center; padding:45px 20px; background:#fff; border-radius:16px; border:1px solid #e2e8f0; margin-bottom:30px;">
+        <div style="font-size:42px; margin-bottom:10px;">🔍</div>
+        <h4 style="font-size:16px; font-weight:700; color:#334155; margin-bottom:4px;">Data Alumni Tidak Ditemukan</h4>
+        <p style="font-size:13px; color:#64748b; margin-bottom:14px;">Coba gunakan kata kunci pencarian lain atau pilih filter 'Semua Capaian'.</p>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="resetAlumniFilter()">Reset Pencarian</button>
+      </div>
+
+      <!-- CTA Ikatan Alumni & Update Data -->
+      <div class="alumni-cta-card reveal-on-scroll reveal-up">
+        <div class="alumni-cta-content">
+          <div class="alumni-cta-badge">🤝 IKATAN KELUARGA ALUMNI (IKA)</div>
+          <h3 class="alumni-cta-title">Anda Alumni Asrama Tahfidz Sunan Bonang?</h3>
+          <p class="alumni-cta-desc">
+            Mari terus sambung silaturahim dan berkontribusi untuk almamater. Perbarui data studi lanjut, domisili, atau profesi terkini Anda melalui formulir pendataan alumni.
+          </p>
+        </div>
+        <div class="alumni-cta-actions">
+          <button type="button" class="btn btn-gold btn-md" onclick="openModalFormAlumni()">
+            <span>📝</span> Form Pendataan Alumni
+          </button>
+          <a href="https://api.whatsapp.com/send?phone=6281234567890&text=Assalamu%27alaikum%20Pengurus%20Alumni%20Asrama%20Tahfidz%20Sunan%20Bonang%20Denanyar..." target="_blank" class="btn btn-outline-light btn-md" style="border:1.5px solid rgba(255,255,255,0.7); color:#fff; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+            <span>💬</span> Hubungi Pengurus Alumni
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -1781,6 +1926,7 @@
           <li><a href="#beranda">Beranda</a></li>
           <li><a href="#profil">Profil Pesantren</a></li>
           <li><a href="#program">Program Pendidikan</a></li>
+          <li><a href="#alumni" onclick="navigateToView('alumni'); return false;">Data Lulusan / Alumni</a></li>
           <li><a href="#psb">Pendaftaran Santri (PSB)</a></li>
           <li><a href="#artikel">Berita & Artikel</a></li>
           <li><a href="#galeri">Galeri Dokumentasi</a></li>
@@ -2439,6 +2585,127 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="firebase-sync.js"></script>
   <script src="image-cropper.js"></script>
-  <script src="website.js?v=20261126-v5"></script>
+  <script src="website.js?v=20261126-v6"></script>
+  <!-- ================= MODAL DETAIL PROFIL ALUMNI ================= -->
+  <div class="modal-overlay" id="modalAlumniDetail" onclick="closeModalAlumniDetail(event)">
+    <div class="interactive-detail-modal-box" onclick="event.stopPropagation()" style="max-width:680px; width:92%; background:#ffffff; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px -15px rgba(0,0,0,0.4); display:flex; flex-direction:column; max-height:92vh;">
+      <div style="padding:18px 24px; color:#fff; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, #065f46 0%, #047857 100%);">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-size:28px;">🎓</div>
+          <div>
+            <span id="modalAlumniBadge" style="display:inline-block; font-size:11px; font-weight:800; background:rgba(255,255,255,0.22); color:#fff; padding:2px 8px; border-radius:999px; margin-bottom:4px; letter-spacing:0.5px;">PROFIL ALUMNI</span>
+            <h3 id="modalAlumniTitle" style="font-size:17px; font-weight:800; color:#fff; margin:0; line-height:1.2;">Detail Lulusan</h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalAlumniDetail()" style="background:none; border:none; color:#ffffff; font-size:26px; cursor:pointer; line-height:1; padding:2px 6px;" title="Tutup">&times;</button>
+      </div>
+
+      <div id="modalAlumniBody" style="padding:24px; overflow-y:auto; flex-grow:1; background:#f8fafc;">
+        <!-- Dynamic content injected by website.js -->
+      </div>
+
+      <div style="padding:14px 22px; background:#f1f5f9; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span style="font-size:12px; color:#64748b;">Ikatan Keluarga Alumni (IKA) Asrama Tahfidz Sunan Bonang</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModalAlumniDetail()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL FORMULIR PENDATAAN ALUMNI ================= -->
+  <div class="modal-overlay" id="modalFormAlumni" onclick="closeModalFormAlumni(event)">
+    <div class="interactive-detail-modal-box" onclick="event.stopPropagation()" style="max-width:680px; width:92%; background:#ffffff; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px -15px rgba(0,0,0,0.4); display:flex; flex-direction:column; max-height:92vh;">
+      <div style="padding:18px 24px; color:#fff; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, #065f46 0%, #047857 100%);">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-size:28px;">📝</div>
+          <div>
+            <span style="display:inline-block; font-size:11px; font-weight:800; background:rgba(255,255,255,0.22); color:#fff; padding:2px 8px; border-radius:999px; margin-bottom:4px;">IKATAN ALUMNI</span>
+            <h3 style="font-size:17px; font-weight:800; color:#fff; margin:0; line-height:1.2;">Formulir Pembaruan Data Alumni</h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeModalFormAlumni()" style="background:none; border:none; color:#ffffff; font-size:26px; cursor:pointer; line-height:1; padding:2px 6px;" title="Tutup">&times;</button>
+      </div>
+
+      <div style="padding:22px; overflow-y:auto; flex-grow:1; background:#ffffff;">
+        <p style="font-size:12.5px; color:#475569; margin-bottom:18px;">
+          Bagi alumni santri Asrama Tahfidz Sunan Bonang Denanyar, silakan lengkapi atau perbarui informasi kelulusan Anda di bawah ini untuk mempererat jejaring alumni dan motivasi adik-adik santri.
+        </p>
+        <form id="formUpdateAlumni" onsubmit="submitFormAlumni(event)">
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label class="form-label">Nama Lengkap &amp; Gelar <span style="color:#ef4444;">*</span></label>
+              <input type="text" id="almNama" class="form-control" required placeholder="Contoh: Muhammad Fatih, S.Ag.">
+            </div>
+            <div class="form-group form-col">
+              <label class="form-label">Jenis Kelamin <span style="color:#ef4444;">*</span></label>
+              <select id="almJK" class="form-control" required>
+                <option value="L">Laki-laki (Putra)</option>
+                <option value="P">Perempuan (Putri)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label class="form-label">Tahun Kelulusan / Angkatan <span style="color:#ef4444;">*</span></label>
+              <input type="number" id="almTahun" class="form-control" min="2010" max="2035" required placeholder="Contoh: 2024">
+            </div>
+            <div class="form-group form-col">
+              <label class="form-label">Capaian Tahfidz Saat Lulus <span style="color:#ef4444;">*</span></label>
+              <select id="almCapaian" class="form-control" required>
+                <option value="30_juz">👑 Khatam Tahfidz 30 Juz Bersanad</option>
+                <option value="binnadzor">📜 Wisuda Binnadzor Fashahah</option>
+                <option value="tahfidz_sebagian">📖 Tahfidz 10 - 29 Juz</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label class="form-label">Sekolah Formal Saat di Pondok</label>
+              <input type="text" id="almSekolahFormal" class="form-control" placeholder="Contoh: MA Mamba'ul Ma'arif / SMK Bisri Syansuri">
+            </div>
+            <div class="form-group form-col">
+              <label class="form-label">Nomor WhatsApp Aktif <span style="color:#ef4444;">*</span></label>
+              <input type="tel" id="almWa" class="form-control" required placeholder="08xxxxxxxxxx">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label class="form-label">Perguruan Tinggi / Lembaga Lanjutan</label>
+              <input type="text" id="almKampus" class="form-control" placeholder="Contoh: UIN Sunan Kalijaga / UNAIR / Al-Azhar">
+            </div>
+            <div class="form-group form-col">
+              <label class="form-label">Jurusan / Program Studi</label>
+              <input type="text" id="almJurusan" class="form-control" placeholder="Contoh: Ilmu Al-Qur'an dan Tafsir">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-col">
+              <label class="form-label">Aktivitas / Profesi Saat Ini</label>
+              <input type="text" id="almProfesi" class="form-control" placeholder="Contoh: Mahasiswa / Guru Tahfidz / Wirausaha">
+            </div>
+            <div class="form-group form-col">
+              <label class="form-label">Domisili / Kota Saat Ini</label>
+              <input type="text" id="almDomisili" class="form-control" placeholder="Contoh: Yogyakarta / Jombang">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Pesan, Kesan, atau Motivasi untuk Santri Junior</label>
+            <textarea id="almPesan" class="form-control" rows="3" placeholder="Tuliskan pengalaman berharga atau nasihat untuk adik-adik santri..."></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeModalFormAlumni()">Batal</button>
+            <button type="submit" class="btn btn-primary btn-sm" style="font-weight:800; padding:8px 20px;">
+              <span>💾</span> Simpan &amp; Kirim Data Alumni
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

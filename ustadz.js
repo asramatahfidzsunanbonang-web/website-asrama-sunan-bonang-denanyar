@@ -20,6 +20,84 @@ let UstadzState = {
   selectedSetoranUstadz: ''
 };
 
+// ================= HELPER NORMALISASI HALAQAH & ASATIDZ =================
+function normalizeHalaqah(raw, listHalaqah) {
+  if (!raw || typeof raw !== 'string') return '';
+  const s = raw.trim();
+  if (!s) return '';
+
+  const officialList = Array.isArray(listHalaqah) && listHalaqah.length > 0 
+    ? listHalaqah 
+    : (UstadzState?.settings?.daftarHalaqah || DEFAULT_SETTINGS?.daftarHalaqah || []);
+
+  // 1. Exact match (case-insensitive)
+  const exact = officialList.find(o => o.toLowerCase() === s.toLowerCase());
+  if (exact) return exact;
+
+  // 2. Class code match: "Kelas A", "Kelas B1", etc.
+  const classMatch = s.match(/Kelas\s*([A-E][1-3]?)\b/i);
+  if (classMatch) {
+    const code = classMatch[1].toUpperCase();
+    const matchedClass = officialList.find(o => {
+      const m = o.match(/Kelas\s*([A-E][1-3]?)\b/i);
+      return m && m[1].toUpperCase() === code;
+    });
+    if (matchedClass) return matchedClass;
+  }
+
+  // 3. Keyword / ustadz name match
+  const low = s.toLowerCase();
+  const rules = [
+    { keys: ['fatih prayogi', 'yogi'], targetPrefix: 'Kelas A' },
+    { keys: ['fazaki', 'kaffa'], targetPrefix: 'Kelas B1' },
+    { keys: ['jauhar baihaqi', 'baihaqi', 'haqi'], exclude: ['dzul fahmi'], targetPrefix: 'Kelas B2' },
+    { keys: ['sholahuddin', 'sholah'], targetPrefix: 'Kelas B3' },
+    { keys: ['hafi'], targetPrefix: 'Kelas C1' },
+    { keys: ['alfan'], targetPrefix: 'Kelas C2' },
+    { keys: ['imam rosyid', 'rosyid'], exclude: ['ridlo', 'ridho'], targetPrefix: 'Kelas C3' },
+    { keys: ['bayu', 'sadewo'], targetPrefix: 'Kelas D1' },
+    { keys: ['syahrul', 'arul'], targetPrefix: 'Kelas D2' },
+    { keys: ['muhith'], targetPrefix: 'Kelas D3' },
+    { keys: ['aladinil', 'adin', 'maulana irsyad', 'irsyad'], targetPrefix: 'Kelas E1' },
+    { keys: ['rizqi', 'rizki', 'rafqi', 'izud', 'mauludin'], targetPrefix: 'Kelas E2' },
+    { keys: ['misbah', 'mujtahid'], targetIncludes: 'Misbahul' },
+    { keys: ['syafi', 'kholiq', 'kholid'], targetIncludes: 'Syafi' },
+    { keys: ['mudzak'], targetIncludes: 'Mudzakir' },
+    { keys: ['burhan'], targetIncludes: 'Burhanuddin' },
+    { keys: ['ghoffar', 'ghooffaar', 'wijaya', 'wijoyo'], targetIncludes: 'Ghoffar' },
+    { keys: ['fatih bagus', 'aslamuddin', 'aslamudin'], targetIncludes: 'Fatih Bagus' },
+    { keys: ['dzul fahmi', 'fahmi'], targetIncludes: 'Dzul Fahmi' },
+    { keys: ['izzul', 'walady'], targetIncludes: 'Izzul' },
+    { keys: ['rosyid rid', 'ridlo', 'ridho'], targetIncludes: 'Rosyid Ridlo' },
+    { keys: ['jauharul afif', 'pasca'], targetIncludes: 'Jauharul Afif' }
+  ];
+
+  for (const r of rules) {
+    if (r.exclude && r.exclude.some(ex => low.includes(ex))) continue;
+    if (r.keys.some(k => low.includes(k))) {
+      if (r.targetPrefix) {
+        const found = officialList.find(o => o.startsWith(r.targetPrefix));
+        if (found) return found;
+      }
+      if (r.targetIncludes) {
+        const found = officialList.find(o => o.includes(r.targetIncludes));
+        if (found) return found;
+      }
+    }
+  }
+
+  return s;
+}
+
+function isSameHalaqah(h1, h2, listHalaqah) {
+  if (!h1 || !h2) return false;
+  if (h1 === h2) return true;
+  if (h1.trim().toLowerCase() === h2.trim().toLowerCase()) return true;
+  const n1 = normalizeHalaqah(h1, listHalaqah);
+  const n2 = normalizeHalaqah(h2, listHalaqah);
+  return n1.toLowerCase() === n2.toLowerCase();
+}
+
 // ================= INITIALIZATION =================
 document.addEventListener('DOMContentLoaded', () => {
   initUstadzStorage();
@@ -29,9 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Load remembered ustadz
   let savedUstadz = localStorage.getItem('sitahfidz_my_ustadz') || '';
-  if (savedUstadz.includes('Rafqi')) savedUstadz = 'Kelas E1 (Ust. Adin)';
-  if (savedUstadz.includes('Izud')) savedUstadz = 'Kelas E2 (Ust. Rizki)';
   if (savedUstadz) {
+    savedUstadz = normalizeHalaqah(savedUstadz);
     UstadzState.selectedUstadz = savedUstadz;
     UstadzState.selectedSetoranUstadz = savedUstadz;
   }
@@ -104,27 +181,25 @@ function initUstadzStorage() {
     localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(UstadzState.santri));
   }
 
-  // Auto-clean orphan halaqah: jika halaqah santri sudah dihapus dari Pengaturan Pondok, bersihkan halaqah santri tersebut
-  const validHalaqahUst = new Set((UstadzState.settings.daftarHalaqah || []).map(h => (h || '').trim().toLowerCase()));
-  if (validHalaqahUst.size > 0) {
-    let ustCleaned = false;
-    UstadzState.santri.forEach(s => {
-      if (s.halaqah && !validHalaqahUst.has(s.halaqah.trim().toLowerCase())) {
-        s.halaqah = '';
-        ustCleaned = true;
-      }
-    });
-    if (ustCleaned) {
-      localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(UstadzState.santri));
-    }
-  }
-
-  // Auto-migration: pastikan kelasSekolah tersedia
+  // Normalisasi dan standardisasi halaqah santri secara cerdas (tidak pernah mengosongkan/menghapus halaqah)
+  let ustUpdated = false;
   UstadzState.santri.forEach(s => {
     if (s.kelasSekolah === undefined) {
       s.kelasSekolah = '';
     }
+    if (s && s.halaqah) {
+      const normH = normalizeHalaqah(s.halaqah, UstadzState.settings.daftarHalaqah);
+      if (normH && normH !== s.halaqah) {
+        s.halaqah = normH;
+        ustUpdated = true;
+      }
+    }
   });
+  if (ustUpdated) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(UstadzState.santri));
+    } catch(e) {}
+  }
 
   const savedSetoran = localStorage.getItem(STORAGE_KEYS.SETORAN);
   if (savedSetoran) {
@@ -342,9 +417,16 @@ function getDaftarUstadzHalaqah() {
   });
 
   (UstadzState.santri || []).forEach(s => {
-    const h = (s.halaqah || '').trim().toLowerCase();
-    if (h && counts.hasOwnProperty(h)) {
-      counts[h]++;
+    const rawH = (s.halaqah || '').trim();
+    if (!rawH) return;
+    const normH = normalizeHalaqah(rawH, uniqueOfficial).toLowerCase();
+    if (counts.hasOwnProperty(normH)) {
+      counts[normH]++;
+    } else {
+      const matched = uniqueOfficial.find(off => isSameHalaqah(off, rawH, uniqueOfficial));
+      if (matched && counts.hasOwnProperty(matched.toLowerCase())) {
+        counts[matched.toLowerCase()]++;
+      }
     }
   });
 
@@ -441,7 +523,7 @@ function getFilteredAbsensiSantri() {
   if (!search) {
     // KONDISI DEFAULT (Cari Kosong): 100% hanya menampilkan santri halaqah binaan beliau sendiri
     return UstadzState.santri
-      .filter(s => !selectedUstadz || s.halaqah === selectedUstadz)
+      .filter(s => !selectedUstadz || isSameHalaqah(s.halaqah, selectedUstadz))
       .map(s => ({ ...s, isBadal: false }));
   }
 
@@ -454,7 +536,7 @@ function getFilteredAbsensiSantri() {
       return match;
     })
     .map(s => {
-      const isBadal = Boolean(selectedUstadz && s.halaqah !== selectedUstadz);
+      const isBadal = Boolean(selectedUstadz && !isSameHalaqah(s.halaqah, selectedUstadz));
       return { ...s, isBadal };
     })
     .sort((a, b) => {
@@ -956,7 +1038,7 @@ function renderSetoranTable() {
     if (selectedUstadz) {
       const santriObj = UstadzState.santri.find(s => s.id === item.santriId);
       const halaqahSantri = santriObj ? santriObj.halaqah : (item.halaqah || '');
-      const matchUstadz = halaqahSantri === selectedUstadz || 
+      const matchUstadz = isSameHalaqah(halaqahSantri, selectedUstadz) || 
         (item.penyimak && item.penyimak.toLowerCase().includes(selectedUstadz.toLowerCase()));
       if (!matchUstadz) return false;
     }
@@ -1048,13 +1130,13 @@ function openModalSetoran(preselectedSantriId = null) {
     
     // Sort santri so current ustadz's students appear first
     const sortedSantri = [...UstadzState.santri].sort((a, b) => {
-      const matchA = a.halaqah === UstadzState.selectedUstadz ? 0 : 1;
-      const matchB = b.halaqah === UstadzState.selectedUstadz ? 0 : 1;
+      const matchA = isSameHalaqah(a.halaqah, UstadzState.selectedUstadz) ? 0 : 1;
+      const matchB = isSameHalaqah(b.halaqah, UstadzState.selectedUstadz) ? 0 : 1;
       return matchA - matchB;
     });
 
     sortedSantri.forEach(s => {
-      const isMy = s.halaqah === UstadzState.selectedUstadz;
+      const isMy = isSameHalaqah(s.halaqah, UstadzState.selectedUstadz);
       const opt = document.createElement('option');
       opt.value = s.id;
       opt.textContent = `${isMy ? '⭐ ' : ''}${s.nama} (${s.program}${s.kelasSekolah ? ' - Kls ' + s.kelasSekolah : ''} - ${s.halaqah || 'Umum'})`;
@@ -1088,7 +1170,7 @@ function openModalSetoran(preselectedSantriId = null) {
   let defaultMusyrif = UstadzState.selectedUstadz || UstadzState.settings.kepalaTahfidz || '';
   if (preselectedSantriId) {
     const s = UstadzState.santri.find(x => x.id === preselectedSantriId);
-    const isBadal = Boolean(UstadzState.selectedUstadz && s && s.halaqah && s.halaqah !== UstadzState.selectedUstadz);
+    const isBadal = Boolean(UstadzState.selectedUstadz && s && s.halaqah && !isSameHalaqah(s.halaqah, UstadzState.selectedUstadz));
     if (isBadal) {
       // Santri titipan/badal: Penyimak adalah Ustadz pengganti yang aktif saat ini
       defaultMusyrif = UstadzState.selectedUstadz || s.halaqah;

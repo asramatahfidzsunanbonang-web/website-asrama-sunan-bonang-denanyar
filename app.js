@@ -38,6 +38,84 @@ let AppState = {
   activeFilterJuz: null
 };
 
+// ================= HELPER NORMALISASI HALAQAH & ASATIDZ =================
+function normalizeHalaqah(raw, listHalaqah) {
+  if (!raw || typeof raw !== 'string') return '';
+  const s = raw.trim();
+  if (!s) return '';
+
+  const officialList = Array.isArray(listHalaqah) && listHalaqah.length > 0 
+    ? listHalaqah 
+    : (AppState?.settings?.daftarHalaqah || DEFAULT_SETTINGS?.daftarHalaqah || []);
+
+  // 1. Exact match (case-insensitive)
+  const exact = officialList.find(o => o.toLowerCase() === s.toLowerCase());
+  if (exact) return exact;
+
+  // 2. Class code match: "Kelas A", "Kelas B1", etc.
+  const classMatch = s.match(/Kelas\s*([A-E][1-3]?)\b/i);
+  if (classMatch) {
+    const code = classMatch[1].toUpperCase();
+    const matchedClass = officialList.find(o => {
+      const m = o.match(/Kelas\s*([A-E][1-3]?)\b/i);
+      return m && m[1].toUpperCase() === code;
+    });
+    if (matchedClass) return matchedClass;
+  }
+
+  // 3. Keyword / ustadz name match
+  const low = s.toLowerCase();
+  const rules = [
+    { keys: ['fatih prayogi', 'yogi'], targetPrefix: 'Kelas A' },
+    { keys: ['fazaki', 'kaffa'], targetPrefix: 'Kelas B1' },
+    { keys: ['jauhar baihaqi', 'baihaqi', 'haqi'], exclude: ['dzul fahmi'], targetPrefix: 'Kelas B2' },
+    { keys: ['sholahuddin', 'sholah'], targetPrefix: 'Kelas B3' },
+    { keys: ['hafi'], targetPrefix: 'Kelas C1' },
+    { keys: ['alfan'], targetPrefix: 'Kelas C2' },
+    { keys: ['imam rosyid', 'rosyid'], exclude: ['ridlo', 'ridho'], targetPrefix: 'Kelas C3' },
+    { keys: ['bayu', 'sadewo'], targetPrefix: 'Kelas D1' },
+    { keys: ['syahrul', 'arul'], targetPrefix: 'Kelas D2' },
+    { keys: ['muhith'], targetPrefix: 'Kelas D3' },
+    { keys: ['aladinil', 'adin', 'maulana irsyad', 'irsyad'], targetPrefix: 'Kelas E1' },
+    { keys: ['rizqi', 'rizki', 'rafqi', 'izud', 'mauludin'], targetPrefix: 'Kelas E2' },
+    { keys: ['misbah', 'mujtahid'], targetIncludes: 'Misbahul' },
+    { keys: ['syafi', 'kholiq', 'kholid'], targetIncludes: 'Syafi' },
+    { keys: ['mudzak'], targetIncludes: 'Mudzakir' },
+    { keys: ['burhan'], targetIncludes: 'Burhanuddin' },
+    { keys: ['ghoffar', 'ghooffaar', 'wijaya', 'wijoyo'], targetIncludes: 'Ghoffar' },
+    { keys: ['fatih bagus', 'aslamuddin', 'aslamudin'], targetIncludes: 'Fatih Bagus' },
+    { keys: ['dzul fahmi', 'fahmi'], targetIncludes: 'Dzul Fahmi' },
+    { keys: ['izzul', 'walady'], targetIncludes: 'Izzul' },
+    { keys: ['rosyid rid', 'ridlo', 'ridho'], targetIncludes: 'Rosyid Ridlo' },
+    { keys: ['jauharul afif', 'pasca'], targetIncludes: 'Jauharul Afif' }
+  ];
+
+  for (const r of rules) {
+    if (r.exclude && r.exclude.some(ex => low.includes(ex))) continue;
+    if (r.keys.some(k => low.includes(k))) {
+      if (r.targetPrefix) {
+        const found = officialList.find(o => o.startsWith(r.targetPrefix));
+        if (found) return found;
+      }
+      if (r.targetIncludes) {
+        const found = officialList.find(o => o.includes(r.targetIncludes));
+        if (found) return found;
+      }
+    }
+  }
+
+  return s;
+}
+
+function isSameHalaqah(h1, h2, listHalaqah) {
+  if (!h1 || !h2) return false;
+  if (h1 === h2) return true;
+  if (h1.trim().toLowerCase() === h2.trim().toLowerCase()) return true;
+  const n1 = normalizeHalaqah(h1, listHalaqah);
+  const n2 = normalizeHalaqah(h2, listHalaqah);
+  return n1.toLowerCase() === n2.toLowerCase();
+}
+
 // ================= INITIALIZATION =================
 document.addEventListener('DOMContentLoaded', () => {
   initStorage();
@@ -182,55 +260,16 @@ function initStorage() {
     localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(AppState.santri));
   }
 
-  // Auto-clean orphan halaqah: jika halaqah santri sudah dihapus dari Pengaturan Pondok, bersihkan halaqah santri tersebut
-  const validHalaqahOnLoad = new Set((AppState.settings.daftarHalaqah || []).map(h => (h || '').trim().toLowerCase()));
-  if (validHalaqahOnLoad.size > 0) {
-    let santriCleaned = false;
-    AppState.santri.forEach(s => {
-      if (s.halaqah && !validHalaqahOnLoad.has(s.halaqah.trim().toLowerCase())) {
-        s.halaqah = '';
-        santriCleaned = true;
-      }
-    });
-    if (santriCleaned) {
-      localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(AppState.santri));
-    }
-  }
-
-  // Auto-migration: pastikan setiap santri memiliki data kelasSekolah & update halaqah Adin/Rizki jika ada
+  // Normalisasi dan standardisasi halaqah santri secara cerdas (tidak pernah mengosongkan/menghapus halaqah)
   let santriUpdated = false;
   AppState.santri.forEach(s => {
     if (s.kelasSekolah === undefined) {
       s.kelasSekolah = '';
     }
     if (s && s.halaqah) {
-      const lowerH = s.halaqah.trim().toLowerCase();
-      const HALAQAH_MAP = {
-        'kelas a (ust. yogi)': 'Kelas A (Ust. Fatih Prayogi)',
-        'kelas b1 (ust. kaffa)': 'Kelas B1 (Ust. Fazaki Sadid Al Kaffa)',
-        'kelas b2 (ust. haqi)': 'Kelas B2 (Ust. Jauhar Baihaqi)',
-        'kelas b3 (ust. sholah)': 'Kelas B3 (Ust. Sholahuddin Ilham)',
-        'kelas c1 (ust. hafi)': 'Kelas C1 (Ust. Hafi Masruli)',
-        'kelas c2 (ust. alfan)': 'Kelas C2 (Ust. Alfan Athallah)',
-        'kelas c3 (ust. rosyid)': 'Kelas C3 (Ust. Imam Rosyid)',
-        'kelas d1 (ust. bayu)': 'Kelas D1 (Ust. Indra Bayu Sadewo)',
-        'kelas d2 (ust. arul)': 'Kelas D2 (Ust. Syahrul Huda)',
-        'kelas d3 (ust. muhith)': 'Kelas D3 (Ust. Abdul Muhith)',
-        'kelas e1 (ust. adin)': 'Kelas E1 (Ust. Aladinil Hanif)',
-        'kelas e1 (ust. rafqi)': 'Kelas E1 (Ust. Aladinil Hanif)',
-        'kelas e2 (ust. rizki)': 'Kelas E2 (Ust. Rizqi Mauludin)',
-        'kelas e2 (ust. izud)': 'Kelas E2 (Ust. Rizqi Mauludin)',
-        'halaqah ust. misbakhul mujtahidin': 'Halaqah Ust. Misbahul Mujtahidin',
-        'halaqah ust. syafi\'ul kholid': 'Halaqah Ust. Syafi\'ul Kholiq',
-        'halaqah ust. mudzakkir': 'Halaqah Ust. Mudzakir',
-        'halaqah ust. burhan': 'Halaqah Ust. Burhanuddin',
-        'halaqah ust. m. abdul ghoffar wijoyo': 'Halaqah Ust. Abdul Ghoffar Wijaya',
-        'halaqah ust. fatih bagus aslamudin': 'Halaqah Ust. Fatih Bagus Aslamuddin',
-        'halaqah ust. fahmi': 'Halaqah Ust. Dzul Fahmi Al Haqiqi',
-        'halaqah ust. rosyid ridho': 'Halaqah Ust. Rosyid Ridlo'
-      };
-      if (HALAQAH_MAP[lowerH]) {
-        s.halaqah = HALAQAH_MAP[lowerH];
+      const normH = normalizeHalaqah(s.halaqah, AppState.settings.daftarHalaqah);
+      if (normH && normH !== s.halaqah) {
+        s.halaqah = normH;
         santriUpdated = true;
       }
     }
@@ -767,9 +806,16 @@ function getDaftarUstadzHalaqah() {
   });
 
   (AppState.santri || []).forEach(s => {
-    const h = (s.halaqah || '').trim().toLowerCase();
-    if (h && counts.hasOwnProperty(h)) {
-      counts[h]++;
+    const rawH = (s.halaqah || '').trim();
+    if (!rawH) return;
+    const normH = normalizeHalaqah(rawH, uniqueOfficial).toLowerCase();
+    if (counts.hasOwnProperty(normH)) {
+      counts[normH]++;
+    } else {
+      const matched = uniqueOfficial.find(off => isSameHalaqah(off, rawH, uniqueOfficial));
+      if (matched && counts.hasOwnProperty(matched.toLowerCase())) {
+        counts[matched.toLowerCase()]++;
+      }
     }
   });
 
@@ -868,7 +914,7 @@ function getFilteredAbsensiSantri() {
   const selectedUstadz = AppState.selectedAbsensiUstadz || '';
 
   return AppState.santri.filter(s => {
-    if (selectedUstadz && s.halaqah !== selectedUstadz) {
+    if (selectedUstadz && !isSameHalaqah(s.halaqah, selectedUstadz)) {
       return false;
     }
     if (progFilter && s.program !== progFilter) {
@@ -2248,7 +2294,7 @@ function renderSetoranTable() {
     if (selectedUstadz) {
       const santriObj = AppState.santri.find(s => s.id === item.santriId);
       const halaqahSantri = santriObj ? santriObj.halaqah : (item.halaqah || '');
-      const matchUstadz = halaqahSantri === selectedUstadz || 
+      const matchUstadz = isSameHalaqah(halaqahSantri, selectedUstadz) || 
         (item.penyimak && item.penyimak.toLowerCase().includes(selectedUstadz.toLowerCase()));
       if (!matchUstadz) return false;
     }
@@ -2865,7 +2911,7 @@ function renderSantriTable() {
       matchProg = s.program === progFilter;
     }
 
-    const matchHalaqah = !halaqahFilter || s.halaqah === halaqahFilter;
+    const matchHalaqah = !halaqahFilter || isSameHalaqah(s.halaqah, halaqahFilter);
     const matchKelas = !kelasFilter || s.kelasSekolah === kelasFilter;
     return matchSearch && matchProg && matchHalaqah && matchKelas;
   });

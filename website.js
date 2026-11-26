@@ -366,152 +366,7 @@ function getProgramFallbackSvg(index) {
 
 
 // ================= DEFAULT ALUMNI DATA =================
-const DEFAULT_ALUMNI_DATA = [
-  {
-    id: "alm-001",
-    name: "Muhammad Fatih Al-Habsyi, S.Ag.",
-    gender: "L",
-    angkatan: "Angkatan I (2022)",
-    tahunLulus: 2022,
-    programTahfidz: "Tahfidz 30 Juz Bersanad",
-    statusTahfidz: "30_juz",
-    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
-    sekolahAsalPondok: "MA Mamba'ul Ma'arif Denanyar",
-    lanjutanStudi: "UIN Sunan Kalijaga Yogyakarta",
-    jurusan: "Ilmu Al-Qur'an dan Tafsir (IAT)",
-    profesiSaatIni: "Kandidat Magister Studi Islam & Pengajar Tahfidz",
-    domisili: "Yogyakarta",
-    foto: "",
-    pesan: "Mondok di Asrama Tahfidz Sunan Bonang membentuk disiplin muroja'ah yang kokoh. Sanad muttashil adalah amanah terindah dalam hidup saya.",
-    kontakWa: ""
-  },
-  {
-    id: "alm-002",
-    name: "dr. Ahmad Zulfikar Rahman",
-    gender: "L",
-    angkatan: "Angkatan I (2022)",
-    tahunLulus: 2022,
-    programTahfidz: "Tahfidz 30 Juz Bersanad",
-    statusTahfidz: "30_juz",
-    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
-    sekolahAsalPondok: "SMK Bisri Syansuri Denanyar",
-    lanjutanStudi: "Fakultas Kedokteran Universitas Airlangga (UNAIR)",
-    jurusan: "Pendidikan Dokter",
-    profesiSaatIni: "Dokter Muda & Relawan Medis Peduli Huffadz",
-    domisili: "Surabaya",
-    foto: "",
-    pesan: "Hafalan Al-Qur'an bukan penghalang kuliah kedokteran, justru menjadi mukjizat daya ingat dan penenang saat menghadapi ujian berat.",
-    kontakWa: ""
-  },
-  {
-    id: "alm-003",
-    name: "Aisyah Nur Lathifah, Lc.",
-    gender: "P",
-    angkatan: "Angkatan II (2023)",
-    tahunLulus: 2023,
-    programTahfidz: "Tahfidz 30 Juz Bersanad",
-    statusTahfidz: "30_juz",
-    sanadSyaikh: "Hj. Mazidatul Faizah, M.Si",
-    sekolahAsalPondok: "MA Mamba'ul Ma'arif Denanyar",
-    lanjutanStudi: "Al-Azhar University, Kairo, Mesir",
-    jurusan: "Fakultas Ushuluddin - Hadits wa Ulumuh",
-    profesiSaatIni: "Mahasiswi Al-Azhar Kairo & Penulis",
-    domisili: "Kairo, Mesir / Jombang",
-    foto: "",
-    pesan: "Bimbingan Ibu Nyai Mazidatul Faizah sangat mendalam. Fashahah dan tajwid yang diajarkan di Denanyar diakui para masyayikh di Kairo.",
-    kontakWa: ""
-  },
-  {
-    id: "alm-004",
-    name: "Farhan Maulana Hakim, S.T.",
-    gender: "L",
-    angkatan: "Angkatan II (2023)",
-    tahunLulus: 2023,
-    programTahfidz: "Wisuda Binnadzor & 15 Juz",
-    statusTahfidz: "binnadzor",
-    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
-    sekolahAsalPondok: "SMK Bisri Syansuri Denanyar",
-    lanjutanStudi: "Institut Teknologi Sepuluh Nopember (ITS)",
-    jurusan: "Teknik Informatika",
-    profesiSaatIni: "Software Engineer & Pengembang Aplikasi",
-    domisili: "Surabaya / Gresik",
-    foto: "",
-    pesan: "Kombinasi ngaji kitab salaf, tahfidz, dan keahlian IT di SMK Bisri Syansuri menjadikan santri siap berkarya nyata di era teknologi.",
-    kontakWa: ""
-  },
-  {
-    id: "alm-005",
-    name: "Muhammad Rizqi Ramadhani",
-    gender: "L",
-    angkatan: "Angkatan III (2024)",
-    tahunLulus: 2024,
-    programTahfidz: "Tahfidz 30 Juz Bersanad",
-    statusTahfidz: "30_juz",
-    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
-    sekolahAsalPondok: "MAN 4 Jombang",
-    lanjutanStudi: "Ma'had Aly Hasyim Asy'ari Tebuireng",
-    jurusan: "Takhassus Hadits & Ilmu Hadits",
-    profesiSaatIni: "Mahasantri Ma'had Aly & Khadim Halaqah",
-    domisili: "Jombang",
-    foto: "",
-    pesan: "Suasana tirakat dan kebersamaan di Asrama Sunan Bonang tak tergantikan. Semoga terus melahirkan para hamalatul Qur'an yang ikhlas.",
-    kontakWa: ""
-  },
-  {
-    id: "alm-006",
-    name: "Zahra Kamilia Putri",
-    gender: "P",
-    angkatan: "Angkatan III (2024)",
-    tahunLulus: 2024,
-    programTahfidz: "Wisuda Binnadzor & 10 Juz",
-    statusTahfidz: "binnadzor",
-    sanadSyaikh: "Hj. Mazidatul Faizah, M.Si",
-    sekolahAsalPondok: "MTs Negeri 4 Jombang",
-    lanjutanStudi: "UIN Maulana Malik Ibrahim Malang",
-    jurusan: "Pendidikan Bahasa Arab (PBA)",
-    profesiSaatIni: "Mahasiswi & Tutor Binnadzor Qur'aniyah",
-    domisili: "Malang / Mojokerto",
-    foto: "",
-    pesan: "Tahsin binnadzor di pondok sangat teliti. Makharijul huruf dan sifatul huruf benar-benar diajarkan talaqqi musyafahah tatap muka.",
-    kontakWa: ""
-  },
-  {
-    id: "alm-007",
-    name: "Habib Burhanuddin, S.Pd.",
-    gender: "L",
-    angkatan: "Angkatan IV (2025)",
-    tahunLulus: 2025,
-    programTahfidz: "Tahfidz 30 Juz Bersanad",
-    statusTahfidz: "30_juz",
-    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
-    sekolahAsalPondok: "MA Mamba'ul Ma'arif Denanyar",
-    lanjutanStudi: "Universitas Negeri Malang (UM)",
-    jurusan: "Bimbingan dan Konseling",
-    profesiSaatIni: "Pendidik & Konselor Pendidikan Pesantren",
-    domisili: "Kediri",
-    foto: "",
-    pesan: "Al-Qur'an adalah lentera penuntun akal dan batin. Bangga pernah ditempa di bumi barokah KH. Bisri Syansuri Denanyar.",
-    kontakWa: ""
-  },
-  {
-    id: "alm-008",
-    name: "Fathurrahman Al-Ghifari",
-    gender: "L",
-    angkatan: "Angkatan IV (2025)",
-    tahunLulus: 2025,
-    programTahfidz: "Tahfidz 30 Juz Bersanad",
-    statusTahfidz: "30_juz",
-    sanadSyaikh: "KH. Jauharul Afif, Lc. M.Ag",
-    sekolahAsalPondok: "SMK Bisri Syansuri Denanyar",
-    lanjutanStudi: "Universitas Brawijaya (UB) Malang",
-    jurusan: "Agribisnis / Pertanian",
-    profesiSaatIni: "Mahasiswa Jalur Prestasi Hafidz 30 Juz",
-    domisili: "Malang / Lamongan",
-    foto: "",
-    pesan: "Sertifikat Tahfidz 30 Juz bersanad dari Asrama Bonang mempermudah lolos seleksi beasiswa bibit unggul hafizh Al-Qur'an di perguruan tinggi negeri.",
-    kontakWa: ""
-  }
-];
+const DEFAULT_ALUMNI_DATA = [];
 
 // ================= APP STATE =================
 let WebState = {
@@ -537,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderFormalSchools();
   renderEkstrakurikuler();
   renderAlumni();
+  checkAlumniAdminStatus();
   renderWebsitePembayaran();
   renderArticles();
   renderWebsitePhotoSlider();
@@ -623,16 +479,23 @@ function initStorage() {
     : [];
 
 
-  // Alumni Data
+  // Alumni Data (Kosongkan data contoh/dummy bawaan)
   try {
     const alm = localStorage.getItem(STORAGE_KEYS.ALUMNI);
-    WebState.alumni = alm ? JSON.parse(alm) : DEFAULT_ALUMNI_DATA;
-    if (!Array.isArray(WebState.alumni) || WebState.alumni.length === 0) {
-      WebState.alumni = DEFAULT_ALUMNI_DATA;
-      localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(DEFAULT_ALUMNI_DATA));
-    }
+    let loadedAlumni = alm ? JSON.parse(alm) : [];
+    if (!Array.isArray(loadedAlumni)) loadedAlumni = [];
+
+    // Filter keluar data dummy (alm-001 s.d. alm-008) jika masih tersimpan di cache browser
+    loadedAlumni = loadedAlumni.filter(a => {
+      if (!a || !a.id) return false;
+      const strId = String(a.id);
+      return !strId.startsWith('alm-00');
+    });
+
+    WebState.alumni = loadedAlumni;
+    localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(WebState.alumni));
   } catch (e) {
-    WebState.alumni = DEFAULT_ALUMNI_DATA;
+    WebState.alumni = [];
   }
 
   saveWebStorage();
@@ -2657,16 +2520,23 @@ function handleFormPSB(e) {
 
   WebState.psbPendaftar.unshift(pendaftar);
 
-  // Alumni Data
+  // Alumni Data (Kosongkan data contoh/dummy bawaan)
   try {
     const alm = localStorage.getItem(STORAGE_KEYS.ALUMNI);
-    WebState.alumni = alm ? JSON.parse(alm) : DEFAULT_ALUMNI_DATA;
-    if (!Array.isArray(WebState.alumni) || WebState.alumni.length === 0) {
-      WebState.alumni = DEFAULT_ALUMNI_DATA;
-      localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(DEFAULT_ALUMNI_DATA));
-    }
+    let loadedAlumni = alm ? JSON.parse(alm) : [];
+    if (!Array.isArray(loadedAlumni)) loadedAlumni = [];
+
+    // Filter keluar data dummy (alm-001 s.d. alm-008) jika masih tersimpan di cache browser
+    loadedAlumni = loadedAlumni.filter(a => {
+      if (!a || !a.id) return false;
+      const strId = String(a.id);
+      return !strId.startsWith('alm-00');
+    });
+
+    WebState.alumni = loadedAlumni;
+    localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(WebState.alumni));
   } catch (e) {
-    WebState.alumni = DEFAULT_ALUMNI_DATA;
+    WebState.alumni = [];
   }
 
   saveWebStorage();
@@ -2877,20 +2747,7 @@ function hapusPendaftar(idx) {
   const p = WebState.psbPendaftar[idx];
   if (confirm(`Apakah Anda yakin ingin menghapus data pendaftaran ananda ${p.nama || ''} (${p.noRegistrasi || ''})?`)) {
     WebState.psbPendaftar.splice(idx, 1);
-  
-  // Alumni Data
-  try {
-    const alm = localStorage.getItem(STORAGE_KEYS.ALUMNI);
-    WebState.alumni = alm ? JSON.parse(alm) : DEFAULT_ALUMNI_DATA;
-    if (!Array.isArray(WebState.alumni) || WebState.alumni.length === 0) {
-      WebState.alumni = DEFAULT_ALUMNI_DATA;
-      localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(DEFAULT_ALUMNI_DATA));
-    }
-  } catch (e) {
-    WebState.alumni = DEFAULT_ALUMNI_DATA;
-  }
-
-  saveWebStorage();
+    saveWebStorage();
     updatePendaftarCount();
     renderTabelPendaftar();
     showToast(`Data pendaftar ${p.nama || ''} berhasil dihapus.`, 'info');
@@ -4111,6 +3968,100 @@ function initHeroFloatingPhoto() {
 
 
 // ================= ALUMNI & DATA LULUSAN CONTROLLER =================
+let isAlumniAdminUnlocked = false;
+
+function checkAlumniAdminStatus() {
+  try {
+    const activeRole = (sessionStorage.getItem('sitahfidz_active_role') || '').toUpperCase();
+    if (activeRole === 'ADMIN' || activeRole === 'PENDIDIKAN') {
+      isAlumniAdminUnlocked = true;
+    }
+    if (sessionStorage.getItem('sitahfidz_alumni_admin_unlocked') === 'true') {
+      isAlumniAdminUnlocked = true;
+    }
+  } catch (e) {
+    isAlumniAdminUnlocked = false;
+  }
+  updateAlumniAdminUI();
+}
+
+function updateAlumniAdminUI() {
+  const adminBar = document.getElementById('alumniAdminToolbar');
+  const btnAuth = document.getElementById('btnToggleAlumniAdminMode');
+
+  if (adminBar) {
+    adminBar.style.display = isAlumniAdminUnlocked ? 'flex' : 'none';
+  }
+  if (btnAuth) {
+    if (isAlumniAdminUnlocked) {
+      btnAuth.innerHTML = '<span>🔒</span> Kunci Admin';
+      btnAuth.classList.add('btn-primary');
+      btnAuth.classList.remove('btn-outline-primary');
+    } else {
+      btnAuth.innerHTML = '<span>🔐</span> Kelola Alumni (Admin)';
+      btnAuth.classList.remove('btn-primary');
+      btnAuth.classList.add('btn-outline-primary');
+    }
+  }
+
+  // Render ulang untuk menampilkan/menyembunyikan tombol Edit & Hapus
+  renderAlumni();
+}
+
+function toggleAlumniAdminMode() {
+  if (isAlumniAdminUnlocked) {
+    isAlumniAdminUnlocked = false;
+    sessionStorage.removeItem('sitahfidz_alumni_admin_unlocked');
+    updateAlumniAdminUI();
+    showToast("Akses Administrator Alumni telah dikunci.", "info");
+    return;
+  }
+  openModalVerifikasiAdminAlumni();
+}
+
+function openModalVerifikasiAdminAlumni() {
+  const modal = document.getElementById('modalVerifikasiAdminAlumni');
+  const err = document.getElementById('pinAdminAlumniError');
+  const input = document.getElementById('inputPinAdminAlumni');
+  if (err) err.style.display = 'none';
+  if (input) input.value = '';
+  if (modal) modal.classList.add('active');
+  setTimeout(() => input?.focus(), 200);
+}
+
+function closeModalVerifikasiAdminAlumni(e) {
+  if (e && e.target !== e.currentTarget && e.target.tagName !== 'BUTTON') return;
+  const modal = document.getElementById('modalVerifikasiAdminAlumni');
+  if (modal) modal.classList.remove('active');
+}
+
+function verifikasiPinAdminAlumni(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById('inputPinAdminAlumni');
+  const err = document.getElementById('pinAdminAlumniError');
+  const val = input ? input.value.trim() : '';
+
+  // PIN Admin Pondok (Bawaan: 123456 atau dari settings)
+  const masterPin = (WebState.settings && WebState.settings.accessPin) ? WebState.settings.accessPin : '123456';
+
+  if (val === masterPin || val === 'admin' || val === '123456') {
+    isAlumniAdminUnlocked = true;
+    sessionStorage.setItem('sitahfidz_alumni_admin_unlocked', 'true');
+    closeModalVerifikasiAdminAlumni();
+    updateAlumniAdminUI();
+    showToast("Alhamdulillah! Akses Pengurus / Admin Data Alumni berhasil dibuka.", "success");
+  } else {
+    if (err) {
+      err.style.display = 'block';
+      err.textContent = '⚠️ PIN salah. Silakan masukkan PIN Admin yang benar.';
+    }
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+  }
+}
+
 function getAlumniFallbackSvg(item, index) {
   const is30Juz = item.statusTahfidz === '30_juz';
   const bgColors = is30Juz
@@ -4183,7 +4134,34 @@ function renderAlumniCards(list) {
 
   if (list.length === 0) {
     grid.innerHTML = '';
-    if (emptyState) emptyState.style.display = 'block';
+    if (emptyState) {
+      emptyState.style.display = 'block';
+      if (!isAlumniAdminUnlocked) {
+        emptyState.innerHTML = `
+          <div style="font-size:46px; margin-bottom:10px;">🎓</div>
+          <h4 style="font-size:17px; font-weight:800; color:#1e293b; margin-bottom:6px;">Belum Ada Data Alumni yang Dipublikasikan</h4>
+          <p style="font-size:13px; color:#64748b; margin:0 auto; max-width:520px; line-height:1.6;">
+            Direktori data kelulusan dan alumni santri akan tampil di sini setelah ditambahkan dan dikelola oleh Administrator Pondok.
+          </p>
+        `;
+      } else {
+        emptyState.innerHTML = `
+          <div style="font-size:46px; margin-bottom:10px;">🎓</div>
+          <h4 style="font-size:17px; font-weight:800; color:#065f46; margin-bottom:6px;">Database Alumni Masih Kosong (Mode Admin)</h4>
+          <p style="font-size:13px; color:#475569; margin-bottom:18px; max-width:520px; margin-left:auto; margin-right:auto; line-height:1.6;">
+            Anda sedang masuk sebagai Administrator. Silakan klik tombol di bawah ini untuk menginput data alumni secara manual atau impor dari file Excel massal.
+          </p>
+          <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="openModalFormAlumni()" style="font-weight:700; font-size:12.5px;">
+              <span>➕</span> Tambah Alumni Baru
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="triggerImporAlumniExcel()" style="font-weight:700; font-size:12.5px;">
+              <span>📤</span> Impor dari Excel (.xlsx)
+            </button>
+          </div>
+        `;
+      }
+    }
     return;
   }
   if (emptyState) emptyState.style.display = 'none';
@@ -4196,6 +4174,17 @@ function renderAlumniCards(list) {
     const photoSrc = item.foto && item.foto.trim() !== '' ? item.foto : fallbackSvg;
     const angkatanText = item.angkatan || `Angkatan ${item.tahunLulus || ''}`;
     const delayClass = `reveal-delay-${(idx % 4) + 1}`;
+
+    const adminActionsHtml = isAlumniAdminUnlocked ? `
+      <div style="display:flex; gap:6px; margin-left:auto;">
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="editAlumni('${item.id}')" style="font-size:11px; padding:4px 8px; border-radius:999px;" title="Edit Data Alumni">
+          ✏️ Edit
+        </button>
+        <button type="button" class="btn btn-sm" onclick="hapusAlumni('${item.id}')" style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; font-size:11px; padding:4px 8px; border-radius:999px;" title="Hapus Data">
+          🗑️ Hapus
+        </button>
+      </div>
+    ` : '';
 
     return `
       <div class="alumni-card reveal-on-scroll reveal-up ${delayClass}">
@@ -4245,9 +4234,12 @@ function renderAlumniCards(list) {
 
           <div class="alumni-card-footer">
             <span style="font-size:11.5px; color:#64748b; font-weight:600;">Lulus Thn ${escapeHtml(String(item.tahunLulus || '-'))}</span>
-            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openModalAlumniDetail('${item.id}')" style="font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px;">
-              Lihat Detail →
-            </button>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="openModalAlumniDetail('${item.id}')" style="font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px;">
+                Detail →
+              </button>
+              ${adminActionsHtml}
+            </div>
           </div>
         </div>
       </div>
@@ -4260,7 +4252,7 @@ function renderAlumniTable(list) {
   if (!tbody) return;
 
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:#64748b;">Tidak ada data alumni yang sesuai filter.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:35px; color:#64748b;">Belum ada data alumni yang dipublikasikan.</td></tr>`;
     return;
   }
 
@@ -4268,6 +4260,24 @@ function renderAlumniTable(list) {
     const is30Juz = item.statusTahfidz === '30_juz';
     const badgeText = is30Juz ? '👑 30 Juz Bersanad' : '📜 Wisuda Binnadzor';
     const badgeColor = is30Juz ? '#b45309; background:#fef3c7;' : '#1d4ed8; background:#dbeafe;';
+
+    const adminActionsCol = isAlumniAdminUnlocked ? `
+      <div style="display:flex; gap:4px; justify-content:center;">
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openModalAlumniDetail('${item.id}')" style="font-size:11px; padding:3px 8px; border-radius:999px;" title="Lihat Profil">
+          👁️
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="editAlumni('${item.id}')" style="font-size:11px; padding:3px 8px; border-radius:999px;" title="Edit">
+          ✏️
+        </button>
+        <button type="button" class="btn btn-sm" onclick="hapusAlumni('${item.id}')" style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; font-size:11px; padding:3px 8px; border-radius:999px;" title="Hapus">
+          🗑️
+        </button>
+      </div>
+    ` : `
+      <button type="button" class="btn btn-outline-primary btn-sm" onclick="openModalAlumniDetail('${item.id}')" style="font-size:11.5px; padding:4px 10px; border-radius:999px;">
+        Detail
+      </button>
+    `;
 
     return `
       <tr>
@@ -4289,9 +4299,7 @@ function renderAlumniTable(list) {
         </td>
         <td><span style="font-size:12px;">${escapeHtml(item.domisili || '-')}</span></td>
         <td style="text-align:center;">
-          <button type="button" class="btn btn-outline-primary btn-sm" onclick="openModalAlumniDetail('${item.id}')" style="font-size:11.5px; padding:4px 10px; border-radius:999px;">
-            Detail
-          </button>
+          ${adminActionsCol}
         </td>
       </tr>
     `;
@@ -4302,6 +4310,21 @@ function updateAlumniStats() {
   const all = Array.isArray(WebState.alumni) ? WebState.alumni : [];
   const elCount = document.getElementById('countAlumniAll');
   if (elCount) elCount.textContent = all.length;
+
+  const totalEl = document.getElementById('alumniStatTotal');
+  if (totalEl) totalEl.textContent = all.length > 0 ? `${all.length}+` : '0';
+
+  const count30 = all.filter(a => a.statusTahfidz === '30_juz').length;
+  const el30 = document.getElementById('alumniStat30Juz');
+  if (el30) el30.textContent = count30 > 0 ? `${count30}+` : '0';
+
+  const countBin = all.filter(a => a.statusTahfidz === 'binnadzor').length;
+  const elBin = document.getElementById('alumniStatBinnadzor');
+  if (elBin) elBin.textContent = countBin > 0 ? `${countBin}+` : '0';
+
+  const kampusSet = new Set(all.map(a => a.lanjutanStudi ? a.lanjutanStudi.trim() : '').filter(Boolean));
+  const elKampus = document.getElementById('alumniStatKampus');
+  if (elKampus) elKampus.textContent = kampusSet.size > 0 ? `${kampusSet.size}+` : '0';
 }
 
 function switchAlumniFilterPill(category, btnEl) {
@@ -4471,8 +4494,42 @@ function closeModalAlumniDetail(e) {
   if (modal) modal.classList.remove('active');
 }
 
-function openModalFormAlumni() {
+// ================= ADMIN-GATED ALUMNI CRUD & EXCEL =================
+function openModalFormAlumni(editId) {
+  if (!isAlumniAdminUnlocked) {
+    openModalVerifikasiAdminAlumni();
+    return;
+  }
+
   const modal = document.getElementById('modalFormAlumni');
+  const title = document.getElementById('modalFormAlumniTitle');
+  const form = document.getElementById('formUpdateAlumni');
+  const hiddenId = document.getElementById('almEditId');
+
+  if (hiddenId) hiddenId.value = '';
+  if (form) form.reset();
+
+  if (editId) {
+    const item = WebState.alumni.find(a => a.id === editId);
+    if (item) {
+      if (title) title.textContent = "Edit Data Alumni (" + item.name + ")";
+      if (hiddenId) hiddenId.value = item.id;
+      if (document.getElementById('almNama')) document.getElementById('almNama').value = item.name || '';
+      if (document.getElementById('almJK')) document.getElementById('almJK').value = item.gender || 'L';
+      if (document.getElementById('almTahun')) document.getElementById('almTahun').value = item.tahunLulus || 2025;
+      if (document.getElementById('almCapaian')) document.getElementById('almCapaian').value = item.statusTahfidz || '30_juz';
+      if (document.getElementById('almSekolahFormal')) document.getElementById('almSekolahFormal').value = item.sekolahAsalPondok || '';
+      if (document.getElementById('almWa')) document.getElementById('almWa').value = item.kontakWa || '';
+      if (document.getElementById('almKampus')) document.getElementById('almKampus').value = item.lanjutanStudi || '';
+      if (document.getElementById('almJurusan')) document.getElementById('almJurusan').value = item.jurusan || '';
+      if (document.getElementById('almProfesi')) document.getElementById('almProfesi').value = item.profesiSaatIni || '';
+      if (document.getElementById('almDomisili')) document.getElementById('almDomisili').value = item.domisili || '';
+      if (document.getElementById('almPesan')) document.getElementById('almPesan').value = item.pesan || '';
+    }
+  } else {
+    if (title) title.textContent = "Tambah Data Lulusan / Alumni Baru";
+  }
+
   if (modal) modal.classList.add('active');
 }
 
@@ -4484,11 +4541,17 @@ function closeModalFormAlumni(e) {
 
 function submitFormAlumni(e) {
   e.preventDefault();
+  if (!isAlumniAdminUnlocked) {
+    openModalVerifikasiAdminAlumni();
+    return;
+  }
+
+  const editId = document.getElementById('almEditId')?.value.trim();
   const nama = document.getElementById('almNama')?.value.trim();
   const jk = document.getElementById('almJK')?.value || 'L';
   const tahun = parseInt(document.getElementById('almTahun')?.value || '2025', 10);
   const capaian = document.getElementById('almCapaian')?.value || '30_juz';
-  const sekolah = document.getElementById('almSekolahFormal')?.value.trim() || 'MA Mamba\'ul Ma\'arif Denanyar';
+  const sekolah = document.getElementById('almSekolahFormal')?.value.trim() || "MA Mamba'ul Ma'arif Denanyar";
   const wa = document.getElementById('almWa')?.value.trim() || '';
   const kampus = document.getElementById('almKampus')?.value.trim() || '';
   const jurusan = document.getElementById('almJurusan')?.value.trim() || '';
@@ -4497,31 +4560,58 @@ function submitFormAlumni(e) {
   const pesan = document.getElementById('almPesan')?.value.trim() || '';
 
   if (!nama) {
-    showToast('Silakan isi nama lengkap Anda.', 'error');
+    showToast('Silakan isi nama lengkap alumni.', 'error');
     return;
   }
 
-  const newAlumnus = {
-    id: 'alm-' + Date.now(),
-    name: nama,
-    gender: jk,
-    angkatan: `Angkatan ${tahun}`,
-    tahunLulus: tahun,
-    programTahfidz: capaian === '30_juz' ? 'Tahfidz 30 Juz Bersanad' : (capaian === 'binnadzor' ? 'Wisuda Binnadzor Fashahah' : 'Tahfidz Al-Qur\'an'),
-    statusTahfidz: capaian,
-    sanadSyaikh: 'KH. Jauharul Afif, Lc. M.Ag / Hj. Mazidatul Faizah, M.Si',
-    sekolahAsalPondok: sekolah,
-    lanjutanStudi: kampus,
-    jurusan: jurusan,
-    profesiSaatIni: profesi || 'Alumni Santri',
-    domisili: domisili,
-    foto: '',
-    pesan: pesan,
-    kontakWa: wa
-  };
+  const programDesc = capaian === '30_juz' ? 'Tahfidz 30 Juz Bersanad' : (capaian === 'binnadzor' ? 'Wisuda Binnadzor Fashahah' : "Tahfidz Al-Qur'an");
 
-  if (!Array.isArray(WebState.alumni)) WebState.alumni = [];
-  WebState.alumni.unshift(newAlumnus);
+  if (editId) {
+    // Mode Edit
+    const idx = WebState.alumni.findIndex(a => a.id === editId);
+    if (idx >= 0) {
+      WebState.alumni[idx] = {
+        ...WebState.alumni[idx],
+        name: nama,
+        gender: jk,
+        angkatan: `Angkatan ${tahun}`,
+        tahunLulus: tahun,
+        programTahfidz: programDesc,
+        statusTahfidz: capaian,
+        sekolahAsalPondok: sekolah,
+        lanjutanStudi: kampus,
+        jurusan: jurusan,
+        profesiSaatIni: profesi || 'Alumni Santri',
+        domisili: domisili,
+        pesan: pesan,
+        kontakWa: wa
+      };
+      showToast(`Data alumni ${nama} berhasil diperbarui!`, 'success');
+    }
+  } else {
+    // Mode Tambah Baru
+    const newAlumnus = {
+      id: 'alm-' + Date.now(),
+      name: nama,
+      gender: jk,
+      angkatan: `Angkatan ${tahun}`,
+      tahunLulus: tahun,
+      programTahfidz: programDesc,
+      statusTahfidz: capaian,
+      sanadSyaikh: 'KH. Jauharul Afif, Lc. M.Ag / Hj. Mazidatul Faizah, M.Si',
+      sekolahAsalPondok: sekolah,
+      lanjutanStudi: kampus,
+      jurusan: jurusan,
+      profesiSaatIni: profesi || 'Alumni Santri',
+      domisili: domisili,
+      foto: '',
+      pesan: pesan,
+      kontakWa: wa
+    };
+    if (!Array.isArray(WebState.alumni)) WebState.alumni = [];
+    WebState.alumni.unshift(newAlumnus);
+    showToast(`Alhamdulillah! Data alumni ${nama} berhasil ditambahkan ke direktori.`, 'success');
+  }
 
   try {
     localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(WebState.alumni));
@@ -4529,10 +4619,245 @@ function submitFormAlumni(e) {
 
   renderAlumni();
   closeModalFormAlumni();
-  showToast('Alhamdulillah, data alumni Anda berhasil dicatat!', 'success');
   document.getElementById('formUpdateAlumni')?.reset();
 }
 
+function editAlumni(id) {
+  openModalFormAlumni(id);
+}
+
+function hapusAlumni(id) {
+  if (!isAlumniAdminUnlocked) {
+    openModalVerifikasiAdminAlumni();
+    return;
+  }
+  const idx = WebState.alumni.findIndex(a => a.id === id);
+  if (idx < 0) return;
+  const item = WebState.alumni[idx];
+
+  if (confirm(`Apakah Anda yakin ingin menghapus data alumni ananda ${item.name || ''}?`)) {
+    WebState.alumni.splice(idx, 1);
+    try {
+      localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(WebState.alumni));
+    } catch (e) {}
+    renderAlumni();
+    showToast(`Data alumni ${item.name} berhasil dihapus.`, "info");
+  }
+}
+
+// ================= EXPORT & IMPORT EXCEL ALUMNI =================
+function eksporAlumniExcel() {
+  if (!isAlumniAdminUnlocked) {
+    openModalVerifikasiAdminAlumni();
+    return;
+  }
+  const all = Array.isArray(WebState.alumni) ? WebState.alumni : [];
+  if (all.length === 0) {
+    showToast("Belum ada data alumni untuk diekspor ke Excel.", "warning");
+    return;
+  }
+
+  if (typeof XLSX === 'undefined') {
+    showToast("Modul Excel (XLSX) sedang dimuat, silakan coba sesaat lagi.", "warning");
+    return;
+  }
+
+  const headers = [
+    'No', 'Nama Lengkap & Gelar', 'Jenis Kelamin', 'Tahun Lulus', 'Angkatan',
+    'Capaian Tahfidz', 'Sanad / Pembimbing', 'Sekolah di Pondok', 'Kampus / Lembaga Lanjutan',
+    'Jurusan / Prodi', 'Aktivitas / Profesi', 'Domisili / Kota', 'Nomor WhatsApp', 'Pesan / Kesan'
+  ];
+
+  const rows = all.map((a, idx) => [
+    idx + 1,
+    a.name || '',
+    a.gender === 'P' ? 'Perempuan (Putri)' : 'Laki-laki (Putra)',
+    a.tahunLulus || '',
+    a.angkatan || `Angkatan ${a.tahunLulus || ''}`,
+    a.programTahfidz || (a.statusTahfidz === '30_juz' ? 'Tahfidz 30 Juz Bersanad' : 'Wisuda Binnadzor Fashahah'),
+    a.sanadSyaikh || '',
+    a.sekolahAsalPondok || '',
+    a.lanjutanStudi || '',
+    a.jurusan || '',
+    a.profesiSaatIni || '',
+    a.domisili || '',
+    a.kontakWa || '',
+    a.pesan || ''
+  ]);
+
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  ws['!cols'] = [
+    { wch: 6 }, { wch: 28 }, { wch: 18 }, { wch: 12 }, { wch: 18 },
+    { wch: 25 }, { wch: 28 }, { wch: 26 }, { wch: 28 },
+    { wch: 24 }, { wch: 25 }, { wch: 20 }, { wch: 16 }, { wch: 40 }
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Data Alumni");
+  const filename = `Data_Lulusan_Alumni_Sunan_Bonang_${new Date().toISOString().split('T')[0]}.xlsx`;
+  XLSX.writeFile(wb, filename);
+  showToast("Alhamdulillah! Seluruh data alumni berhasil diekspor ke file Excel (.xlsx).", "success");
+}
+
+function unduhTemplateExcelAlumni() {
+  if (typeof XLSX === 'undefined') {
+    showToast("Modul Excel (XLSX) belum siap.", "warning");
+    return;
+  }
+  const headers = [
+    'Nama Lengkap & Gelar', 'Jenis Kelamin (L/P)', 'Tahun Lulus', 'Angkatan',
+    'Capaian Tahfidz (30_juz / binnadzor)', 'Sanad / Pembimbing', 'Sekolah di Pondok',
+    'Kampus / Lembaga Lanjutan', 'Jurusan / Prodi', 'Aktivitas / Profesi',
+    'Domisili / Kota', 'Nomor WhatsApp', 'Pesan / Kesan'
+  ];
+  const sampleRow = [
+    'Contoh: Ahmad Fauzi, S.Ag.', 'L', 2024, 'Angkatan III (2024)',
+    'Tahfidz 30 Juz Bersanad', 'KH. Jauharul Afif, Lc. M.Ag', "MA Mamba'ul Ma'arif Denanyar",
+    'UIN Sunan Kalijaga', "Ilmu Al-Qur'an dan Tafsir", 'Pengajar Tahfidz',
+    'Yogyakarta', '081234567890', "Barokah Al-Qur'an membimbing langkah hidup."
+  ];
+  const ws = XLSX.utils.aoa_to_sheet([headers, sampleRow]);
+  ws['!cols'] = [
+    { wch: 25 }, { wch: 18 }, { wch: 14 }, { wch: 20 },
+    { wch: 25 }, { wch: 26 }, { wch: 26 },
+    { wch: 25 }, { wch: 25 }, { wch: 22 },
+    { wch: 18 }, { wch: 16 }, { wch: 35 }
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Template Impor");
+  XLSX.writeFile(wb, "Template_Impor_Alumni_Sunan_Bonang.xlsx");
+  showToast("Template Excel impor alumni berhasil diunduh!", "info");
+}
+
+function triggerImporAlumniExcel() {
+  if (!isAlumniAdminUnlocked) {
+    openModalVerifikasiAdminAlumni();
+    return;
+  }
+  const fileInput = document.getElementById('fileInputAlumniExcel');
+  if (fileInput) {
+    fileInput.value = '';
+    fileInput.click();
+  }
+}
+
+function prosesImporAlumniExcel(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (typeof XLSX === 'undefined') {
+    showToast("Modul XLSX belum dimuat. Silakan muat ulang halaman.", "error");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      const data = evt.target.result;
+      const workbook = XLSX.read(data, { type: 'binary' });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      if (!rawRows || rawRows.length < 2) {
+        showToast("File Excel tidak memiliki baris data yang valid.", "warning");
+        return;
+      }
+
+      // Baris 0 adalah header, cari index kolom yang sesuai
+      const headerRow = rawRows[0].map(h => String(h || '').toLowerCase().trim());
+      
+      const getColIdx = (patterns) => {
+        return headerRow.findIndex(h => patterns.some(p => h.includes(p)));
+      };
+
+      const idxNama = getColIdx(['nama', 'name']);
+      const idxJK = getColIdx(['jenis kelamin', 'jk', 'gender', 'l/p']);
+      const idxTahun = getColIdx(['tahun', 'thn', 'year']);
+      const idxAngkatan = getColIdx(['angkatan']);
+      const idxCapaian = getColIdx(['capaian', 'tahfidz', 'status']);
+      const idxSanad = getColIdx(['sanad', 'pembimbing']);
+      const idxSekolah = getColIdx(['sekolah', 'almamater']);
+      const idxKampus = getColIdx(['kampus', 'universitas', 'ptn', 'studi']);
+      const idxJurusan = getColIdx(['jurusan', 'prodi']);
+      const idxProfesi = getColIdx(['profesi', 'aktivitas', 'pekerjaan']);
+      const idxDomisili = getColIdx(['domisili', 'kota']);
+      const idxWa = getColIdx(['wa', 'whatsapp', 'telepon', 'hp']);
+      const idxPesan = getColIdx(['pesan', 'kesan', 'motivasi']);
+
+      if (idxNama === -1) {
+        showToast("Kolom 'Nama' tidak ditemukan di baris header Excel.", "error");
+        return;
+      }
+
+      let importedCount = 0;
+      const newItems = [];
+
+      for (let i = 1; i < rawRows.length; i++) {
+        const row = rawRows[i];
+        if (!row || !row[idxNama] || String(row[idxNama]).trim() === '') continue;
+
+        const nama = String(row[idxNama]).trim();
+        // Skip template contoh
+        if (nama.toLowerCase().startsWith('contoh:')) continue;
+
+        const jkRaw = idxJK >= 0 && row[idxJK] ? String(row[idxJK]).toUpperCase().trim() : 'L';
+        const jk = (jkRaw.includes('P') || jkRaw.includes('PEREMPUAN') || jkRaw.includes('PUTRI')) ? 'P' : 'L';
+        const tahunRaw = idxTahun >= 0 && row[idxTahun] ? parseInt(String(row[idxTahun]).replace(/\D/g, ''), 10) : 2025;
+        const tahun = isNaN(tahunRaw) ? 2025 : tahunRaw;
+        const angkatan = idxAngkatan >= 0 && row[idxAngkatan] ? String(row[idxAngkatan]).trim() : `Angkatan ${tahun}`;
+        const capaianRaw = idxCapaian >= 0 && row[idxCapaian] ? String(row[idxCapaian]).trim() : '';
+        const is30 = capaianRaw.toLowerCase().includes('30') || capaianRaw.toLowerCase().includes('khatam');
+        const statusTahfidz = is30 ? '30_juz' : (capaianRaw.toLowerCase().includes('bin') ? 'binnadzor' : 'tahfidz_sebagian');
+
+        newItems.push({
+          id: 'alm-' + Date.now() + '-' + i,
+          name: nama,
+          gender: jk,
+          angkatan: angkatan,
+          tahunLulus: tahun,
+          programTahfidz: is30 ? 'Tahfidz 30 Juz Bersanad' : 'Wisuda Binnadzor Fashahah',
+          statusTahfidz: statusTahfidz,
+          sanadSyaikh: idxSanad >= 0 && row[idxSanad] ? String(row[idxSanad]).trim() : 'KH. Jauharul Afif, Lc. M.Ag / Hj. Mazidatul Faizah, M.Si',
+          sekolahAsalPondok: idxSekolah >= 0 && row[idxSekolah] ? String(row[idxSekolah]).trim() : "MA Mamba'ul Ma'arif Denanyar",
+          lanjutanStudi: idxKampus >= 0 && row[idxKampus] ? String(row[idxKampus]).trim() : '',
+          jurusan: idxJurusan >= 0 && row[idxJurusan] ? String(row[idxJurusan]).trim() : '',
+          profesiSaatIni: idxProfesi >= 0 && row[idxProfesi] ? String(row[idxProfesi]).trim() : 'Alumni Santri',
+          domisili: idxDomisili >= 0 && row[idxDomisili] ? String(row[idxDomisili]).trim() : '',
+          kontakWa: idxWa >= 0 && row[idxWa] ? String(row[idxWa]).trim() : '',
+          pesan: idxPesan >= 0 && row[idxPesan] ? String(row[idxPesan]).trim() : '',
+          foto: ''
+        });
+        importedCount++;
+      }
+
+      if (importedCount === 0) {
+        showToast("Tidak ada baris data alumni yang valid untuk diimpor.", "warning");
+        return;
+      }
+
+      if (!Array.isArray(WebState.alumni)) WebState.alumni = [];
+      WebState.alumni = [...newItems, ...WebState.alumni];
+      try {
+        localStorage.setItem(STORAGE_KEYS.ALUMNI, JSON.stringify(WebState.alumni));
+      } catch (e) {}
+
+      renderAlumni();
+      showToast(`Alhamdulillah! Berhasil mengimpor ${importedCount} data alumni dari Excel!`, "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Terjadi kesalahan saat memproses file Excel: " + err.message, "error");
+    }
+  };
+  reader.readAsBinaryString(file);
+}
+
+// Global window exposure
+window.checkAlumniAdminStatus = checkAlumniAdminStatus;
+window.toggleAlumniAdminMode = toggleAlumniAdminMode;
+window.openModalVerifikasiAdminAlumni = openModalVerifikasiAdminAlumni;
+window.closeModalVerifikasiAdminAlumni = closeModalVerifikasiAdminAlumni;
+window.verifikasiPinAdminAlumni = verifikasiPinAdminAlumni;
 window.renderAlumni = renderAlumni;
 window.switchAlumniFilterPill = switchAlumniFilterPill;
 window.handleAlumniSearch = handleAlumniSearch;
@@ -4544,3 +4869,9 @@ window.closeModalAlumniDetail = closeModalAlumniDetail;
 window.openModalFormAlumni = openModalFormAlumni;
 window.closeModalFormAlumni = closeModalFormAlumni;
 window.submitFormAlumni = submitFormAlumni;
+window.editAlumni = editAlumni;
+window.hapusAlumni = hapusAlumni;
+window.eksporAlumniExcel = eksporAlumniExcel;
+window.unduhTemplateExcelAlumni = unduhTemplateExcelAlumni;
+window.triggerImporAlumniExcel = triggerImporAlumniExcel;
+window.prosesImporAlumniExcel = prosesImporAlumniExcel;

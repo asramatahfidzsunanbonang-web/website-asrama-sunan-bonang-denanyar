@@ -7,7 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Asrama Tahfidz Sunan Bonang - Yayasan PP. Mamba'ul Ma'arif Denanyar Jombang</title>
-  <link rel="stylesheet" href="website.css?v=20261126-v6">
+  <link rel="stylesheet" href="website.css?v=20261126-v7">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
   <script>
     // Global standalone SVG Fallbacks (Offline & Instant Error Safe)
@@ -1044,6 +1044,40 @@
               <span>📋</span> Tabel
             </button>
           </div>
+
+          <!-- Tombol Akses Kelola Khusus Admin -->
+          <button type="button" class="btn btn-outline-primary btn-sm" id="btnToggleAlumniAdminMode" onclick="toggleAlumniAdminMode()" style="font-size:12px; font-weight:700; border-radius:999px; display:inline-flex; align-items:center; gap:5px;" title="Khusus Administrator / Pengurus Pondok">
+            <span>🔐</span> Kelola Alumni (Admin)
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Management Toolbar (Hanya Muncul jika Admin Terverifikasi PIN) -->
+      <div id="alumniAdminToolbar" style="display:none; background:#ecfdf5; border:1.5px solid #10b981; border-radius:14px; padding:12px 18px; margin-bottom:24px; box-shadow:0 4px 12px rgba(16,185,129,0.12); align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;">🛡️</span>
+          <div>
+            <strong style="color:#065f46; font-size:13px; display:block;">Panel Kelola Alumni Aktif (Administrator):</strong>
+            <span style="font-size:11.5px; color:#047857;">Hanya Admin yang dapat menambah, mengedit, menghapus, serta ekspor &amp; impor data Excel.</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary btn-sm" onclick="openModalFormAlumni()" style="font-weight:700; font-size:12px; display:inline-flex; align-items:center; gap:5px;">
+            <span>➕</span> Tambah Alumni
+          </button>
+          <button type="button" class="btn btn-gold btn-sm" onclick="eksporAlumniExcel()" style="font-weight:700; font-size:12px; display:inline-flex; align-items:center; gap:5px;">
+            <span>📥</span> Ekspor Excel (.xlsx)
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="triggerImporAlumniExcel()" style="font-weight:700; font-size:12px; display:inline-flex; align-items:center; gap:5px;">
+            <span>📤</span> Impor Excel (.xlsx)
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="unduhTemplateExcelAlumni()" style="font-size:11.5px; font-weight:600; padding:5px 9px;" title="Unduh Format Template Excel untuk Impor">
+            <span>📄</span> Format Excel
+          </button>
+          <input type="file" id="fileInputAlumniExcel" accept=".xlsx, .xls, .csv" style="display:none;" onchange="prosesImporAlumniExcel(event)">
+          <button type="button" class="btn btn-sm" onclick="toggleAlumniAdminMode()" style="background:#fee2e2; color:#991b1b; border:1px solid #fecaca; font-weight:700; font-size:11.5px; padding:5px 10px; border-radius:999px;">
+            <span>🔒</span> Kunci Admin
+          </button>
         </div>
       </div>
 
@@ -1081,21 +1115,18 @@
         <button type="button" class="btn btn-secondary btn-sm" onclick="resetAlumniFilter()">Reset Pencarian</button>
       </div>
 
-      <!-- CTA Ikatan Alumni & Update Data -->
+      <!-- CTA Ikatan Alumni (Public WhatsApp Silaturahim) -->
       <div class="alumni-cta-card reveal-on-scroll reveal-up">
         <div class="alumni-cta-content">
           <div class="alumni-cta-badge">🤝 IKATAN KELUARGA ALUMNI (IKA)</div>
-          <h3 class="alumni-cta-title">Anda Alumni Asrama Tahfidz Sunan Bonang?</h3>
+          <h3 class="alumni-cta-title">Silaturahim Alumni Asrama Sunan Bonang</h3>
           <p class="alumni-cta-desc">
-            Mari terus sambung silaturahim dan berkontribusi untuk almamater. Perbarui data studi lanjut, domisili, atau profesi terkini Anda melalui formulir pendataan alumni.
+            Mari terus sambung ukhuwah dan silaturahim antar-angkatan. Bagi alumni santri yang ingin memperbarui data kelulusan, domisili, atau studi lanjut, silakan hubungi tim sekretariat pondok melalui WhatsApp resmi di bawah ini.
           </p>
         </div>
         <div class="alumni-cta-actions">
-          <button type="button" class="btn btn-gold btn-md" onclick="openModalFormAlumni()">
-            <span>📝</span> Form Pendataan Alumni
-          </button>
-          <a href="https://api.whatsapp.com/send?phone=6281234567890&text=Assalamu%27alaikum%20Pengurus%20Alumni%20Asrama%20Tahfidz%20Sunan%20Bonang%20Denanyar..." target="_blank" class="btn btn-outline-light btn-md" style="border:1.5px solid rgba(255,255,255,0.7); color:#fff; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
-            <span>💬</span> Hubungi Pengurus Alumni
+          <a href="https://api.whatsapp.com/send?phone=6281234567890&text=Assalamu%27alaikum%20Sekretariat%20Alumni%20Asrama%20Tahfidz%20Sunan%20Bonang%20Denanyar,%20saya%20alumni%20ingin%20memperbarui%20data..." target="_blank" class="btn btn-gold btn-md" style="font-weight:800; display:inline-flex; align-items:center; gap:6px;">
+            <span>💬</span> Hubungi Sekretariat Alumni via WhatsApp
           </a>
         </div>
       </div>
@@ -2585,7 +2616,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="firebase-sync.js"></script>
   <script src="image-cropper.js"></script>
-  <script src="website.js?v=20261126-v6"></script>
+  <script src="website.js?v=20261126-v7"></script>
   <!-- ================= MODAL DETAIL PROFIL ALUMNI ================= -->
   <div class="modal-overlay" id="modalAlumniDetail" onclick="closeModalAlumniDetail(event)">
     <div class="interactive-detail-modal-box" onclick="event.stopPropagation()" style="max-width:680px; width:92%; background:#ffffff; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px -15px rgba(0,0,0,0.4); display:flex; flex-direction:column; max-height:92vh;">
@@ -2618,8 +2649,8 @@
         <div style="display:flex; align-items:center; gap:12px;">
           <div style="font-size:28px;">📝</div>
           <div>
-            <span style="display:inline-block; font-size:11px; font-weight:800; background:rgba(255,255,255,0.22); color:#fff; padding:2px 8px; border-radius:999px; margin-bottom:4px;">IKATAN ALUMNI</span>
-            <h3 style="font-size:17px; font-weight:800; color:#fff; margin:0; line-height:1.2;">Formulir Pembaruan Data Alumni</h3>
+            <span style="display:inline-block; font-size:11px; font-weight:800; background:#fef08a; color:#78350f; padding:2px 8px; border-radius:999px; margin-bottom:4px;">KHUSUS ADMINISTRATOR</span>
+            <h3 id="modalFormAlumniTitle" style="font-size:17px; font-weight:800; color:#fff; margin:0; line-height:1.2;">Formulir Data Lulusan / Alumni</h3>
           </div>
         </div>
         <button type="button" onclick="closeModalFormAlumni()" style="background:none; border:none; color:#ffffff; font-size:26px; cursor:pointer; line-height:1; padding:2px 6px;" title="Tutup">&times;</button>
@@ -2630,6 +2661,7 @@
           Bagi alumni santri Asrama Tahfidz Sunan Bonang Denanyar, silakan lengkapi atau perbarui informasi kelulusan Anda di bawah ini untuk mempererat jejaring alumni dan motivasi adik-adik santri.
         </p>
         <form id="formUpdateAlumni" onsubmit="submitFormAlumni(event)">
+          <input type="hidden" id="almEditId" value="">
           <div class="form-row">
             <div class="form-group form-col">
               <label class="form-label">Nama Lengkap &amp; Gelar <span style="color:#ef4444;">*</span></label>
@@ -2707,5 +2739,28 @@
       </div>
     </div>
   </div>
+  <!-- ================= MODAL VERIFIKASI ADMIN ALUMNI ================= -->
+  <div class="modal-overlay" id="modalVerifikasiAdminAlumni" onclick="closeModalVerifikasiAdminAlumni(event)">
+    <div class="interactive-detail-modal-box" onclick="event.stopPropagation()" style="max-width:420px; width:92%; background:#ffffff; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px -15px rgba(0,0,0,0.4); padding:28px 24px; text-align:center;">
+      <div style="font-size:42px; margin-bottom:10px;">🔐</div>
+      <h3 style="font-size:18px; font-weight:800; color:#0f172a; margin:0 0 6px 0;">Verifikasi Pengurus / Admin</h3>
+      <p style="font-size:12.5px; color:#64748b; margin:0 0 20px 0; line-height:1.5;">
+        Masukkan PIN Administrator Pondok untuk membuka fitur tambah, edit, hapus, serta ekspor &amp; impor data alumni.
+      </p>
+      <form onsubmit="verifikasiPinAdminAlumni(event)">
+        <div style="margin-bottom:18px;">
+          <input type="password" id="inputPinAdminAlumni" class="form-control" placeholder="PIN Administrator (Default: 123456)" required style="text-align:center; font-size:16px; letter-spacing:2px; font-weight:700; padding:10px;">
+          <div id="pinAdminAlumniError" style="display:none; color:#dc2626; font-size:12px; margin-top:6px; font-weight:700;">
+            ⚠️ PIN salah. Silakan coba lagi.
+          </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn btn-secondary btn-sm" style="flex:1;" onclick="closeModalVerifikasiAdminAlumni()">Batal</button>
+          <button type="submit" class="btn btn-primary btn-sm" style="flex:1; font-weight:800; padding:9px 16px;">Buka Akses</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>

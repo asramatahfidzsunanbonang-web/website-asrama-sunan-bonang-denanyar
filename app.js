@@ -8711,6 +8711,10 @@ function renderPengaturanTab() {
   document.getElementById('settingPengasuh').value = AppState.settings.pengasuhPondok || '';
   const elIstri = document.getElementById('settingPengasuhIstri');
   if (elIstri) elIstri.value = AppState.settings.pengasuhIstri || '';
+  const elDescPengasuh = document.getElementById('settingDeskripsiPengasuh');
+  if (elDescPengasuh) elDescPengasuh.value = AppState.settings.deskripsiPengasuh || (typeof DEFAULT_SETTINGS !== 'undefined' ? DEFAULT_SETTINGS.deskripsiPengasuh : '') || '';
+  const elDescIstri = document.getElementById('settingDeskripsiPengasuhIstri');
+  if (elDescIstri) elDescIstri.value = AppState.settings.deskripsiPengasuhIstri || (typeof DEFAULT_SETTINGS !== 'undefined' ? DEFAULT_SETTINGS.deskripsiPengasuhIstri : '') || '';
   document.getElementById('settingKepalaTahfidz').value = AppState.settings.kepalaTahfidz || '';
   document.getElementById('settingTahunAjaran').value = AppState.settings.tahunAjaran || '';
   document.getElementById('settingKontak').value = AppState.settings.noKontakPondok || '';
@@ -9290,6 +9294,10 @@ function simpanPengaturan() {
   AppState.settings.pengasuhPondok = document.getElementById('settingPengasuh').value.trim();
   const elIstri = document.getElementById('settingPengasuhIstri');
   if (elIstri) AppState.settings.pengasuhIstri = elIstri.value.trim();
+  const elDescPengasuh = document.getElementById('settingDeskripsiPengasuh');
+  if (elDescPengasuh) AppState.settings.deskripsiPengasuh = elDescPengasuh.value.trim();
+  const elDescIstri = document.getElementById('settingDeskripsiPengasuhIstri');
+  if (elDescIstri) AppState.settings.deskripsiPengasuhIstri = elDescIstri.value.trim();
   AppState.settings.kepalaTahfidz = document.getElementById('settingKepalaTahfidz').value.trim();
   AppState.settings.tahunAjaran = document.getElementById('settingTahunAjaran').value.trim();
   AppState.settings.noKontakPondok = document.getElementById('settingKontak').value.trim();
@@ -9915,7 +9923,14 @@ function getStoredBiayaAdmin() {
     const raw = localStorage.getItem('sitahfidz_web_biaya');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        parsed.forEach(item => {
+          if (item && item.keterangan && item.keterangan.includes('3x')) {
+            item.keterangan = item.keterangan.replace(/3x/g, '2x');
+          }
+        });
+        return parsed;
+      }
     }
   } catch (e) {}
 
@@ -10380,18 +10395,18 @@ const DEFAULT_WEB_FACILITIES = [
     title: "Dapur & Ruang Makan",
     icon: "🍽️",
     badge: "Gizi & Kehalalan Terjamin",
-    capacity: "Layanan 3x Sehari",
+    capacity: "Layanan 2x Sehari",
     image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1200&q=80",
-    snippet: "Penyediaan menu makan santri bergizi, higienis, dan terjaga kehalalannya 3x sehari.",
+    snippet: "Penyediaan menu makan santri bergizi, higienis, dan terjaga kehalalannya 2x sehari.",
     fullDesc: "Dikelola oleh tim juru masak pesantren dengan standar kebersihan tinggi. Menggunakan bahan makanan segar pilihan bersertifikasi halal untuk mencukupi kebutuhan gizi, protein, dan stamina fisik santri selama menempuh hafalan Al-Qur'an sepanjang hari.",
     specs: [
-      "Penyajian makan 3 kali sehari (Pagi, Siang, dan Sore)",
+      "Penyajian makan 2 kali sehari (Pagi dan Sore/Malam)",
       "Menu variatif 4 sehat seimbang (protein hewani/nabati, sayuran, buah)",
       "Sistem air minum filter RO (Reverse Osmosis) higienis tanpa batas",
       "Peralatan memasak dan makan stainless steel standar food-grade",
       "Ruang makan luas dengan adab makan sunnah Rasulullah SAW"
     ],
-    schedule: "Jadwal Makan: Pagi (06.30 WIB), Siang (12.30 WIB), dan Sore (17.00 WIB)."
+    schedule: "Jadwal Makan: Pagi dan Sore/Malam."
   },
   {
     id: "FAC-06",

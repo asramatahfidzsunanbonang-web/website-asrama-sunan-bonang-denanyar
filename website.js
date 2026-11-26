@@ -197,12 +197,12 @@ const DEFAULT_FACILITIES = [
     title: "Dapur & Ruang Makan",
     icon: "🍽️",
     badge: "Gizi & Kehalalan Terjamin",
-    capacity: "Layanan 3x Sehari",
+    capacity: "Layanan 2x Sehari",
     image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1200&q=80",
-    snippet: "Penyediaan menu makan santri bergizi, higienis, dan terjaga kehalalannya 3x sehari.",
+    snippet: "Penyediaan menu makan santri bergizi, higienis, dan terjaga kehalalannya 2x sehari.",
     fullDesc: "Dikelola oleh tim juru masak pesantren dengan standar kebersihan tinggi. Menggunakan bahan makanan segar pilihan bersertifikasi halal untuk mencukupi kebutuhan gizi, protein, dan stamina fisik santri selama menempuh hafalan Al-Qur'an sepanjang hari.",
     specs: [
-      "Penyajian makan 3 kali sehari (Pagi, Siang, dan Sore)",
+      "Penyajian makan 2 kali sehari (Pagi dan Sore/Malam)",
       "Menu variatif 4 sehat seimbang (protein hewani/nabati, sayuran, buah)",
       "Sistem air minum filter RO (Reverse Osmosis) higienis tanpa batas",
       "Peralatan memasak dan makan stainless steel standar food-grade",
@@ -426,6 +426,8 @@ function initStorage() {
     noKontakPutri: "0813-9876-5432",
     pengasuhPondok: "H. M. Jauharul Afif, Lc., M.Ag., M.Pd.",
     pengasuhIstri: "Hj. Mazidatul Faizah, M.Si.",
+    deskripsiPengasuh: "Ulama huffadz alumnus pesantren tahfidz salaf yang mengabdikan hidupnya dalam pembinaan qira'at Al-Qur'an dan kajian kitab kuning.",
+    deskripsiPengasuhIstri: "Membimbing akhlaqul karimah santriwati, ketertiban asrama putri, dan keteladanan ibadah harian.",
     fotoPengasuh: "",
     fotoPengasuhIstri: "",
     heroFloatingPhoto: "foto-masyayikh.png",
@@ -754,6 +756,11 @@ function initPondokIdentity() {
   const kepalaTahfidzElements = document.querySelectorAll('.bind-kepala-tahfidz');
   kepalaTahfidzElements.forEach(el => el.textContent = WebState.settings.kepalaTahfidz || "Ust. Misbahul Mujtahidin");
 
+  const aboutModalTitle = document.getElementById('aboutModalMainTitle');
+  if (aboutModalTitle) {
+    aboutModalTitle.textContent = namaPondok;
+  }
+
   // Logo pondok (transparan murni tanpa background kotak hitam)
   if (WebState.settings.logoPondok) {
     const logoWraps = document.querySelectorAll('.brand-logo');
@@ -909,7 +916,7 @@ function renderWebPengasuhSection() {
             <div style="background:#f8fafc; padding:14px 16px; border-radius:10px; border-left:4px solid #059669;">
               <div style="font-size:11px; font-weight:800; color:#059669; text-transform:uppercase; margin-bottom:2px;">PENGASUH UTAMA (KYAI)</div>
               <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0 0 4px 0; line-height:1.35;">${escapeHtml(pengasuhSuami)}</h4>
-              <p style="font-size:12px; color:#64748b; margin:0; line-height:1.5;">Ulama huffadz alumnus pesantren tahfidz salaf yang mengabdikan hidupnya dalam pembinaan qira'at Al-Qur'an dan kajian kitab kuning.</p>
+              <p style="font-size:12px; color:#64748b; margin:0; line-height:1.5;">${escapeHtml(WebState.settings.deskripsiPengasuh || "Ulama huffadz alumnus pesantren tahfidz salaf yang mengabdikan hidupnya dalam pembinaan qira'at Al-Qur'an dan kajian kitab kuning.")}</p>
             </div>
 
             <!-- Profil Nyai -->
@@ -917,7 +924,7 @@ function renderWebPengasuhSection() {
             <div style="background:#fffbeb; padding:14px 16px; border-radius:10px; border-left:4px solid #d97706;">
               <div style="font-size:11px; font-weight:800; color:#b45309; text-transform:uppercase; margin-bottom:2px;">PENGASUH PUTRI (NYAI / UMI)</div>
               <h4 style="font-size:16px; font-weight:800; color:#0f172a; margin:0 0 4px 0; line-height:1.35;">${escapeHtml(pengasuhIstri)}</h4>
-              <p style="font-size:12px; color:#78350f; margin:0; line-height:1.5;">Membimbing akhlaqul karimah santriwati, ketertiban asrama putri, dan keteladanan ibadah harian.</p>
+              <p style="font-size:12px; color:#78350f; margin:0; line-height:1.5;">${escapeHtml(WebState.settings.deskripsiPengasuhIstri || "Membimbing akhlaqul karimah santriwati, ketertiban asrama putri, dan keteladanan ibadah harian.")}</p>
             </div>
             ` : ''}
           </div>
@@ -1667,7 +1674,14 @@ function getStoredBiayaPembayaran() {
     const raw = localStorage.getItem(STORAGE_KEYS.BIAYA || 'sitahfidz_web_biaya');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        parsed.forEach(item => {
+          if (item && item.keterangan && item.keterangan.includes('3x')) {
+            item.keterangan = item.keterangan.replace(/3x/g, '2x');
+          }
+        });
+        return parsed;
+      }
     }
   } catch (e) {}
 
@@ -2256,6 +2270,11 @@ function initModalKeyboardNav() {
 function openAboutDetailModal(initialTab = 'pengasuh') {
   const modal = document.getElementById('modalAboutDetail');
   if (modal) {
+    const titleEl = document.getElementById('aboutModalMainTitle');
+    if (titleEl) {
+      titleEl.textContent = WebState.settings.namaPondok || "Asrama Tahfidz Sunan Bonang";
+    }
+    renderWebPengasuhSection();
     modal.classList.add('active');
     modal.style.display = 'flex';
     switchAboutModalTab(initialTab);

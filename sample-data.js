@@ -6,6 +6,8 @@ const DEFAULT_SETTINGS = {
   alamatPondok: "Jl. KH. Bisri Syansuri, Denanyar, Jombang, Jawa Timur",
   pengasuhPondok: "H. M. Jauharul Afif, Lc., M.Ag., M.Pd.",
   pengasuhIstri: "Hj. Mazidatul Faizah, M.Si.",
+  deskripsiPengasuh: "Ulama huffadz alumnus pesantren tahfidz salaf yang mengabdikan hidupnya dalam pembinaan qira'at Al-Qur'an dan kajian kitab kuning.",
+  deskripsiPengasuhIstri: "Membimbing akhlaqul karimah santriwati, ketertiban asrama putri, dan keteladanan ibadah harian.",
   fotoPengasuh: "",
   fotoPengasuhIstri: "",
   heroBannerPhoto: "",
@@ -1464,7 +1466,7 @@ const DEFAULT_BIAYA_PEMBAYARAN = [
     id: 'biaya-5',
     nama: '5. Iuran Bulanan / Syahriah (All-In)',
     nominal: 'Rp 750.000',
-    keterangan: 'Asrama, makan bergizi 3x sehari, bimbingan tahfidz & laundry',
+    keterangan: 'Asrama, makan bergizi 2x sehari, bimbingan tahfidz & laundry',
     isBulanan: true
   }
 ];

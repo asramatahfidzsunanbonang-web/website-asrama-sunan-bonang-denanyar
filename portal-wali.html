@@ -271,6 +271,25 @@
 
   </main>
 
+  <!-- MODAL SYAHADAH KHUSUS WALI SANTRI -->
+  <div id="modalSyahadahWali" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.72); z-index:99999; justify-content:center; align-items:center; padding:16px;">
+    <div style="background:#fff; border-radius:14px; max-width:840px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 25px 50px -12px rgba(0,0,0,0.3); position:relative;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid #e2e8f0; background:#f8fafc;">
+        <h3 id="modalSyahadahTitle" style="font-size:16px; font-weight:800; color:#0f172a; margin:0; display:flex; align-items:center; gap:8px;">
+          <span>📜</span> Syahadah Resmi Pondok Pesantren
+        </h3>
+        <button type="button" onclick="closeModalSyahadahWali()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b; line-height:1;">&times;</button>
+      </div>
+      <div id="modalSyahadahContent" style="padding:24px; background:#fafafa;">
+        <!-- Dynamic certificate content -->
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; padding:14px 20px; border-top:1px solid #e2e8f0; background:#f8fafc;">
+        <button type="button" class="btn btn-secondary" onclick="closeModalSyahadahWali()">Tutup</button>
+        <button type="button" class="btn btn-gold" onclick="cetakSyahadahWali()">🖨️ Cetak / Simpan PDF</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= FOOTER ================= -->
   <footer style="text-align:center; padding:24px; font-size:12px; color:#64748b; border-top:1px solid #e2e8f0; background:#fff; margin-top:auto;">
     <div id="footerPondokName" style="font-weight:600; color:#1e293b; margin-bottom:4px;">Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah</div>
@@ -519,6 +538,91 @@
         `;
       }
 
+      // Cek kelayakan Syahadah Binnadzor & Tahfidz untuk Akses Wali Santri
+      const isWisudaBnz = (s.binnadzorProgress?.statusWisuda === 'Sudah Wisuda') ||
+                          (s.program === 'Tahfidz') ||
+                          (s.program === 'Pasca Tahfidz') ||
+                          Boolean(s.binnadzorProgress?.noIjazah);
+
+      const isKhatamTahfidz = (s.tahfidzProgress?.statusWisudaTahfidz === 'Sudah Wisuda Tahfidz') ||
+                              (s.program === 'Pasca Tahfidz') ||
+                              ((s.tahfidzProgress?.totalJuzHafal || 0) >= 30) ||
+                              Boolean(s.tahfidzProgress?.noIjazahTahfidz);
+
+      const isTahfidzApproved = Boolean(s.tahfidzProgress?.syahadahTampilKeWali);
+
+      let syahadahCardsHtml = '';
+      if (isWisudaBnz || isKhatamTahfidz) {
+        let bnzCard = '';
+        if (isWisudaBnz) {
+          const bp = s.binnadzorProgress || {};
+          bnzCard = `
+            <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:26px;">📜</span>
+                <div>
+                  <div style="font-size:14px; font-weight:800; color:#14532d;">Syahadah Kelulusan Program Binnadzor</div>
+                  <div style="font-size:12px; color:#475569; margin-top:2px;">
+                    Nomor Syahadah: <code>${escapeHtml(bp.noIjazah || 'WIS-BNZ-2024-001')}</code> • Predikat: <strong style="color:#15803d;">${escapeHtml(bp.predikatWisuda || 'Mumtaz (A)')}</strong>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-sm btn-gold" onclick="bukaSyahadahBinnadzorWali()" style="font-weight:700; padding:7px 14px; font-size:12px; display:inline-flex; align-items:center; gap:6px;">
+                📜 Buka &amp; Unduh Syahadah Binnadzor
+              </button>
+            </div>
+          `;
+        }
+
+        let thfCard = '';
+        if (isKhatamTahfidz) {
+          const tp = s.tahfidzProgress || {};
+          if (isTahfidzApproved) {
+            thfCard = `
+              <div style="background:#fffdf5; border:1px solid #f59e0b; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span style="font-size:26px;">👑</span>
+                  <div>
+                    <div style="font-size:14px; font-weight:800; color:#78350f;">Syahadah Khotmil Qur'an Bil-Ghaib 30 Juz</div>
+                    <div style="font-size:12px; color:#475569; margin-top:2px;">
+                      Nomor Syahadah: <code>${escapeHtml(tp.noIjazahTahfidz || 'WIS-THF-2024-001')}</code> • Predikat: <strong style="color:#b45309;">${escapeHtml(tp.predikatWisudaTahfidz || 'Mumtaz Syaraf (A+)')}</strong>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-gold" onclick="bukaSyahadahTahfidzWali()" style="font-weight:700; padding:7px 14px; font-size:12px; display:inline-flex; align-items:center; gap:6px;">
+                  👑 Buka &amp; Unduh Syahadah 30 Juz
+                </button>
+              </div>
+            `;
+          } else {
+            thfCard = `
+              <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <span style="font-size:26px;">👑</span>
+                  <div>
+                    <div style="font-size:14px; font-weight:700; color:#475569;">Syahadah Khotmil Qur'an Bil-Ghaib 30 Juz</div>
+                    <div style="font-size:12px; color:#64748b; margin-top:2px;">
+                      Ananda telah menuntaskan 30 Juz • Status: <span class="badge" style="background:#fef3c7; color:#92400e; font-size:11px; font-weight:700;">⏳ Sedang Proses Validasi Pengasuh</span>
+                    </div>
+                  </div>
+                </div>
+                <span style="font-size:11.5px; color:#94a3b8; font-style:italic;">Akan tampil setelah disetujui Pengasuh</span>
+              </div>
+            `;
+          }
+        }
+
+        syahadahCardsHtml = `
+          <div style="margin-bottom:20px;">
+            <div style="font-size:12px; font-weight:700; text-transform:uppercase; color:#64748b; margin-bottom:6px; letter-spacing:0.5px;">
+              🎖️ Sertifikasi &amp; Syahadah Kelulusan Resmi:
+            </div>
+            ${bnzCard}
+            ${thfCard}
+          </div>
+        `;
+      }
+
       // Kurikulum Progres Global
       let progressHtml = '';
       if (s.program === 'Binnadzor' || s.program === 'Program Maqbul') {
@@ -707,6 +811,9 @@
             ${statusWisudaHtml}
           </div>
         </div>
+
+        <!-- SERTIFIKASI & SYAHADAH KELULUSAN RESMI PONDOK (BINNADZOR & TAHFIDZ) -->
+        ${syahadahCardsHtml}
 
         <!-- 3 PILAR UTAMA INFORMASI SANTRI (TAB NAVIGASI WALI SANTRI) -->
         <div style="display:flex; gap:8px; border-bottom:2px solid #e2e8f0; margin:24px 0 16px 0; padding-bottom:8px; flex-wrap:wrap;">
@@ -1366,6 +1473,184 @@
       const periode = `${NAMA_BULAN[currentMonth]} ${currentYear}`;
       const msg = `Assalamu'alaikum Warahmatullahi Wabarakatuh,\nUstadz/Ustdzh Pengurus Pondok,\n\nSaya orang tua/wali dari ananda *${santriNama}* (${halaqah}).\nIngin menanyakan perihal perkembangan tahfidz, hasil setoran, serta presensi kehadiran ananda untuk periode *${periode}*.\n\nJazakumullahu Khairan Katsiran.`;
       window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // ================= FITUR AKSES SYAHADAH WALI SANTRI =================
+    function bukaSyahadahBinnadzorWali() {
+      if (!currentSantri) return;
+      const s = currentSantri;
+      const p = s.binnadzorProgress || {};
+      const modal = document.getElementById('modalSyahadahWali');
+      const container = document.getElementById('modalSyahadahContent');
+      const title = document.getElementById('modalSyahadahTitle');
+      if (!modal || !container) return;
+
+      if (title) title.innerHTML = `<span>📜</span> Syahadah Kelulusan Binnadzor - ${escapeHtml(s.nama)}`;
+
+      container.innerHTML = `
+        <div id="syahadahPrintWrapper" style="background:#fff; border:4px double #b45309; padding:32px 28px; border-radius:12px; text-align:center; position:relative; font-family:'Amiri', Georgia, serif;">
+          <div style="font-size:28px; color:#064e3b; font-weight:bold; margin-bottom:8px;">
+            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+          </div>
+          <div style="font-size:16px; font-weight:bold; letter-spacing:1px; text-transform:uppercase; color:#0f172a; font-family:sans-serif;">
+            ${escapeHtml(portalSettings.namaPondok || DEFAULT_SETTINGS.namaPondok)}
+          </div>
+          <div style="font-size:12px; color:#64748b; font-family:sans-serif; margin-top:2px;">
+            ${escapeHtml(portalSettings.alamatPondok || '')}
+          </div>
+
+          <hr style="border:none; border-top:2px solid #b45309; margin:16px auto; width:80%;">
+
+          <h2 style="font-size:22px; font-weight:800; color:#b45309; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; font-family:sans-serif;">
+            SYAHADAH KELULUSAN BINNADZOR
+          </h2>
+          <div style="font-size:12.5px; color:#475569; font-family:sans-serif;">
+            Nomor Syahadah: <strong>${escapeHtml(p.noIjazah || 'WIS-BNZ-2024-001')}</strong>
+          </div>
+
+          <div style="font-size:13.5px; color:#334155; margin:20px auto 14px auto; max-width:550px; line-height:1.7; font-family:sans-serif;">
+            Dewan Asatidz &amp; Pengasuh Pondok menerangkan dengan sesungguhnya bahwa:
+          </div>
+
+          <div style="font-size:24px; font-weight:bold; color:#064e3b; text-decoration:underline; margin-bottom:4px; font-family:sans-serif;">
+            ${escapeHtml(s.nama)}
+          </div>
+          <div style="font-size:13px; color:#64748b; margin-bottom:16px; font-family:sans-serif;">
+            Nomor Induk Santri (NIS): <strong>${escapeHtml(s.nis)}</strong> • Kelas: <strong>${escapeHtml(s.halaqah || '-')}</strong>
+          </div>
+
+          <div style="font-size:13px; color:#1e293b; line-height:1.7; max-width:600px; margin:0 auto 24px auto; font-family:sans-serif;">
+            Telah menyelesaikan dengan baik dan dinyatakan <strong>LULUS</strong> dalam <strong>Program Binnadzor</strong>, meliputi Khatam Bacaan Al-Qur'an 30 Juz secara fashih serta tuntas Tasmi' Hafalan <strong>Juz 28, Juz 29, dan Juz 30</strong> dengan predikat:
+            <div style="margin-top:10px;">
+              <span style="font-size:15px; padding:6px 16px; background:#dcfce7; color:#15803d; border-radius:999px; font-weight:800; display:inline-block;">
+                ${escapeHtml(p.predikatWisuda || 'Mumtaz (A)')}
+              </span>
+            </div>
+            <div style="margin-top:10px; font-size:12px; color:#64748b;">
+              Dan berhak melanjutkan pendidikan ke <strong>Program Tahfidz Al-Qur'an 30 Juz Bil-Ghaib</strong>.
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:36px; padding:0 30px; font-size:12px; font-family:sans-serif; color:#1e293b;">
+            <div style="text-align:center; width:220px;">
+              <div>Ketua Divisi Tahfidz</div>
+              <div style="height:60px;"></div>
+              <div style="font-weight:bold; text-decoration:underline;">${escapeHtml(portalSettings.kepalaTahfidz || DEFAULT_SETTINGS.kepalaTahfidz)}</div>
+            </div>
+            <div style="text-align:center; width:220px;">
+              <div>${p.tanggalWisuda ? formatTanggalIndo(p.tanggalWisuda) : formatTanggalIndo(new Date().toISOString().split('T')[0])}</div>
+              <div>Pengasuh Pondok Pesantren</div>
+              <div style="height:48px;"></div>
+              <div style="font-weight:bold; text-decoration:underline;">${escapeHtml(portalSettings.pengasuhPondok || DEFAULT_SETTINGS.pengasuhPondok)}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+    }
+
+    function bukaSyahadahTahfidzWali() {
+      if (!currentSantri) return;
+      const s = currentSantri;
+      const tp = s.tahfidzProgress || {};
+
+      if (!tp.syahadahTampilKeWali) {
+        alert("Syahadah Tahfidz ananda sedang dalam proses verifikasi dan belum dipublikasikan oleh Pengasuh/Admin Pondok.");
+        return;
+      }
+
+      const modal = document.getElementById('modalSyahadahWali');
+      const container = document.getElementById('modalSyahadahContent');
+      const title = document.getElementById('modalSyahadahTitle');
+      if (!modal || !container) return;
+
+      if (title) title.innerHTML = `<span>👑</span> Syahadah Khotmil Qur'an 30 Juz - ${escapeHtml(s.nama)}`;
+
+      const tglStr = tp.tanggalWisudaTahfidz ? formatTanggalIndo(tp.tanggalWisudaTahfidz) : formatTanggalIndo(new Date().toISOString().split('T')[0]);
+      const noIjazah = tp.noIjazahTahfidz || `WIS-THF-${new Date().getFullYear()}-001`;
+      const predikat = tp.predikatWisudaTahfidz || 'Mumtaz Syaraf (A+)';
+
+      container.innerHTML = `
+        <div id="syahadahPrintWrapper" style="background:#fffdf5; border:4px double #b45309; padding:32px 28px; border-radius:12px; text-align:center; position:relative; font-family:'Amiri', Georgia, serif;">
+          <div style="font-size:36px; margin-bottom:4px;">👑</div>
+          <div style="font-size:28px; color:#92400e; font-weight:bold; margin-bottom:6px;">
+            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+          </div>
+          <h2 style="font-size:21px; font-weight:800; color:#78350f; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; font-family:sans-serif;">
+            SYAHADAH KHOTMIL QUR'AN BIL-GHAIB 30 JUZ
+          </h2>
+          <div style="font-size:13px; color:#92400e; font-weight:700; font-family:sans-serif;">
+            Nomor Syahadah: <code>${escapeHtml(noIjazah)}</code>
+          </div>
+
+          <p style="font-size:13px; color:#334155; margin:18px auto 14px auto; max-width:600px; line-height:1.6; font-family:sans-serif;">
+            Dewan Masyayikh dan Pengasuh Pondok Pesantren menerangkan dengan sesungguhnya bahwa santri:
+          </p>
+
+          <h1 style="font-size:24px; font-weight:800; color:#0f172a; border-bottom:2px dashed #d97706; display:inline-block; padding:0 24px 6px 24px; margin-bottom:12px; font-family:sans-serif;">
+            ${escapeHtml(s.nama)}
+          </h1>
+          <div style="font-size:13px; color:#475569; margin-bottom:16px; font-family:sans-serif;">
+            Nomor Induk Santri (NIS): <strong>${escapeHtml(s.nis)}</strong> • ${escapeHtml(s.halaqah || 'Pasca Tahfidz')}
+          </div>
+
+          <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:8px; padding:12px; max-width:580px; margin:0 auto 20px auto; font-size:13px; color:#92400e; font-family:sans-serif;">
+            Telah menuntaskan hafalan <strong>Al-Qur'an 30 Juz Bil-Ghaib</strong> secara mutqin, tartil, dan fashih sesuai kaidah tajwid, dengan predikat:
+            <div style="font-size:16px; font-weight:800; color:#b45309; margin-top:4px;">${escapeHtml(predikat)}</div>
+          </div>
+
+          <div style="display:flex; justify-content:space-around; margin-top:32px; text-align:center; font-size:12px; color:#334155; font-family:sans-serif;">
+            <div>
+              <div style="color:#64748b;">Pengasuh Pondok Pesantren,</div>
+              <div style="height:48px;"></div>
+              <strong style="text-decoration:underline; color:#0f172a;">${escapeHtml(portalSettings.pengasuhPondok || DEFAULT_SETTINGS.pengasuhPondok)}</strong>
+            </div>
+            <div>
+              <div style="color:#64748b;">Ditetapkan di Cirebon, ${tglStr}</div>
+              <div style="color:#64748b;">Ustadz Pengampu Tahfidz,</div>
+              <div style="height:32px;"></div>
+              <strong style="text-decoration:underline; color:#0f172a;">${escapeHtml(portalSettings.kepalaTahfidz || DEFAULT_SETTINGS.kepalaTahfidz)}</strong>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+    }
+
+    function closeModalSyahadahWali() {
+      const modal = document.getElementById('modalSyahadahWali');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function cetakSyahadahWali() {
+      const wrapper = document.getElementById('syahadahPrintWrapper');
+      if (!wrapper) return;
+      const printWindow = window.open('', '_blank', 'width=900,height=700');
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Syahadah Resmi Pondok Pesantren</title>
+          <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+          <style>
+            @page { size: A4 landscape; margin: 12mm; }
+            body { margin: 0; padding: 20px; font-family: 'Plus Jakarta Sans', sans-serif; background: #fff; }
+            @media print {
+              body { padding: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          ${wrapper.outerHTML}
+          <script>
+            window.onload = function() { window.print(); };
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
     }
   </script>
 </body>

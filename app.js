@@ -5323,23 +5323,20 @@ function switchWisudaPanel(panelKey) {
   const panels = {
     'binnadzor': document.getElementById('panelWisudaBinnadzor'),
     'maqbul': document.getElementById('panelWisudaMaqbul'),
-    'alumni-bnz': document.getElementById('panelWisudaAlumniBnz'),
-    'calon-30juz': document.getElementById('panelWisudaCalon30Juz'),
+    'tahfidz': document.getElementById('panelWisudaTahfidz'),
     'pasca-tahfidz': document.getElementById('panelWisudaPascaTahfidz')
   };
   const buttons = {
     'binnadzor': document.getElementById('tabBtnWisudaBinnadzor'),
     'maqbul': document.getElementById('tabBtnWisudaMaqbul'),
-    'alumni-bnz': document.getElementById('tabBtnWisudaAlumniBnz'),
-    'calon-30juz': document.getElementById('tabBtnWisudaCalon30Juz'),
+    'tahfidz': document.getElementById('tabBtnWisudaTahfidz'),
     'pasca-tahfidz': document.getElementById('tabBtnWisudaPascaTahfidz'),
     'semua': document.getElementById('tabBtnWisudaSemua')
   };
   const badges = {
     'binnadzor': document.getElementById('badgeWisudaBinnadzor'),
     'maqbul': document.getElementById('badgeWisudaMaqbul'),
-    'alumni-bnz': document.getElementById('badgeWisudaAlumniBnz'),
-    'calon-30juz': document.getElementById('badgeWisudaCalon30Juz'),
+    'tahfidz': document.getElementById('badgeWisudaTahfidz'),
     'pasca-tahfidz': document.getElementById('badgeWisudaPascaTahfidz')
   };
 
@@ -5438,7 +5435,7 @@ function renderWisudaTables() {
     }
   }
 
-  // 2. Table 2: Santri di "Program Maqbul" (Persiapan Menuju Tahfidz & Menunggu Wisuda)
+  // 2. Table 2: Santri di "Program Maqbul" (Persiapan Menuju Tahfidz & Menunggu Wisuda Binnadzor)
   const tbodySiap = document.getElementById('tableSiapWisudaBody');
   if (tbodySiap) {
     tbodySiap.innerHTML = '';
@@ -5479,13 +5476,68 @@ function renderWisudaTables() {
     }
   }
 
-  // 3. Table 3: Alumni Wisuda Binnadzor (Kini di Program Tahfidz 30 Juz)
+  // 3A. Table 3A: Calon & Kelulusan Wisuda Tahfidz 30 Juz & Pengesahan Syahadah Wali
+  const tbodyCalonTahfidz = document.getElementById('tableCalonWisudaTahfidzBody');
+  if (tbodyCalonTahfidz) {
+    tbodyCalonTahfidz.innerHTML = '';
+    const calonList = AppState.santri.filter(s => 
+      (s.program === 'Tahfidz' && ((s.tahfidzProgress?.totalJuzHafal || 0) >= 30 || (s.tahfidzProgress?.juzZiyadahList?.length || 0) >= 30)) ||
+      (s.tahfidzProgress?.statusWisudaTahfidz === 'Sudah Wisuda Tahfidz')
+    );
+
+    if (calonList.length === 0) {
+      tbodyCalonTahfidz.innerHTML = `<tr><td colspan="7" class="empty-state">Saat ini belum ada santri Tahfidz yang mencapai 30 Juz khatam.</td></tr>`;
+    } else {
+      calonList.forEach(s => {
+        const tp = s.tahfidzProgress || {};
+        const isWisuda = tp.statusWisudaTahfidz === 'Sudah Wisuda Tahfidz';
+        const isApprovedWali = Boolean(tp.syahadahTampilKeWali);
+
+        const btnIzinWali = `
+          <button type="button" class="btn btn-sm ${isApprovedWali ? 'btn-success' : 'btn-outline-secondary'}" onclick="togglePublikasiSyahadahTahfidz('${s.id}')" style="font-size:11px; font-weight:700; padding:4px 8px; display:inline-flex; align-items:center; gap:4px; ${isApprovedWali ? 'background:#ecfdf5; color:#047857; border:1px solid #10b981;' : ''}" title="${isApprovedWali ? 'Klik untuk menyembunyikan dari portal wali santri' : 'Klik untuk mengizinkan tampil di portal wali santri'}">
+            <span>${isApprovedWali ? '✅' : '🔒'}</span> ${isApprovedWali ? 'Disetujui (Tampil di Wali)' : 'Belum Disetujui (Klik utk Izinkan)'}
+          </button>
+        `;
+
+        const btnTindakan = isWisuda 
+          ? `<div style="display:flex; gap:6px; justify-content:center;">
+               <button class="btn btn-gold btn-sm" onclick="previewPiagamWisudaTahfidz('${s.id}')" title="Lihat Syahadah 30 Juz">
+                 👑 Syahadah 30 Juz
+               </button>
+             </div>`
+          : `<button class="btn btn-gold btn-sm" onclick="openModalWisudaTahfidzAction('${s.id}')">
+               👑 Sidang & Wisuda Tahfidz
+             </button>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(s.nama)}</strong></td>
+          <td>${escapeHtml(s.nis)}</td>
+          <td><span class="badge" style="background:#ecfdf5; color:#065f46;">${escapeHtml(s.halaqah || '-')}</span></td>
+          <td><strong style="color:#059669; font-size:13px;">${isWisuda ? '30 Juz Mutqin (Lulus Wisuda)' : '30 / 30 Juz Khatam'}</strong> (${tp.juzMutqinList?.length || 0} Mutqin)</td>
+          <td>
+            <span class="badge ${isWisuda ? 'badge-primary' : 'badge-ready-grad'}" style="${isWisuda ? 'background:#dcfce7; color:#15803d;' : 'background:#fef3c7; color:#92400e;'}">
+              ${isWisuda ? '🎓 Telah Wisuda Tahfidz' : '👑 Siap Wisuda Tahfidz'}
+            </span>
+          </td>
+          <td>${btnIzinWali}</td>
+          <td style="text-align:center;">${btnTindakan}</td>
+        `;
+        tbodyCalonTahfidz.appendChild(tr);
+      });
+    }
+  }
+
+  // 3B. Table 3B: Riwayat Alumni Wisuda Binnadzor (Kini di Program Tahfidz 30 Juz)
   const tbodyAlumni = document.getElementById('tableAlumniWisudaBody');
   if (tbodyAlumni) {
     tbodyAlumni.innerHTML = '';
     const alumniList = AppState.santri.filter(s => s.program === 'Tahfidz' && s.binnadzorProgress?.statusWisuda === 'Sudah Wisuda');
-    const badgeAlumni = document.getElementById('badgeWisudaAlumniBnz');
-    if (badgeAlumni) badgeAlumni.textContent = alumniList.length;
+
+    // Update Badge Total Tahfidz
+    const tahfidzTotal = AppState.santri.filter(s => s.program === 'Tahfidz').length;
+    const badgeTahfidz = document.getElementById('badgeWisudaTahfidz');
+    if (badgeTahfidz) badgeTahfidz.textContent = tahfidzTotal;
 
     if (alumniList.length === 0) {
       tbodyAlumni.innerHTML = `<tr><td colspan="8" class="empty-state">Belum ada riwayat santri wisuda binnadzor.</td></tr>`;
@@ -5504,7 +5556,7 @@ function renderWisudaTables() {
           <td><strong>${tp.totalJuzHafal || 3} / 30 Juz</strong> (${tp.juzMutqinList?.length || 0} Mutqin)</td>
           <td style="text-align:center;">
             <button class="btn btn-secondary btn-sm" onclick="previewSertifikatWisuda('${s.id}')">
-              📜 Lihat Piagam
+              📜 Lihat Syahadah
             </button>
           </td>
         `;
@@ -5513,42 +5565,7 @@ function renderWisudaTables() {
     }
   }
 
-  // 4. Table 4: Calon Wisuda Tahfidz 30 Juz (Santri Tahfidz Khatam 30 Juz)
-  const tbodyCalonTahfidz = document.getElementById('tableCalonWisudaTahfidzBody');
-  if (tbodyCalonTahfidz) {
-    tbodyCalonTahfidz.innerHTML = '';
-    const calonList = AppState.santri.filter(s => 
-      s.program === 'Tahfidz' && 
-      ((s.tahfidzProgress?.totalJuzHafal || 0) >= 30 || (s.tahfidzProgress?.juzZiyadahList?.length || 0) >= 30)
-    );
-    const badgeCalon = document.getElementById('badgeWisudaCalon30Juz');
-    if (badgeCalon) badgeCalon.textContent = calonList.length;
-
-    if (calonList.length === 0) {
-      tbodyCalonTahfidz.innerHTML = `<tr><td colspan="7" class="empty-state">Saat ini belum ada santri Tahfidz yang mencapai 30 Juz khatam.</td></tr>`;
-    } else {
-      calonList.forEach(s => {
-        const tp = s.tahfidzProgress || {};
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${escapeHtml(s.nama)}</strong></td>
-          <td>${escapeHtml(s.nis)}</td>
-          <td><span class="badge" style="background:#ecfdf5; color:#065f46;">${escapeHtml(s.halaqah || '-')}</span></td>
-          <td><strong style="color:#059669; font-size:13px;">30 / 30 Juz Khatam</strong> (${tp.juzMutqinList?.length || 0} Mutqin)</td>
-          <td style="font-size:12px;">${escapeHtml(tp.terakhirSetor || 'Khotmil Qur\'an Bil-Ghaib')}</td>
-          <td><span class="badge badge-ready-grad" style="background:#fef3c7; color:#92400e;">👑 Siap Wisuda Tahfidz</span></td>
-          <td style="text-align:center;">
-            <button class="btn btn-gold btn-sm" onclick="openModalWisudaTahfidzAction('${s.id}')">
-              👑 Sidang & Wisuda Tahfidz 30 Juz
-            </button>
-          </td>
-        `;
-        tbodyCalonTahfidz.appendChild(tr);
-      });
-    }
-  }
-
-  // 5. Table 5: Monitoring Kelas Pasca Tahfidz (Progres Tasmi' & Sanad)
+  // 4. Table 4: Monitoring Kelas Pasca Tahfidz (Progres Tasmi' & Sanad)
   const tbodyPasca = document.getElementById('tablePascaTahfidzBody');
   if (tbodyPasca) {
     tbodyPasca.innerHTML = '';
@@ -5557,17 +5574,24 @@ function renderWisudaTables() {
     if (badgePasca) badgePasca.textContent = pascaList.length;
 
     if (pascaList.length === 0) {
-      tbodyPasca.innerHTML = `<tr><td colspan="8" class="empty-state">Belum ada mahasantri di Kelas Pasca Tahfidz.</td></tr>`;
+      tbodyPasca.innerHTML = `<tr><td colspan="9" class="empty-state">Belum ada mahasantri di Kelas Pasca Tahfidz.</td></tr>`;
     } else {
       pascaList.forEach(s => {
         const tp = s.tahfidzProgress || {};
         const pst = s.pascaTahfidzProgress || {};
+        const isApprovedWali = Boolean(tp.syahadahTampilKeWali);
 
         const chip5 = pst.tasmi5Juz ? `<span class="badge" style="background:#dcfce7; color:#15803d; font-size:11px;">✓ 5J</span>` : `<span style="color:#94a3b8; font-size:11px;">— 5J</span>`;
         const chip10 = pst.tasmi10Juz ? `<span class="badge" style="background:#dcfce7; color:#15803d; font-size:11px;">✓ 10J</span>` : `<span style="color:#94a3b8; font-size:11px;">— 10J</span>`;
         const chip15 = pst.tasmi15Juz ? `<span class="badge" style="background:#dcfce7; color:#15803d; font-size:11px;">✓ 15J</span>` : `<span style="color:#94a3b8; font-size:11px;">— 15J</span>`;
         const chip20 = pst.tasmi20Juz ? `<span class="badge" style="background:#dcfce7; color:#15803d; font-size:11px;">✓ 20J</span>` : `<span style="color:#94a3b8; font-size:11px;">— 20J</span>`;
         const chip30 = pst.tasmi30JuzSekaliDuduk ? `<span class="badge" style="background:#fef3c7; color:#92400e; font-weight:700; font-size:11px;">👑 30J</span>` : `<span style="color:#94a3b8; font-size:11px;">— 30J</span>`;
+
+        const btnIzinWali = `
+          <button type="button" class="btn btn-sm ${isApprovedWali ? 'btn-success' : 'btn-outline-secondary'}" onclick="togglePublikasiSyahadahTahfidz('${s.id}')" style="font-size:10.5px; font-weight:700; padding:3px 7px; display:inline-flex; align-items:center; gap:4px; ${isApprovedWali ? 'background:#ecfdf5; color:#047857; border:1px solid #10b981;' : ''}" title="${isApprovedWali ? 'Klik untuk menyembunyikan dari portal wali' : 'Klik untuk mengizinkan tampil di portal wali'}">
+            <span>${isApprovedWali ? '✅' : '🔒'}</span> ${isApprovedWali ? 'Disetujui' : 'Belum Izin'}
+          </button>
+        `;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -5582,13 +5606,14 @@ function renderWisudaTables() {
           </td>
           <td style="font-size:12px; color:#0f172a;">${escapeHtml(pst.terakhirTasmi || 'Tasmi\' Sekali Duduk')}</td>
           <td style="font-size:12px; color:#15803d; font-weight:600;">${escapeHtml(pst.statusSanad || 'Bimbingan Sanad')}</td>
+          <td>${btnIzinWali}</td>
           <td style="text-align:center;">
             <div style="display:flex; gap:6px; justify-content:center;">
               <button class="btn btn-gold btn-sm" onclick="openModalSetoran('${s.id}')" title="Catat Setoran Tasmi'">
                 📖 Setor Tasmi'
               </button>
-              <button class="btn btn-secondary btn-sm" onclick="previewPiagamWisudaTahfidz('${s.id}')" title="Lihat Piagam 30 Juz">
-                👑 Piagam
+              <button class="btn btn-secondary btn-sm" onclick="previewPiagamWisudaTahfidz('${s.id}')" title="Lihat Syahadah 30 Juz">
+                👑 Syahadah
               </button>
             </div>
           </td>
@@ -5601,6 +5626,26 @@ function renderWisudaTables() {
   // Jaga tab panel aktif tetap sinkron saat render ulang
   if (typeof switchWisudaPanel === 'function') {
     switchWisudaPanel(currentWisudaPanel);
+  }
+}
+
+function togglePublikasiSyahadahTahfidz(santriId) {
+  const s = AppState.santri.find(item => item.id === santriId);
+  if (!s) return;
+  if (!s.tahfidzProgress) {
+    s.tahfidzProgress = {};
+  }
+  s.tahfidzProgress.syahadahTampilKeWali = !s.tahfidzProgress.syahadahTampilKeWali;
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
+  renderAll();
+
+  if (s.tahfidzProgress.syahadahTampilKeWali) {
+    showToast(`✅ Syahadah Tahfidz ananda ${s.nama} disetujui & sekarang DAPAT DILIHAT oleh Wali Santri!`, "success");
+  } else {
+    showToast(`🔒 Syahadah Tahfidz ananda ${s.nama} sekarang DISEMBUNYIKAN dari Wali Santri.`, "info");
   }
 }
 
@@ -5740,9 +5785,9 @@ function previewSertifikatWisuda(santriId) {
     <hr style="border:none; border-top:2px solid var(--gold-600); margin:16px auto; width:80%;">
 
     <h2 style="font-size:22px; font-weight:800; color:var(--gold-700); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px;">
-      PIAGAM KELULUSAN BINNADZOR
+      SYAHADAH KELULUSAN BINNADZOR
     </h2>
-    <div style="font-size:12px; color:var(--dark-600);">Nomor: <strong>${escapeHtml(p.noIjazah || 'WIS-BNZ-2024-001')}</strong></div>
+    <div style="font-size:12px; color:var(--dark-600);">Nomor Syahadah: <strong>${escapeHtml(p.noIjazah || 'WIS-BNZ-2024-001')}</strong></div>
 
     <div style="font-size:14px; color:var(--dark-700); margin:20px auto 14px auto; max-width:550px; line-height:1.7;">
       Dewan Asatidz & Pengasuh Pondok menerangkan dengan sesungguhnya bahwa:
@@ -7928,6 +7973,8 @@ function konfirmasiWisudaTahfidzSantri(e) {
   s.tahfidzProgress.noIjazahTahfidz = noIjazah;
   s.tahfidzProgress.predikatWisudaTahfidz = predikat;
   s.tahfidzProgress.catatanWisudaTahfidz = catatan;
+  const tampilKeWali = document.getElementById('wisudaTahfidzTampilKeWali')?.checked ?? true;
+  s.tahfidzProgress.syahadahTampilKeWali = tampilKeWali;
 
   if (!s.pascaTahfidzProgress) {
     s.pascaTahfidzProgress = {
@@ -7945,6 +7992,9 @@ function konfirmasiWisudaTahfidzSantri(e) {
   }
 
   saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
   closeModalWisudaTahfidz();
   renderAll();
 
@@ -7973,10 +8023,10 @@ function previewPiagamWisudaTahfidz(santriId) {
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
       </div>
       <h2 style="font-size: 20px; font-weight: 800; color: #78350f; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
-        PIAGAM KHOTMIL QUR'AN BIL-GHAIB 30 JUZ
+        SYAHADAH KHOTMIL QUR'AN BIL-GHAIB 30 JUZ
       </h2>
       <div style="font-size: 13px; color: #92400e; font-weight: 700;">
-        Nomor Ijazah: <code>${noIjazah}</code>
+        Nomor Syahadah: <code>${noIjazah}</code>
       </div>
 
       <p style="font-size: 13px; color: #334155; margin: 18px auto 14px auto; max-width: 600px; line-height: 1.6;">

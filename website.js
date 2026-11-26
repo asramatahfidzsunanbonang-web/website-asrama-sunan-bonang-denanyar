@@ -429,7 +429,7 @@ function initStorage() {
     fotoPengasuh: "",
     fotoPengasuhIstri: "",
     heroFloatingPhoto: "foto-masyayikh.png",
-    kepalaTahfidz: "Ust. Misbakhul Mujtahidin"
+    kepalaTahfidz: "Ust. Misbahul Mujtahidin"
   };
 
   // Auto-upgrade jika data lokal masih berisi nama contoh bawaan lama
@@ -439,8 +439,8 @@ function initStorage() {
   if (!WebState.settings.pengasuhIstri || WebState.settings.pengasuhIstri.includes('Siti Fatimah')) {
     WebState.settings.pengasuhIstri = "Hj. Mazidatul Faizah, M.Si.";
   }
-  if (!WebState.settings.kepalaTahfidz || WebState.settings.kepalaTahfidz.includes('Muhammad Ridwan')) {
-    WebState.settings.kepalaTahfidz = "Ust. Misbakhul Mujtahidin";
+  if (!WebState.settings.kepalaTahfidz || WebState.settings.kepalaTahfidz.includes('Muhammad Ridwan') || WebState.settings.kepalaTahfidz.includes('Misbakhul')) {
+    WebState.settings.kepalaTahfidz = "Ust. Misbahul Mujtahidin";
   }
   if (!WebState.settings.medsos) {
     WebState.settings.medsos = (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.medsos) ? { ...DEFAULT_SETTINGS.medsos } : {
@@ -752,7 +752,7 @@ function initPondokIdentity() {
   renderWebPengasuhSection();
 
   const kepalaTahfidzElements = document.querySelectorAll('.bind-kepala-tahfidz');
-  kepalaTahfidzElements.forEach(el => el.textContent = WebState.settings.kepalaTahfidz || "Ust. Misbakhul Mujtahidin");
+  kepalaTahfidzElements.forEach(el => el.textContent = WebState.settings.kepalaTahfidz || "Ust. Misbahul Mujtahidin");
 
   // Logo pondok (transparan murni tanpa background kotak hitam)
   if (WebState.settings.logoPondok) {

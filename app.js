@@ -66,22 +66,25 @@ function initStorage() {
     AppState.settings.daftarHalaqahPascaTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahPascaTahfidz ];
     AppState.settings.daftarHalaqah = [ ...DEFAULT_SETTINGS.daftarHalaqah ];
   }
-  // Auto-upgrade nama kelas E1 & E2 jika masih nama lama
-  if (Array.isArray(AppState.settings.daftarKelasBinnadzor)) {
-    AppState.settings.daftarKelasBinnadzor = AppState.settings.daftarKelasBinnadzor.map(k => {
-      if (typeof k === 'string' && k.includes('Rafqi')) return 'Kelas E1 (Ust. Adin)';
-      if (typeof k === 'string' && k.includes('Izud')) return 'Kelas E2 (Ust. Rizki)';
-      return k;
-    });
+  // Auto-upgrade ke nama lengkap resmi asatidz jika masih berisi nama panggilan lama
+  const hasOldNicknames = (list) => Array.isArray(list) && list.some(k => 
+    typeof k === 'string' && (
+      k.includes('(Ust. Yogi)') || k.includes('(Ust. Kaffa)') || k.includes('(Ust. Haqi)') ||
+      k.includes('(Ust. Sholah)') || k.includes('(Ust. Hafi)') || k.includes('(Ust. Alfan)') ||
+      k.includes('(Ust. Rosyid)') || k.includes('(Ust. Bayu)') || k.includes('(Ust. Arul)') ||
+      k.includes('(Ust. Muhith)') || k.includes('(Ust. Adin)') || k.includes('(Ust. Rizki)') ||
+      k.includes('Misbakhul') || k.includes('M. Abdul Ghoffar Wijoyo') || k.includes('Aslamudin') ||
+      k.includes('Ust. Fahmi') || k.includes('Ust. Burhan') || k.includes('Syafi\'ul Kholid')
+    )
+  );
+
+  if (hasOldNicknames(AppState.settings.daftarKelasBinnadzor) || hasOldNicknames(AppState.settings.daftarHalaqahTahfidz)) {
+    AppState.settings.daftarKelasBinnadzor = [ ...DEFAULT_SETTINGS.daftarKelasBinnadzor ];
+    AppState.settings.daftarHalaqahTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahTahfidz ];
+    AppState.settings.daftarHalaqahPascaTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahPascaTahfidz ];
+    AppState.settings.daftarHalaqah = [ ...DEFAULT_SETTINGS.daftarHalaqah ];
   }
-  if (Array.isArray(AppState.settings.daftarHalaqah)) {
-    AppState.settings.daftarHalaqah = AppState.settings.daftarHalaqah.map(k => {
-      if (typeof k === 'string' && k.includes('Rafqi')) return 'Kelas E1 (Ust. Adin)';
-      if (typeof k === 'string' && k.includes('Izud')) return 'Kelas E2 (Ust. Rizki)';
-      return k;
-    });
-  }
-  if (!AppState.settings.kepalaTahfidz || AppState.settings.kepalaTahfidz.includes('Muhammad Ridwan')) {
+  if (!AppState.settings.kepalaTahfidz || AppState.settings.kepalaTahfidz.includes('Misbakhul') || AppState.settings.kepalaTahfidz.includes('Muhammad Ridwan')) {
     AppState.settings.kepalaTahfidz = DEFAULT_SETTINGS.kepalaTahfidz;
   }
 
@@ -201,12 +204,33 @@ function initStorage() {
       s.kelasSekolah = '';
     }
     if (s && s.halaqah) {
-      if (s.halaqah.includes('Rafqi')) {
-        s.halaqah = 'Kelas E1 (Ust. Adin)';
-        santriUpdated = true;
-      }
-      if (s.halaqah.includes('Izud')) {
-        s.halaqah = 'Kelas E2 (Ust. Rizki)';
+      const lowerH = s.halaqah.trim().toLowerCase();
+      const HALAQAH_MAP = {
+        'kelas a (ust. yogi)': 'Kelas A (Ust. Fatih Prayogi)',
+        'kelas b1 (ust. kaffa)': 'Kelas B1 (Ust. Fazaki Sadid Al Kaffa)',
+        'kelas b2 (ust. haqi)': 'Kelas B2 (Ust. Jauhar Baihaqi)',
+        'kelas b3 (ust. sholah)': 'Kelas B3 (Ust. Sholahuddin Ilham)',
+        'kelas c1 (ust. hafi)': 'Kelas C1 (Ust. Hafi Masruli)',
+        'kelas c2 (ust. alfan)': 'Kelas C2 (Ust. Alfan Athallah)',
+        'kelas c3 (ust. rosyid)': 'Kelas C3 (Ust. Imam Rosyid)',
+        'kelas d1 (ust. bayu)': 'Kelas D1 (Ust. Indra Bayu Sadewo)',
+        'kelas d2 (ust. arul)': 'Kelas D2 (Ust. Syahrul Huda)',
+        'kelas d3 (ust. muhith)': 'Kelas D3 (Ust. Abdul Muhith)',
+        'kelas e1 (ust. adin)': 'Kelas E1 (Ust. Aladinil Hanif)',
+        'kelas e1 (ust. rafqi)': 'Kelas E1 (Ust. Aladinil Hanif)',
+        'kelas e2 (ust. rizki)': 'Kelas E2 (Ust. Rizqi Mauludin)',
+        'kelas e2 (ust. izud)': 'Kelas E2 (Ust. Rizqi Mauludin)',
+        'halaqah ust. misbakhul mujtahidin': 'Halaqah Ust. Misbahul Mujtahidin',
+        'halaqah ust. syafi\'ul kholid': 'Halaqah Ust. Syafi\'ul Kholiq',
+        'halaqah ust. mudzakkir': 'Halaqah Ust. Mudzakir',
+        'halaqah ust. burhan': 'Halaqah Ust. Burhanuddin',
+        'halaqah ust. m. abdul ghoffar wijoyo': 'Halaqah Ust. Abdul Ghoffar Wijaya',
+        'halaqah ust. fatih bagus aslamudin': 'Halaqah Ust. Fatih Bagus Aslamuddin',
+        'halaqah ust. fahmi': 'Halaqah Ust. Dzul Fahmi Al Haqiqi',
+        'halaqah ust. rosyid ridho': 'Halaqah Ust. Rosyid Ridlo'
+      };
+      if (HALAQAH_MAP[lowerH]) {
+        s.halaqah = HALAQAH_MAP[lowerH];
         santriUpdated = true;
       }
     }
@@ -225,30 +249,22 @@ function initStorage() {
   const savedAbsensi = localStorage.getItem(STORAGE_KEYS.ABSENSI);
   AppState.absensi = (savedAbsensi ? JSON.parse(savedAbsensi) : []).filter(a => a && a.id && !isDummyAbsensiId(a.id) && !isDummySantriId(a.santriId));
 
-  // Data Asatidz (Auto-upgrade ke data resmi jika masih template lama)
+  // Data Asatidz (Auto-upgrade ke data resmi nama lengkap jika masih template lama atau nama panggilan lama)
   const savedUstadz = localStorage.getItem(STORAGE_KEYS.USTADZ);
   let parsedUstadz = savedUstadz ? JSON.parse(savedUstadz) : [];
-  if (!Array.isArray(parsedUstadz) || parsedUstadz.length === 0 || parsedUstadz.some(u => u && u.nama && u.nama.includes('Muhammad Ridwan, S.Pd.I.'))) {
+  const needsUstadzUpgrade = !Array.isArray(parsedUstadz) || parsedUstadz.length === 0 || 
+    parsedUstadz.some(u => u && u.nama && (
+      u.nama.includes('Muhammad Ridwan') || 
+      u.nama === 'Ust. Yogi' || u.nama === 'Ust. Kaffa' || u.nama === 'Ust. Haqi' ||
+      u.nama === 'Ust. Sholah' || u.nama === 'Ust. Hafi' || u.nama === 'Ust. Alfan' ||
+      u.nama === 'Ust. Bayu' || u.nama === 'Ust. Arul' || u.nama === 'Ust. Muhith' ||
+      u.nama === 'Ust. Adin' || u.nama === 'Ust. Rizki' || u.nama === 'Ust. Rafqi' || u.nama === 'Ust. Izud' ||
+      u.nama === 'Ust. Burhan' || u.nama === 'Ust. Fahmi' || u.nama === 'Ust. Mudzakkir' ||
+      u.nama.includes('Misbakhul') || u.nama.includes('Wijoyo')
+    ));
+
+  if (needsUstadzUpgrade) {
     parsedUstadz = [ ...SAMPLE_USTADZ ];
-    try {
-      localStorage.setItem(STORAGE_KEYS.USTADZ, JSON.stringify(parsedUstadz));
-    } catch(e) {}
-  }
-  // Pastikan UST-021 dan UST-022 ter-update ke nama baru jika masih nama lama
-  let ustadzUpdated = false;
-  parsedUstadz.forEach(u => {
-    if (u && (u.id === 'UST-021' || (u.nama && u.nama.includes('Rafqi')))) {
-      u.nama = 'Ust. Adin';
-      u.halaqah = 'Kelas E1 (Ust. Adin)';
-      ustadzUpdated = true;
-    }
-    if (u && (u.id === 'UST-022' || (u.nama && u.nama.includes('Izud')))) {
-      u.nama = 'Ust. Rizki';
-      u.halaqah = 'Kelas E2 (Ust. Rizki)';
-      ustadzUpdated = true;
-    }
-  });
-  if (ustadzUpdated) {
     try {
       localStorage.setItem(STORAGE_KEYS.USTADZ, JSON.stringify(parsedUstadz));
     } catch(e) {}

@@ -48,26 +48,24 @@ function initUstadzStorage() {
   if (!UstadzState.settings.pengasuhPondok || UstadzState.settings.pengasuhPondok.includes('Ahmad Dahlan Masykur')) {
     UstadzState.settings.pengasuhPondok = DEFAULT_SETTINGS.pengasuhPondok;
   }
-  if (!UstadzState.settings.daftarHalaqahTahfidz || UstadzState.settings.daftarHalaqahTahfidz.length === 0 || UstadzState.settings.daftarHalaqahTahfidz.some(h => h.includes('Wildan, Al-Hafidz'))) {
+  const hasOldNicknames = (list) => Array.isArray(list) && list.some(k => 
+    typeof k === 'string' && (
+      k.includes('(Ust. Yogi)') || k.includes('(Ust. Kaffa)') || k.includes('(Ust. Haqi)') ||
+      k.includes('(Ust. Sholah)') || k.includes('(Ust. Hafi)') || k.includes('(Ust. Alfan)') ||
+      k.includes('(Ust. Rosyid)') || k.includes('(Ust. Bayu)') || k.includes('(Ust. Arul)') ||
+      k.includes('(Ust. Muhith)') || k.includes('(Ust. Adin)') || k.includes('(Ust. Rizki)') ||
+      k.includes('Misbakhul') || k.includes('M. Abdul Ghoffar Wijoyo') || k.includes('Aslamudin') ||
+      k.includes('Ust. Fahmi') || k.includes('Ust. Burhan') || k.includes('Syafi\'ul Kholid')
+    )
+  );
+
+  if (!UstadzState.settings.daftarHalaqahTahfidz || UstadzState.settings.daftarHalaqahTahfidz.length === 0 || 
+      UstadzState.settings.daftarHalaqahTahfidz.some(h => h.includes('Wildan, Al-Hafidz')) ||
+      hasOldNicknames(UstadzState.settings.daftarKelasBinnadzor) || hasOldNicknames(UstadzState.settings.daftarHalaqahTahfidz)) {
     UstadzState.settings.daftarHalaqahTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahTahfidz ];
     UstadzState.settings.daftarKelasBinnadzor = [ ...DEFAULT_SETTINGS.daftarKelasBinnadzor ];
     UstadzState.settings.daftarHalaqahPascaTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahPascaTahfidz ];
     UstadzState.settings.daftarHalaqah = [ ...DEFAULT_SETTINGS.daftarHalaqah ];
-  }
-  // Auto-upgrade nama kelas E1 & E2 jika masih nama lama
-  if (Array.isArray(UstadzState.settings.daftarKelasBinnadzor)) {
-    UstadzState.settings.daftarKelasBinnadzor = UstadzState.settings.daftarKelasBinnadzor.map(k => {
-      if (typeof k === 'string' && k.includes('Rafqi')) return 'Kelas E1 (Ust. Adin)';
-      if (typeof k === 'string' && k.includes('Izud')) return 'Kelas E2 (Ust. Rizki)';
-      return k;
-    });
-  }
-  if (Array.isArray(UstadzState.settings.daftarHalaqah)) {
-    UstadzState.settings.daftarHalaqah = UstadzState.settings.daftarHalaqah.map(k => {
-      if (typeof k === 'string' && k.includes('Rafqi')) return 'Kelas E1 (Ust. Adin)';
-      if (typeof k === 'string' && k.includes('Izud')) return 'Kelas E2 (Ust. Rizki)';
-      return k;
-    });
   }
   if (!UstadzState.settings.accessPin) UstadzState.settings.accessPin = '123456';
   if (!UstadzState.settings.ustadzPin) UstadzState.settings.ustadzPin = '888888';

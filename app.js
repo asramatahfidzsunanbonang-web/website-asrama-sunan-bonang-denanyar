@@ -3064,6 +3064,7 @@ function renderSantriTable() {
       <td style="text-align:center;">
         <div style="display:flex; gap:4px; justify-content:center;">
           <button class="btn btn-secondary btn-sm" onclick="lihatMutabaahSantri('${s.id}')" title="Peta Hafalan 30 Juz">🗺️</button>
+          <button class="btn btn-secondary btn-sm" onclick="bukaModalPindahHalaqahSingle('${s.id}')" title="Pindah Halaqah / Kelas" style="color:#0284c7; font-weight:bold;">🔄</button>
           <button class="btn btn-secondary btn-sm" onclick="editSantri('${s.id}')" title="Edit Data">✏️</button>
           <button class="btn btn-secondary btn-sm" onclick="hapusSantri('${s.id}')" title="Hapus" style="color:var(--danger);">🗑️</button>
         </div>
@@ -3430,42 +3431,369 @@ function hapusSantriBulk() {
   showToast(`${ids.length} santri berhasil dihapus.`, "info");
 }
 
+// ================= FITUR PEROMBAKAN & PINDAH HALAQAH SANTRI (KHUSUS ADMIN) =================
+let perombakanSelectedSantriIds = new Set();
+let perombakanCurrentMode = 'rombongan'; // 'rombongan' | 'pilihan'
+
+function openModalPerombakanHalaqah(preselectedIds = null, preselectedAsal = null) {
+  const modal = document.getElementById('modalPerombakanHalaqah');
+  if (!modal) return;
+
+  populatePerombakanHalaqahDropdowns();
+
+  perombakanSelectedSantriIds.clear();
+  if (Array.isArray(preselectedIds) && preselectedIds.length > 0) {
+    preselectedIds.forEach(id => perombakanSelectedSantriIds.add(id));
+    switchPerombakanMode('pilihan');
+  } else {
+    switchPerombakanMode('rombongan');
+  }
+
+  // Set halaqah asal jika diberikan
+  const selectAsal = document.getElementById('perombakanHalaqahAsal');
+  if (selectAsal) {
+    if (preselectedAsal) {
+      selectAsal.value = preselectedAsal;
+    } else {
+      selectAsal.value = "";
+    }
+  }
+
+  // Reset form target
+  const selectTujuan = document.getElementById('perombakanHalaqahTujuan');
+  if (selectTujuan) selectTujuan.value = "";
+  const selectProgram = document.getElementById('perombakanProgramTujuan');
+  if (selectProgram) selectProgram.value = "auto";
+  const inputKelas = document.getElementById('perombakanKelasSekolahTujuan');
+  if (inputKelas) inputKelas.value = "";
+  const inputCatatan = document.getElementById('perombakanCatatan');
+  if (inputCatatan) inputCatatan.value = "";
+
+  renderPerombakanSantriList();
+  updatePerombakanCountUI();
+
+  modal.classList.add('active');
+}
+
+function closeModalPerombakanHalaqah() {
+  const modal = document.getElementById('modalPerombakanHalaqah');
+  if (modal) modal.classList.remove('active');
+  perombakanSelectedSantriIds.clear();
+}
+
+function bukaModalPindahHalaqahSingle(santriId) {
+  const s = AppState.santri.find(x => x.id === santriId);
+  if (!s) return;
+  openModalPerombakanHalaqah([santriId], s.halaqah || "");
+}
+
 function bukaModalPindahHalaqahBulk() {
   const checkedBoxes = Array.from(document.querySelectorAll('.check-santri-item:checked'));
   const ids = checkedBoxes.map(cb => cb.value);
-  if (ids.length === 0) return;
+  if (ids.length === 0) {
+    showToast("Silakan centang minimal 1 santri terlebih dahulu.", "warning");
+    return;
+  }
+  openModalPerombakanHalaqah(ids);
+}
 
-  const halaqahList = AppState.settings.daftarHalaqah || [];
-  if (halaqahList.length === 0) {
-    alert("Daftar halaqah belum dikonfigurasi di Pengaturan.");
+function populatePerombakanHalaqahDropdowns() {
+  const selectAsal = document.getElementById('perombakanHalaqahAsal');
+  const selectTujuan = document.getElementById('perombakanHalaqahTujuan');
+  if (!selectAsal || !selectTujuan) return;
+
+  const binnadzorList = AppState.settings?.daftarKelasBinnadzor || DEFAULT_SETTINGS?.daftarKelasBinnadzor || [];
+  const tahfidzList = AppState.settings?.daftarHalaqahTahfidz || DEFAULT_SETTINGS?.daftarHalaqahTahfidz || [];
+  const pascaList = AppState.settings?.daftarHalaqahPascaTahfidz || DEFAULT_SETTINGS?.daftarHalaqahPascaTahfidz || [];
+
+  // Dropdown Asal
+  let asalHtml = `<option value="">-- Pilih Halaqah / Kelas Asal --</option>`;
+  asalHtml += `<option value="__ALL__">🌐 Semua Santri Pondok (${AppState.santri.length} Santri)</option>`;
+  
+  asalHtml += `<optgroup label="📘 Kelas Binnadzor (${binnadzorList.length} Kelas)">`;
+  binnadzorList.forEach(h => {
+    const count = AppState.santri.filter(s => isSameHalaqah(s.halaqah, h)).length;
+    asalHtml += `<option value="${escapeHtml(h)}">${escapeHtml(h)} (${count} santri)</option>`;
+  });
+  asalHtml += `</optgroup>`;
+
+  asalHtml += `<optgroup label="📗 Halaqah Tahfidz (${tahfidzList.length} Halaqah)">`;
+  tahfidzList.forEach(h => {
+    const count = AppState.santri.filter(s => isSameHalaqah(s.halaqah, h)).length;
+    asalHtml += `<option value="${escapeHtml(h)}">${escapeHtml(h)} (${count} santri)</option>`;
+  });
+  asalHtml += `</optgroup>`;
+
+  if (pascaList.length > 0) {
+    asalHtml += `<optgroup label="👑 Pasca Tahfidz">`;
+    pascaList.forEach(h => {
+      const count = AppState.santri.filter(s => isSameHalaqah(s.halaqah, h)).length;
+      asalHtml += `<option value="${escapeHtml(h)}">${escapeHtml(h)} (${count} santri)</option>`;
+    });
+    asalHtml += `</optgroup>`;
+  }
+  selectAsal.innerHTML = asalHtml;
+
+  // Dropdown Tujuan
+  let tujuanHtml = `<option value="">-- Pilih Halaqah / Ustadz Tujuan Baru --</option>`;
+
+  tujuanHtml += `<optgroup label="📘 Kelas Binnadzor (${binnadzorList.length} Kelas)">`;
+  binnadzorList.forEach(h => {
+    tujuanHtml += `<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`;
+  });
+  tujuanHtml += `</optgroup>`;
+
+  tujuanHtml += `<optgroup label="📗 Halaqah Tahfidz (${tahfidzList.length} Halaqah)">`;
+  tahfidzList.forEach(h => {
+    tujuanHtml += `<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`;
+  });
+  tujuanHtml += `</optgroup>`;
+
+  if (pascaList.length > 0) {
+    tujuanHtml += `<optgroup label="👑 Pasca Tahfidz">`;
+    pascaList.forEach(h => {
+      tujuanHtml += `<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`;
+    });
+    tujuanHtml += `</optgroup>`;
+  }
+  selectTujuan.innerHTML = tujuanHtml;
+}
+
+function renderPerombakanSantriList() {
+  const tbody = document.getElementById('tablePerombakanSantriBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  let list = [];
+  if (perombakanCurrentMode === 'rombongan') {
+    const asal = document.getElementById('perombakanHalaqahAsal')?.value || '';
+    if (!asal) {
+      tbody.innerHTML = `<tr><td colspan="4" class="empty-state" style="padding:24px; text-align:center; color:#64748b;">Silakan pilih <strong>Halaqah / Kelas Asal</strong> di atas untuk melihat daftar santri.</td></tr>`;
+      updatePerombakanCountUI();
+      return;
+    }
+    if (asal === '__ALL__') {
+      list = [...AppState.santri];
+    } else {
+      list = AppState.santri.filter(s => isSameHalaqah(s.halaqah, asal));
+    }
+  } else {
+    // Mode Pilihan / Cari
+    const query = document.getElementById('perombakanSearchInput')?.value?.toLowerCase().trim() || '';
+    if (query) {
+      list = AppState.santri.filter(s => 
+        s.nama.toLowerCase().includes(query) || 
+        s.nis.toLowerCase().includes(query) || 
+        (s.halaqah && s.halaqah.toLowerCase().includes(query))
+      );
+    } else if (perombakanSelectedSantriIds.size > 0) {
+      list = AppState.santri.filter(s => perombakanSelectedSantriIds.has(s.id));
+    } else {
+      list = [...AppState.santri].slice(0, 30);
+    }
+  }
+
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty-state" style="padding:24px; text-align:center; color:#64748b;">Tidak ada data santri yang cocok.</td></tr>`;
+    updatePerombakanCountUI();
     return;
   }
 
-  const optionsPrompt = halaqahList.map((h, i) => `${i + 1}. ${h}`).join('\n');
-  const pilihan = prompt(`Pilih nomor atau ketik nama Kelas / Halaqah baru untuk ${ids.length} santri terpilih:\n\n${optionsPrompt}`);
-  if (!pilihan) return;
+  list.forEach(s => {
+    const isChecked = perombakanSelectedSantriIds.has(s.id);
+    const tr = document.createElement('tr');
+    tr.style.cursor = 'pointer';
+    tr.onclick = (e) => {
+      if (e.target.tagName !== 'INPUT') {
+        toggleSelectPerombakanSantri(s.id);
+      }
+    };
+    tr.innerHTML = `
+      <td style="width:36px; text-align:center;" onclick="event.stopPropagation()">
+        <input type="checkbox" class="check-perombakan-item" value="${s.id}" ${isChecked ? 'checked' : ''} onchange="toggleSelectPerombakanSantri('${s.id}')">
+      </td>
+      <td>
+        <strong style="font-size:12.5px; color:#0f172a;">${escapeHtml(s.nama)}</strong>
+        <div style="font-size:11px; color:#64748b;">NIS: ${escapeHtml(s.nis)}${s.kelasSekolah ? ' • Kls ' + escapeHtml(s.kelasSekolah) : ''}</div>
+      </td>
+      <td>
+        <span class="badge" style="font-size:11px; background:#f1f5f9; color:#334155; font-weight:600;">
+          ${escapeHtml(s.halaqah || 'Belum ada halaqah')}
+        </span>
+      </td>
+      <td>
+        <span class="badge" style="font-size:11px; font-weight:700; ${s.program === 'Tahfidz' ? 'background:#ecfdf5; color:#065f46;' : (s.program === 'Program Maqbul' ? 'background:#fff7ed; color:#c2410c;' : 'background:#e0f2fe; color:#0369a1;')}">
+          ${escapeHtml(s.program || '-')}
+        </span>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
 
-  let targetHalaqah = '';
-  const num = parseInt(pilihan.trim(), 10);
-  if (!isNaN(num) && num >= 1 && num <= halaqahList.length) {
-    targetHalaqah = halaqahList[num - 1];
-  } else if (pilihan.trim()) {
-    targetHalaqah = pilihan.trim();
+  updatePerombakanCountUI();
+}
+
+function toggleSelectPerombakanSantri(santriId) {
+  if (perombakanSelectedSantriIds.has(santriId)) {
+    perombakanSelectedSantriIds.delete(santriId);
+  } else {
+    perombakanSelectedSantriIds.add(santriId);
+  }
+  const cb = document.querySelector(`.check-perombakan-item[value="${santriId}"]`);
+  if (cb) cb.checked = perombakanSelectedSantriIds.has(santriId);
+  updatePerombakanCountUI();
+}
+
+function toggleSelectAllPerombakan(checked) {
+  const cbs = document.querySelectorAll('.check-perombakan-item');
+  cbs.forEach(cb => {
+    cb.checked = checked;
+    if (checked) {
+      perombakanSelectedSantriIds.add(cb.value);
+    } else {
+      perombakanSelectedSantriIds.delete(cb.value);
+    }
+  });
+  updatePerombakanCountUI();
+}
+
+function updatePerombakanCountUI() {
+  const count = perombakanSelectedSantriIds.size;
+  const countSpan = document.getElementById('perombakanCountSelected');
+  if (countSpan) countSpan.textContent = count;
+
+  const btnSubmit = document.getElementById('btnEksekusiPerombakan');
+  if (btnSubmit) {
+    btnSubmit.innerHTML = `🚀 Pindahkan <strong>${count}</strong> Santri Terpilih`;
+    btnSubmit.disabled = count === 0;
   }
 
-  if (!targetHalaqah) return;
+  const checkAll = document.getElementById('checkAllPerombakan');
+  if (checkAll) {
+    const allCbs = document.querySelectorAll('.check-perombakan-item');
+    if (allCbs.length === 0) {
+      checkAll.checked = false;
+      checkAll.indeterminate = false;
+    } else {
+      const allChecked = Array.from(allCbs).every(cb => cb.checked);
+      const someChecked = Array.from(allCbs).some(cb => cb.checked);
+      checkAll.checked = allChecked;
+      checkAll.indeterminate = someChecked && !allChecked;
+    }
+  }
+}
+
+function switchPerombakanMode(mode) {
+  perombakanCurrentMode = mode;
+  const tabRombongan = document.getElementById('tabPerombakanRombongan');
+  const tabPilihan = document.getElementById('tabPerombakanPilihan');
+  const btnRombongan = document.getElementById('tabBtnPerombakanRombongan');
+  const btnPilihan = document.getElementById('tabBtnPerombakanPilihan');
+
+  if (mode === 'rombongan') {
+    if (tabRombongan) tabRombongan.style.display = 'block';
+    if (tabPilihan) tabPilihan.style.display = 'none';
+    if (btnRombongan) { btnRombongan.className = 'btn btn-sm btn-primary'; }
+    if (btnPilihan) { btnPilihan.className = 'btn btn-sm btn-secondary'; }
+  } else {
+    if (tabRombongan) tabRombongan.style.display = 'none';
+    if (tabPilihan) tabPilihan.style.display = 'block';
+    if (btnRombongan) { btnRombongan.className = 'btn btn-sm btn-secondary'; }
+    if (btnPilihan) { btnPilihan.className = 'btn btn-sm btn-primary'; }
+  }
+  renderPerombakanSantriList();
+}
+
+function onPerombakanHalaqahAsalChange() {
+  const asal = document.getElementById('perombakanHalaqahAsal')?.value;
+  perombakanSelectedSantriIds.clear();
+  if (asal && asal !== '__ALL__') {
+    AppState.santri.filter(s => isSameHalaqah(s.halaqah, asal)).forEach(s => {
+      perombakanSelectedSantriIds.add(s.id);
+    });
+  }
+  renderPerombakanSantriList();
+}
+
+function eksekusiPindahHalaqah() {
+  const ids = Array.from(perombakanSelectedSantriIds);
+  if (ids.length === 0) {
+    alert("Pilih minimal 1 santri yang akan dipindahkan.");
+    return;
+  }
+
+  const targetHalaqah = document.getElementById('perombakanHalaqahTujuan')?.value?.trim();
+  if (!targetHalaqah) {
+    alert("Silakan pilih Halaqah / Ustadz Tujuan Baru.");
+    document.getElementById('perombakanHalaqahTujuan')?.focus();
+    return;
+  }
+
+  const programMode = document.getElementById('perombakanProgramTujuan')?.value || 'auto';
+  const newKelasSekolah = document.getElementById('perombakanKelasSekolahTujuan')?.value?.trim() || '';
+  const catatan = document.getElementById('perombakanCatatan')?.value?.trim() || '';
+
+  let defaultNewProgram = '';
+  if (programMode === 'auto') {
+    if (targetHalaqah.includes('Pasca Tahfidz')) {
+      defaultNewProgram = 'Pasca Tahfidz';
+    } else if (targetHalaqah.startsWith('Halaqah Ust.')) {
+      defaultNewProgram = 'Tahfidz';
+    } else if (targetHalaqah.startsWith('Kelas ')) {
+      defaultNewProgram = 'Binnadzor';
+    }
+  } else if (programMode !== 'keep') {
+    defaultNewProgram = programMode;
+  }
+
+  const confirmMsg = `Konfirmasi Pemindahan Santri:\n\n` +
+    `• Jumlah Santri: ${ids.length} santri\n` +
+    `• Halaqah Baru: ${targetHalaqah}\n` +
+    (defaultNewProgram ? `• Program Baru: ${defaultNewProgram}\n` : '') +
+    (newKelasSekolah ? `• Kelas Sekolah Baru: ${newKelasSekolah}\n` : '') +
+    `\nApakah Anda yakin ingin memindahkan ${ids.length} santri ini sekarang?`;
+
+  if (!confirm(confirmMsg)) return;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  let updatedCount = 0;
 
   ids.forEach(id => {
     const s = AppState.santri.find(item => item.id === id);
-    if (s) s.halaqah = targetHalaqah;
+    if (!s) return;
+
+    const halaqahLama = s.halaqah || 'Belum ada halaqah';
+    s.halaqah = targetHalaqah;
+
+    if (defaultNewProgram) {
+      s.program = defaultNewProgram;
+    }
+    if (newKelasSekolah) {
+      s.kelasSekolah = newKelasSekolah;
+    }
+
+    s.riwayatPerombakanKelas = s.riwayatPerombakanKelas || [];
+    s.riwayatPerombakanKelas.push({
+      tanggal: todayStr,
+      halaqahLama: halaqahLama,
+      halaqahBaru: targetHalaqah,
+      programBaru: s.program,
+      catatan: catatan || 'Perombakan / Pindah Halaqah oleh Admin',
+      diubahOleh: 'Admin Pondok'
+    });
+
+    updatedCount++;
   });
 
   saveToStorage();
   if (typeof pushLocalToCloud === 'function') {
     pushLocalToCloud(true);
   }
+
+  closeModalPerombakanHalaqah();
   renderAll();
-  showToast(`${ids.length} santri berhasil dipindahkan ke: ${targetHalaqah}`, "success");
+
+  showToast(`🎉 Sukses! ${updatedCount} santri berhasil dipindahkan ke: ${targetHalaqah}`, "success");
 }
 
 function bukaModalUbahKelasBulk() {
@@ -4126,6 +4454,9 @@ function terapkanSatuPerombakanKelas(santriId) {
   if (exam) exam.statusPerombakan = 'Sudah Diterapkan';
 
   saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
   renderAll();
   showToast(`🎉 Santri ${santri.nama} berhasil dipindahkan ke ${targetKelas}!`, "success");
 }
@@ -4177,6 +4508,9 @@ function terapkanSemuaRekomendasiPerombakan() {
   });
 
   saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
   renderAll();
   showToast(`🎉 Alhamdulillah! Perombakan kelas otomatis berhasil diterapkan untuk ${count} santri Binnadzor!`, "success");
 }
@@ -4223,6 +4557,9 @@ function terapkanPerombakanKelasTerpilih() {
   });
 
   saveToStorage();
+  if (typeof pushLocalToCloud === 'function') {
+    pushLocalToCloud(true);
+  }
   renderAll();
   showToast(`💾 Perombakan kelas terpilih berhasil diterapkan untuk ${count} santri!`, "success");
 }

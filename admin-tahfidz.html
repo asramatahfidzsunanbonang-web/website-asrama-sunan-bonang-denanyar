@@ -811,6 +811,9 @@
               <button class="btn btn-warning btn-sm" onclick="openModalKenaikanKelas()" style="background:#4338ca; color:#ffffff; font-weight:600; border:none;" title="Naikkan jenjang kelas sekolah santri serentak untuk tahun ajaran baru">
                 📈 Kenaikan Kelas
               </button>
+              <button class="btn btn-sm" onclick="openModalPerombakanHalaqah()" style="background:#0284c7; color:#ffffff; font-weight:600; border:none;" title="Perombakan atau pindah halaqah / kelas santri fleksibel">
+                🔄 Pindah / Perombakan Halaqah
+              </button>
               <input type="file" id="fileInputCSV" accept=".xlsx, .xls, .csv" style="display:none;" onchange="prosesImportExcel(event)">
               <button class="btn btn-primary btn-sm" onclick="openModalSantri()">
                 ➕ Tambah Santri
@@ -3321,6 +3324,124 @@
     </div>
   </div>
 
+  <!-- ================= MODAL PEROMBAKAN & PINDAH HALAQAH SANTRI (KHUSUS ADMIN) ================= -->
+  <div class="modal-overlay" id="modalPerombakanHalaqah">
+    <div class="modal-box" style="max-width: 780px; width: 95%;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color:#ffffff;">
+        <h3 class="modal-title" style="color:#ffffff;">
+          🔄 Perombakan & Pindah Halaqah / Kelas (Khusus Admin)
+        </h3>
+        <button class="modal-close" onclick="closeModalPerombakanHalaqah()" style="color:#ffffff;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <!-- Banner Info -->
+        <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:12.5px; color:#0369a1; line-height:1.5;">
+          💡 <strong>Panduan Perombakan:</strong> Pilih santri yang ingin dipindahkan ke halaqah/kelas baru. Fitur ini dirancang khusus untuk mempermudah perombakan semesteran/kenaikan jenjang santri secara cepat dan otomatis tersinkronisasi ke Cloud.
+        </div>
+
+        <!-- Mode Switcher -->
+        <div style="display:flex; gap:8px; margin-bottom:14px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
+          <button type="button" id="tabBtnPerombakanRombongan" class="btn btn-sm btn-primary" onclick="switchPerombakanMode('rombongan')">
+            🎯 Per Halaqah / Kelas Asal
+          </button>
+          <button type="button" id="tabBtnPerombakanPilihan" class="btn btn-sm btn-secondary" onclick="switchPerombakanMode('pilihan')">
+            🔍 Cari & Pilih Nama Santri
+          </button>
+        </div>
+
+        <!-- TAB 1: Rombongan Per Halaqah Asal -->
+        <div id="tabPerombakanRombongan">
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label" style="font-weight:600; font-size:12.5px;">Pilih Halaqah / Kelas Asal Santri:</label>
+            <select id="perombakanHalaqahAsal" class="form-control" onchange="onPerombakanHalaqahAsalChange()" style="font-size:13px; font-weight:500;">
+              <!-- Dynamic populated -->
+            </select>
+          </div>
+        </div>
+
+        <!-- TAB 2: Pencarian Nama Santri -->
+        <div id="tabPerombakanPilihan" style="display:none;">
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label" style="font-weight:600; font-size:12.5px;">Cari Santri (Ketik Nama / NIS / Halaqah):</label>
+            <input type="text" id="perombakanSearchInput" class="form-control" placeholder="Ketik nama santri atau NIS..." oninput="renderPerombakanSantriList()" style="font-size:13px;">
+          </div>
+        </div>
+
+        <!-- Daftar Santri dengan Checkbox -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <label style="font-size:12.5px; font-weight:700; color:#1e293b;">
+            Daftar Santri (<span id="perombakanCountSelected" style="color:#0284c7; font-size:14px;">0</span> santri terpilih):
+          </label>
+          <label style="font-size:12px; cursor:pointer; color:#0284c7; font-weight:600; user-select:none;">
+            <input type="checkbox" id="checkAllPerombakan" onchange="toggleSelectAllPerombakan(this.checked)">
+            Pilih Semua di Daftar Ini
+          </label>
+        </div>
+
+        <div style="max-height: 220px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom:18px; background:#ffffff;">
+          <table class="table-modern" style="margin-bottom:0; font-size:12px; width:100%;">
+            <thead style="position:sticky; top:0; background:#f8fafc; z-index:1; border-bottom:1px solid #cbd5e1;">
+              <tr>
+                <th style="width:36px; text-align:center;">Pilih</th>
+                <th>Nama Santri</th>
+                <th>Halaqah Saat Ini</th>
+                <th>Program</th>
+              </tr>
+            </thead>
+            <tbody id="tablePerombakanSantriBody">
+              <!-- Dynamic populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pengaturan Tujuan Pemindahan -->
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px; margin-bottom:12px;">
+          <h4 style="margin:0 0 10px 0; font-size:13px; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:6px;">
+            <span>📍</span> Pengaturan Halaqah & Kelas Baru:
+          </h4>
+
+          <div class="form-row" style="margin-bottom:10px;">
+            <div class="form-col form-group" style="flex:1.2;">
+              <label class="form-label" style="font-weight:600; font-size:12px;">Target Halaqah / Ustadz Baru <span style="color:red;">*</span></label>
+              <select id="perombakanHalaqahTujuan" class="form-control" style="font-size:13px; font-weight:600; color:#0369a1;">
+                <!-- Dynamic populated -->
+              </select>
+            </div>
+            <div class="form-col form-group" style="flex:1;">
+              <label class="form-label" style="font-weight:600; font-size:12px;">Penyesuaian Program Santri</label>
+              <select id="perombakanProgramTujuan" class="form-control" style="font-size:12.5px;">
+                <option value="auto">✨ Otomatis sesuai jenjang Halaqah Baru</option>
+                <option value="keep">🔒 Pertahankan Program Saat Ini</option>
+                <option value="Binnadzor">Binnadzor</option>
+                <option value="Program Maqbul">Program Maqbul (Persiapan Tahfidz)</option>
+                <option value="Tahfidz">Tahfidz</option>
+                <option value="Pasca Tahfidz">Pasca Tahfidz (Khatam 30 Juz)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col form-group">
+              <label class="form-label" style="font-weight:600; font-size:12px;">Ubah Kelas Sekolah Formal (Opsional)</label>
+              <input type="text" id="perombakanKelasSekolahTujuan" class="form-control" placeholder="Contoh: 7, 8, 9, 10... (Kosongkan jika tetap)" style="font-size:12.5px;">
+            </div>
+            <div class="form-col form-group">
+              <label class="form-label" style="font-weight:600; font-size:12px;">Catatan / Keterangan Perombakan (Opsional)</label>
+              <input type="text" id="perombakanCatatan" class="form-control" placeholder="Contoh: Perombakan Semester Ganjil 2026/2027" style="font-size:12.5px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding:10px 0 0 0; background:transparent; display:flex; justify-content:space-between; align-items:center;">
+          <button type="button" class="btn btn-secondary" onclick="closeModalPerombakanHalaqah()">Batal</button>
+          <button type="button" id="btnEksekusiPerombakan" class="btn btn-primary" onclick="eksekusiPindahHalaqah()" style="background:#0284c7; border-color:#0284c7; font-weight:700; font-size:13px; padding:9px 18px;" disabled>
+            🚀 Pindahkan Santri Terpilih
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 2C. Modal Input Nilai Ujian Semester & Evaluasi Perombakan -->
   <div class="modal-overlay" id="modalInputUjian">
     <div class="modal-box" style="max-width: 660px;">
@@ -4177,13 +4298,13 @@
   <!-- SCRIPTS -->
   <script src="xlsx.full.min.js"></script>
   <script src="quran-data.js"></script>
-  <script src="sample-data.js?v=20261127-v1"></script>
+  <script src="sample-data.js?v=20261127-v2"></script>
   <!-- Firebase SDK (Compat v10.12.0) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="firebase-sync.js?v=20261127-v1"></script>
+  <script src="firebase-sync.js?v=20261127-v2"></script>
   <script src="image-cropper.js"></script>
-  <script src="app.js?v=20261127-v1"></script>
+  <script src="app.js?v=20261127-v2"></script>
   <!-- ================= MODAL ADMIN TAMBAH/EDIT ALUMNI ================= -->
   <div class="modal-overlay" id="modalAdminAlumni" onclick="closeModalAdminAlumni(event)">
     <div class="interactive-detail-modal-box" onclick="event.stopPropagation()" style="max-width:640px; width:92%; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.35);">

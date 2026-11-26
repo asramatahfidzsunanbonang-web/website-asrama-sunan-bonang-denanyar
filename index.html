@@ -541,7 +541,7 @@
       <!-- Bento Grid Tentang Pesantren Modern -->
       <div class="about-bento-grid">
         <!-- 1. Hero Bento Card: Profil Pesantren (7 Cols) -->
-        <div class="about-bento-card about-bento-hero reveal-on-scroll reveal-left" onclick="openAboutDetailModal('profil')" title="Klik untuk lihat profil & sejarah lengkap">
+        <div class="about-bento-card about-bento-hero reveal-on-scroll reveal-left" style="cursor:default;">
           <div class="about-hero-img-wrap">
             <img id="webProfilHeroImg" src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80" alt="Kampus Pesantren Al-Barokah" class="about-hero-img" onerror="this.onerror=null; this.src=getFacilityFallbackSvg(0);" loading="lazy">
             <div class="about-hero-gradient"></div>
@@ -550,28 +550,18 @@
             </span>
             <div class="facility-card-icon-floating">🕌</div>
           </div>
-          <div class="about-hero-body">
-            <h3 id="webProfilHeroTitle" style="font-size:20px; font-weight:800; color:var(--dark-900); margin-bottom:8px;">
+          <div class="about-hero-body" style="padding:22px; display:flex; flex-direction:column; justify-content:center; flex:1;">
+            <h3 id="webProfilHeroTitle" style="font-size:20px; font-weight:800; color:var(--dark-900); margin-bottom:10px;">
               Profil Pondok Pesantren Tahfidzul Qur'an
             </h3>
-            <p id="webDescProfilText" style="font-size:13.5px; color:var(--dark-600); line-height:1.65; margin-bottom:18px;">
+            <p id="webDescProfilText" style="font-size:14px; color:var(--dark-600); line-height:1.75; margin:0;">
               Didirikan untuk menjaga kemurnian bacaan Al-Qur'an secara talaqqi musyafahah dengan sanad muttashil. Memadukan kedalaman kajian kitab kuning para ulama salaf dengan akselerasi hafalan 30 juz berdisiplin tinggi, melahirkan generasi Qur'ani yang tangguh, berakhlak mulia, dan berjiwa ikhlas.
             </p>
-            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
-              <span class="about-stat-pill">🕌 Profil &amp; Sejarah Lengkap</span>
-              <span class="about-stat-pill">📜 100% Sanad Qira'at Muttashil</span>
-              <span class="about-stat-pill">👥 Rasio Bimbingan 1:8 Santri</span>
-              <span class="about-stat-pill">🛡️ Lingkungan Asri &amp; Terjaga</span>
-            </div>
-            <div class="facility-action-hint">
-              <span>📖 Baca Profil Lengkap, Sejarah &amp; Keunggulan Pesantren</span>
-              <span class="arrow-hint">→</span>
-            </div>
           </div>
         </div>
 
         <!-- 2. Pengasuh Bento Card (5 Cols) -->
-        <div class="about-bento-card about-bento-pengasuh reveal-on-scroll reveal-right" onclick="openAboutDetailModal('pengasuh')" title="Klik untuk profil & sanad pengasuh" style="display:flex; flex-direction:column; overflow:hidden; padding:0;">
+        <div class="about-bento-card about-bento-pengasuh reveal-on-scroll reveal-right" onclick="openAboutDetailModal('pengasuh')" title="Klik untuk profil & nasihat pengasuh" style="display:flex; flex-direction:column; overflow:hidden; padding:0;">
           <!-- Foto Besar Pengasuh Banner -->
           <div id="webPengasuhBentoPhotoWrap" style="height:210px; width:100%; position:relative; overflow:hidden; background:#064e3b; display:flex;">
             <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #064e3b 0%, #022c22 100%);">
@@ -600,7 +590,7 @@
             </div>
 
             <button type="button" class="btn-about-card-action" style="margin-top:auto;">
-              <span>📜 Profil, Sanad & Nasihat Pengasuh</span>
+              <span>📜 Profil &amp; Nasihat Pengasuh</span>
               <span>→</span>
             </button>
           </div>
@@ -1809,46 +1799,25 @@
         <div class="modal-media-gradient"></div>
         <button type="button" class="modal-media-floating-close" onclick="closeAboutDetailModal()" title="Tutup">&times;</button>
         <div class="modal-media-caption-overlay">
-          <span style="background:#f59e0b; color:#78350f; font-weight:800; font-size:11px; padding:3px 10px; border-radius:999px; display:inline-block; margin-bottom:4px;">PROFIL & SANAD KEILMUAN</span>
+          <span style="background:#f59e0b; color:#78350f; font-weight:800; font-size:11px; padding:3px 10px; border-radius:999px; display:inline-block; margin-bottom:4px;">PROFIL &amp; NASIHAT PENGASUH</span>
           <h2 id="aboutModalMainTitle" style="font-size:22px; font-weight:800; color:#fff; margin:0; text-shadow:0 2px 4px rgba(0,0,0,0.5);">Pondok Pesantren Tahfidz Al-Barokah</h2>
         </div>
       </div>
 
       <!-- Navigation Tabs inside Modal -->
       <div style="display:flex; border-bottom:1px solid #e2e8f0; background:#f8fafc; padding:0 16px;">
-        <button type="button" class="about-tab-btn active" id="tabBtnProfil" onclick="switchAboutModalTab('profil')" style="padding:14px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:#065f46; border-bottom:3px solid #059669; cursor:pointer;">
-          🕌 Profil & Sejarah
-        </button>
-        <button type="button" class="about-tab-btn" id="tabBtnPengasuh" onclick="switchAboutModalTab('pengasuh')" style="padding:14px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:#64748b; cursor:pointer;">
-          📜 Sanad & Pengasuh
+        <button type="button" class="about-tab-btn active" id="tabBtnPengasuh" onclick="switchAboutModalTab('pengasuh')" style="padding:14px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:#065f46; border-bottom:3px solid #059669; cursor:pointer;">
+          👳‍♂️ Profil &amp; Nasihat Pengasuh
         </button>
         <button type="button" class="about-tab-btn" id="tabBtnVisi" onclick="switchAboutModalTab('visi')" style="padding:14px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:#64748b; cursor:pointer;">
-          🎯 Visi & 4 Misi Pesantren
+          🎯 Visi &amp; 4 Misi Pesantren
         </button>
       </div>
 
       <!-- Tab Content Area -->
       <div style="padding:24px 26px; overflow-y:auto; flex-grow:1;">
-        <!-- Tab 1: Profil -->
-        <div id="tabContentProfil">
-          <h3 id="webModalDescProfilTitle" style="font-size:17px; font-weight:800; color:#0f172a; margin-bottom:10px;">Tradisi Menjaga Al-Qur'an dengan Sanad Shahih</h3>
-          <p id="webModalDescProfilText" style="font-size:14px; line-height:1.7; color:#334155; margin-bottom:16px;">
-            Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah didirikan dengan niat ikhlas meneruskan amanah para Masyaikh dalam menjaga kemurnian bacaan Al-Qur'anul Karim. Kami meyakini bahwa menghafal Al-Qur'an tidak sekadar menghafal teks lafadz, melainkan mengambil bacaan secara talaqqi musyafahah (berhadap-hadapan langsung dari lisan guru ke murid) dengan sanad yang muttashil bersambung hingga baginda Rasulullah SAW.
-          </p>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
-            <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:14px; border-radius:12px;">
-              <div id="webModalPoin1Title" style="font-weight:800; color:#15803d; font-size:13px; margin-bottom:4px;">🌿 Lingkungan Asri &amp; Terjaga</div>
-              <p id="webModalPoin1Desc" style="font-size:12.5px; color:#334155; margin:0; line-height:1.5;">Kampus pesantren dikelilingi pepohonan sejuk, jauh dari kebisingan kota, serta terpisah mandiri antara komplek putra dan putri demi menjaga kekhusyukan muraja'ah santri.</p>
-            </div>
-            <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:14px; border-radius:12px;">
-              <div id="webModalPoin2Title" style="font-weight:800; color:#1d4ed8; font-size:13px; margin-bottom:4px;">👥 Halaqah Kecil (Rasio 1:8)</div>
-              <p id="webModalPoin2Desc" style="font-size:12.5px; color:#334155; margin:0; line-height:1.5;">Tiap satu Ustadz pembimbing membina maksimal 8 santri, menjamin setiap huruf yang disetorkan disimak dengan ketelitian penuh.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab 2: Pengasuh & Sanad -->
-        <div id="tabContentPengasuh" style="display:none;">
+        <!-- Tab 1: Pengasuh & Nasihat -->
+        <div id="tabContentPengasuh">
           <div id="tabContentPengasuhProfiles">
             <div style="display:flex; gap:18px; align-items:center; margin-bottom:18px; background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #e2e8f0;">
               <div style="font-size:48px;">👳‍♂️</div>
@@ -1858,20 +1827,6 @@
                 <p style="font-size:12.5px; color:#64748b; margin:0;">Ulama huffadz alumnus pesantren tahfidz salaf yang mengabdikan hidupnya dalam pembinaan qira'at Al-Qur'an dan kajian kitab kuning.</p>
               </div>
             </div>
-          </div>
-
-          <h4 style="font-size:14.5px; font-weight:800; color:#065f46; margin-bottom:10px;">📜 Rantai Silsilah Sanad Qira'at Al-Qur'an Muttashil</h4>
-          <div style="background:#064e3b; color:#fff; padding:18px; border-radius:14px; font-size:12.5px; line-height:1.8; border:2px solid #f59e0b;">
-            <div style="color:#fef08a; font-weight:700; margin-bottom:6px;">Silsilah Qira'at Imam 'Ashim riwayat Hafsh:</div>
-            <div><strong id="modalSanadKyaiName">KH. Ahmad Dahlan Masykur, Al-Hafidz</strong></div>
-            <div style="opacity:0.85;">↳ berguru kepada <strong>KH. Muhammad Arwani Amin / KH. M. Munawwir</strong></div>
-            <div style="opacity:0.85;">↳ berguru kepada <strong>Syaikh Abdul Karim Ad-Diba'i</strong></div>
-            <div style="opacity:0.85;">↳ berguru kepada <strong>Syaikh Khalil Ar-Razi</strong> (hingga Imam Al-Jazari & Imam Asy-Syathibi)</div>
-            <div style="opacity:0.85;">↳ berguru kepada <strong>Imam 'Ashim bin Abi An-Najud</strong></div>
-            <div style="opacity:0.85;">↳ dari <strong>Abu Abdirrahman As-Sulami & Zirr bin Hubaisy</strong></div>
-            <div style="opacity:0.85;">↳ dari Sahabat: <strong>Utsman bin Affan, Ali bin Abi Thalib, Abdullah bin Mas'ud, Ubay bin Ka'ab (RA)</strong></div>
-            <div style="color:#fde047; font-weight:800; margin-top:6px;">↳ dari Junjungan Nabi Besar Muhammad Shallallahu 'Alaihi Wasallam</div>
-            <div style="color:#a7f3d0; font-weight:700;">↳ dari Malaikat Jibril 'Alaihissalam ↳ dari ALLAH Subhanahu wa Ta'ala.</div>
           </div>
         </div>
 

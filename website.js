@@ -2226,8 +2226,8 @@ function initModalKeyboardNav() {
   });
 }
 
-// ================= MODAL DETAIL TENTANG PESANTREN & SANAD =================
-function openAboutDetailModal(initialTab = 'profil') {
+// ================= MODAL DETAIL TENTANG PESANTREN =================
+function openAboutDetailModal(initialTab = 'pengasuh') {
   const modal = document.getElementById('modalAboutDetail');
   if (modal) {
     modal.classList.add('active');
@@ -2238,7 +2238,8 @@ function openAboutDetailModal(initialTab = 'profil') {
 
 function switchAboutModalTab(tabName) {
   if (tabName === 'misi' || tabName === 'pancajiwa') tabName = 'visi';
-  const tabs = ['profil', 'pengasuh', 'visi'];
+  if (tabName === 'profil') tabName = 'pengasuh';
+  const tabs = ['pengasuh', 'visi'];
   tabs.forEach(t => {
     const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
     const content = document.getElementById(`tabContent${t.charAt(0).toUpperCase() + t.slice(1)}`);

@@ -595,6 +595,9 @@
               <button class="btn btn-gold btn-sm" id="btnSetSemuaUstadzHadir" onclick="setSemuaUstadzAbsen('Hadir')">
                 ✓ 1-Klik Set Semua Hadir
               </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="bukaModalKelolaUstadz()" style="font-weight:700; border-color:#059669; color:#047857; background:#ecfdf5;">
+                👳‍♂️ Kelola Data Asatidz
+              </button>
               <button class="btn btn-secondary btn-sm" onclick="eksporAbsensiUstadzExcel()">
                 📥 Ekspor Excel (.xlsx)
               </button>
@@ -4158,13 +4161,13 @@
   <!-- SCRIPTS -->
   <script src="xlsx.full.min.js"></script>
   <script src="quran-data.js"></script>
-  <script src="sample-data.js"></script>
+  <script src="sample-data.js?v=20261126-v10"></script>
   <!-- Firebase SDK (Compat v10.12.0) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="firebase-sync.js"></script>
+  <script src="firebase-sync.js?v=20261126-v10"></script>
   <script src="image-cropper.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20261126-v10"></script>
   <!-- ================= MODAL ADMIN TAMBAH/EDIT ALUMNI ================= -->
   <div class="modal-overlay" id="modalAdminAlumni" onclick="closeModalAdminAlumni(event)">
     <div class="interactive-detail-modal-box" onclick="event.stopPropagation()" style="max-width:640px; width:92%; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.35);">
@@ -4243,6 +4246,109 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL KELOLA DEWAN ASATIDZ ================= -->
+  <div class="modal-overlay" id="modalKelolaUstadz" style="display:none; z-index:99999;" onclick="tutupModalKelolaUstadz(event)">
+    <div class="modal-box modal-lg" onclick="event.stopPropagation()" style="max-width: 920px; width:95%; max-height:92vh; display:flex; flex-direction:column; border-radius:18px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.35);">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0; padding:16px 22px; background:linear-gradient(135deg, #065f46 0%, #047857 100%); color:#fff; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h3 class="modal-title" style="display:flex; align-items:center; gap:8px; margin:0; font-size:16px; font-weight:800; color:#fff;">
+            <span>👳‍♂️</span> Kelola Data Dewan Asatidz Pondok
+          </h3>
+          <p style="font-size:11.5px; color:#a7f3d0; margin:3px 0 0 0;">
+            Tambah baru, perbarui nama &amp; WhatsApp, ubah tugas halaqah/kelas, atau aktifkan/nonaktifkan ustadz sewaktu-waktu.
+          </p>
+        </div>
+        <button type="button" class="modal-close" onclick="tutupModalKelolaUstadz()" style="color:#fff; background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="overflow-y:auto; padding:20px; flex:1; background:#fff;">
+        <!-- Action Toolbar: Tambah Ustadz & Sync Pengaturan -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 16px;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="tampilkanFormTambahUstadz()" style="font-weight:700;">
+              ➕ Tambah Ustadz Baru
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="sinkronkanUstadzDariPengaturanManual()" title="Sinkronkan otomatis dengan daftar nama di Pengaturan Pondok">
+              🔄 Sinkronkan dari Pengaturan
+            </button>
+          </div>
+          <div style="min-width:240px; flex:1; max-width:320px;">
+            <input type="text" id="cariUstadzKelolaInput" class="form-control" placeholder="Cari nama ustadz / halaqah..." style="font-size:12.5px; padding:6px 12px;" oninput="renderTabelKelolaUstadz()">
+          </div>
+        </div>
+
+        <!-- Form Tambah / Edit Ustadz (Collapsible) -->
+        <div id="formUstadzContainer" style="display:none; background:#ecfdf5; border:1.5px solid #a7f3d0; border-radius:12px; padding:16px; margin-bottom:18px;">
+          <h4 id="formUstadzTitle" style="font-size:13.5px; font-weight:800; color:#065f46; margin:0 0 12px 0; display:flex; align-items:center; gap:6px;">
+            ➕ Tambah Ustadz Baru
+          </h4>
+          <input type="hidden" id="formUstadzId">
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="font-size:12px; font-weight:700;">Nama Lengkap &amp; Gelar <span style="color:red;">*</span></label>
+              <input type="text" id="formUstadzNama" class="form-control" placeholder="Contoh: Ust. Adin">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="font-size:12px; font-weight:700;">Peran / Tugas</label>
+              <select id="formUstadzPeran" class="form-control">
+                <option value="Pengajar Binnadzor">Pengajar Binnadzor</option>
+                <option value="Musyrif Tahfidz">Musyrif Tahfidz</option>
+                <option value="Kepala Tahfidz">Kepala Tahfidz</option>
+                <option value="Pengasuh Pondok">Pengasuh Pondok</option>
+                <option value="Asatidzah Putri">Asatidzah Putri</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="font-size:12px; font-weight:700;">Halaqah / Kelas Dibina</label>
+              <input type="text" id="formUstadzHalaqah" class="form-control" placeholder="Contoh: Kelas E1 (Ust. Adin)" list="listHalaqahOptions">
+              <datalist id="listHalaqahOptions"></datalist>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="font-size:12px; font-weight:700;">Nomor WhatsApp / HP</label>
+              <input type="text" id="formUstadzNoHp" class="form-control" placeholder="0812-xxxx-xxxx">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label" style="font-size:12px; font-weight:700;">Status Keaktifan</label>
+              <select id="formUstadzStatus" class="form-control">
+                <option value="Aktif">Aktif Mengajar</option>
+                <option value="Nonaktif">Nonaktif / Cuti</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="sembunyikanFormUstadz()">Batal</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="simpanFormUstadz()" style="font-weight:700;">💾 Simpan Data Ustadz</button>
+          </div>
+        </div>
+
+        <!-- Tabel Daftar Asatidz -->
+        <div class="table-responsive" style="border:1px solid #e2e8f0; border-radius:10px; max-height:420px; overflow-y:auto;">
+          <table class="data-table" style="font-size:12.5px; width:100%; border-collapse:collapse;">
+            <thead style="position:sticky; top:0; background:#f8fafc; z-index:2; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+              <tr>
+                <th style="width:40px; text-align:center;">No</th>
+                <th>Nama Ustadz</th>
+                <th>Peran</th>
+                <th>Halaqah / Kelas</th>
+                <th>WhatsApp</th>
+                <th style="text-align:center;">Status</th>
+                <th style="width:110px; text-align:center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabelKelolaUstadzBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:12px 20px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; background:#f8fafc;">
+        <span style="font-size:12px; color:#64748b;" id="totalUstadzKelolaInfo">Total: 22 Asatidz</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="tutupModalKelolaUstadz()">Tutup</button>
       </div>
     </div>
   </div>

@@ -28,7 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initUstadzDropdowns();
   
   // Load remembered ustadz
-  const savedUstadz = localStorage.getItem('sitahfidz_my_ustadz') || '';
+  let savedUstadz = localStorage.getItem('sitahfidz_my_ustadz') || '';
+  if (savedUstadz.includes('Rafqi')) savedUstadz = 'Kelas E1 (Ust. Adin)';
+  if (savedUstadz.includes('Izud')) savedUstadz = 'Kelas E2 (Ust. Rizki)';
   if (savedUstadz) {
     UstadzState.selectedUstadz = savedUstadz;
     UstadzState.selectedSetoranUstadz = savedUstadz;
@@ -51,6 +53,21 @@ function initUstadzStorage() {
     UstadzState.settings.daftarKelasBinnadzor = [ ...DEFAULT_SETTINGS.daftarKelasBinnadzor ];
     UstadzState.settings.daftarHalaqahPascaTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahPascaTahfidz ];
     UstadzState.settings.daftarHalaqah = [ ...DEFAULT_SETTINGS.daftarHalaqah ];
+  }
+  // Auto-upgrade nama kelas E1 & E2 jika masih nama lama
+  if (Array.isArray(UstadzState.settings.daftarKelasBinnadzor)) {
+    UstadzState.settings.daftarKelasBinnadzor = UstadzState.settings.daftarKelasBinnadzor.map(k => {
+      if (typeof k === 'string' && k.includes('Rafqi')) return 'Kelas E1 (Ust. Adin)';
+      if (typeof k === 'string' && k.includes('Izud')) return 'Kelas E2 (Ust. Rizki)';
+      return k;
+    });
+  }
+  if (Array.isArray(UstadzState.settings.daftarHalaqah)) {
+    UstadzState.settings.daftarHalaqah = UstadzState.settings.daftarHalaqah.map(k => {
+      if (typeof k === 'string' && k.includes('Rafqi')) return 'Kelas E1 (Ust. Adin)';
+      if (typeof k === 'string' && k.includes('Izud')) return 'Kelas E2 (Ust. Rizki)';
+      return k;
+    });
   }
   if (!UstadzState.settings.accessPin) UstadzState.settings.accessPin = '123456';
   if (!UstadzState.settings.ustadzPin) UstadzState.settings.ustadzPin = '888888';

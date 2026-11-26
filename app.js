@@ -66,6 +66,21 @@ function initStorage() {
     AppState.settings.daftarHalaqahPascaTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahPascaTahfidz ];
     AppState.settings.daftarHalaqah = [ ...DEFAULT_SETTINGS.daftarHalaqah ];
   }
+  // Auto-upgrade nama kelas E1 & E2 jika masih nama lama
+  if (Array.isArray(AppState.settings.daftarKelasBinnadzor)) {
+    AppState.settings.daftarKelasBinnadzor = AppState.settings.daftarKelasBinnadzor.map(k => {
+      if (typeof k === 'string' && k.includes('Rafqi')) return 'Kelas E1 (Ust. Adin)';
+      if (typeof k === 'string' && k.includes('Izud')) return 'Kelas E2 (Ust. Rizki)';
+      return k;
+    });
+  }
+  if (Array.isArray(AppState.settings.daftarHalaqah)) {
+    AppState.settings.daftarHalaqah = AppState.settings.daftarHalaqah.map(k => {
+      if (typeof k === 'string' && k.includes('Rafqi')) return 'Kelas E1 (Ust. Adin)';
+      if (typeof k === 'string' && k.includes('Izud')) return 'Kelas E2 (Ust. Rizki)';
+      return k;
+    });
+  }
   if (!AppState.settings.kepalaTahfidz || AppState.settings.kepalaTahfidz.includes('Muhammad Ridwan')) {
     AppState.settings.kepalaTahfidz = DEFAULT_SETTINGS.kepalaTahfidz;
   }
@@ -179,12 +194,28 @@ function initStorage() {
     }
   }
 
-  // Auto-migration: pastikan setiap santri memiliki data kelasSekolah
+  // Auto-migration: pastikan setiap santri memiliki data kelasSekolah & update halaqah Adin/Rizki jika ada
+  let santriUpdated = false;
   AppState.santri.forEach(s => {
     if (s.kelasSekolah === undefined) {
       s.kelasSekolah = '';
     }
+    if (s && s.halaqah) {
+      if (s.halaqah.includes('Rafqi')) {
+        s.halaqah = 'Kelas E1 (Ust. Adin)';
+        santriUpdated = true;
+      }
+      if (s.halaqah.includes('Izud')) {
+        s.halaqah = 'Kelas E2 (Ust. Rizki)';
+        santriUpdated = true;
+      }
+    }
   });
+  if (santriUpdated) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.SANTRI, JSON.stringify(AppState.santri));
+    } catch(e) {}
+  }
 
   // Setoran
   const savedSetoran = localStorage.getItem(STORAGE_KEYS.SETORAN);
@@ -203,7 +234,27 @@ function initStorage() {
       localStorage.setItem(STORAGE_KEYS.USTADZ, JSON.stringify(parsedUstadz));
     } catch(e) {}
   }
+  // Pastikan UST-021 dan UST-022 ter-update ke nama baru jika masih nama lama
+  let ustadzUpdated = false;
+  parsedUstadz.forEach(u => {
+    if (u && (u.id === 'UST-021' || (u.nama && u.nama.includes('Rafqi')))) {
+      u.nama = 'Ust. Adin';
+      u.halaqah = 'Kelas E1 (Ust. Adin)';
+      ustadzUpdated = true;
+    }
+    if (u && (u.id === 'UST-022' || (u.nama && u.nama.includes('Izud')))) {
+      u.nama = 'Ust. Rizki';
+      u.halaqah = 'Kelas E2 (Ust. Rizki)';
+      ustadzUpdated = true;
+    }
+  });
+  if (ustadzUpdated) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.USTADZ, JSON.stringify(parsedUstadz));
+    } catch(e) {}
+  }
   AppState.ustadz = parsedUstadz;
+  syncUstadzWithSettings();
 
   // Absensi Asatidz (Guru Tahfidz)
   const savedAbsensiUstadz = localStorage.getItem(STORAGE_KEYS.ABSENSI_USTADZ);
@@ -1766,6 +1817,278 @@ function prosesImportAbsensiUstadzExcel(event) {
     showToast(`Alhamdulillah! Berhasil mengimpor ${count} data presensi Ustadz dari file Excel!`, 'success');
     event.target.value = '';
   });
+}
+
+// ================= KELOLA DATA DEWAN ASATIDZ =================
+function bukaModalKelolaUstadz() {
+  const modal = document.getElementById('modalKelolaUstadz');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  sembunyikanFormUstadz();
+  
+  // Isi datalist halaqah options
+  const datalist = document.getElementById('listHalaqahOptions');
+  if (datalist) {
+    datalist.innerHTML = '';
+    const halaqahs = AppState.settings.daftarHalaqah || [];
+    halaqahs.forEach(h => {
+      const opt = document.createElement('option');
+      opt.value = h;
+      datalist.appendChild(opt);
+    });
+  }
+
+  const cariInput = document.getElementById('cariUstadzKelolaInput');
+  if (cariInput) cariInput.value = '';
+  renderTabelKelolaUstadz();
+}
+
+function tutupModalKelolaUstadz(e) {
+  if (e && e.target && e.target.id !== 'modalKelolaUstadz' && !e.target.classList.contains('modal-close') && e.target.tagName !== 'BUTTON') {
+    return;
+  }
+  const modal = document.getElementById('modalKelolaUstadz');
+  if (modal) modal.style.display = 'none';
+  sembunyikanFormUstadz();
+}
+
+function renderTabelKelolaUstadz() {
+  const tbody = document.getElementById('tabelKelolaUstadzBody');
+  const infoEl = document.getElementById('totalUstadzKelolaInfo');
+  if (!tbody) return;
+
+  const keyword = (document.getElementById('cariUstadzKelolaInput')?.value || '').toLowerCase().trim();
+  const list = Array.isArray(AppState.ustadz) && AppState.ustadz.length > 0 
+    ? AppState.ustadz 
+    : (typeof SAMPLE_USTADZ !== 'undefined' ? SAMPLE_USTADZ : []);
+
+  const filtered = list.filter(u => {
+    if (!keyword) return true;
+    return (u.nama && u.nama.toLowerCase().includes(keyword)) ||
+           (u.peran && u.peran.toLowerCase().includes(keyword)) ||
+           (u.halaqah && u.halaqah.toLowerCase().includes(keyword)) ||
+           (u.noHp && u.noHp.includes(keyword));
+  });
+
+  if (infoEl) {
+    infoEl.textContent = `Menampilkan ${filtered.length} dari total ${list.length} Asatidz`;
+  }
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:#64748b;">
+      Tidak ada data Ustadz yang cocok dengan pencarian.
+    </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((u, idx) => {
+    const isAktif = (u.status || 'Aktif') === 'Aktif';
+    const statusBadge = isAktif
+      ? `<span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:11px; padding:3px 8px; border-radius:999px; font-weight:700;">● Aktif</span>`
+      : `<span class="badge" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; font-size:11px; padding:3px 8px; border-radius:999px; font-weight:700;">○ Nonaktif</span>`;
+    
+    const isPutri = (u.nama || '').toLowerCase().includes('ustdzh') || (u.nama || '').toLowerCase().includes('putri');
+    const icon = isPutri ? '🧕' : '👳‍♂️';
+
+    return `
+      <tr style="border-bottom:1px solid #f1f5f9; ${!isAktif ? 'opacity:0.65; background:#fafafa;' : ''}">
+        <td style="text-align:center; font-weight:600; color:#64748b;">${idx + 1}</td>
+        <td>
+          <strong style="color:#0f172a;">${icon} ${escapeHtml(u.nama || '-')}</strong>
+          <div style="font-size:11px; color:#64748b;">ID: ${escapeHtml(u.id || '-')}</div>
+        </td>
+        <td><span style="font-size:12px; color:#334155; font-weight:600;">${escapeHtml(u.peran || '-')}</span></td>
+        <td><span style="font-size:12px; color:#0f172a;">${escapeHtml(u.halaqah || '-')}</span></td>
+        <td><span style="font-size:11.5px; font-family:monospace; color:#475569;">${escapeHtml(u.noHp || '-')}</span></td>
+        <td style="text-align:center;">${statusBadge}</td>
+        <td style="text-align:center; white-space:nowrap;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="editDataUstadz('${u.id}')" style="padding:3px 8px; font-size:11.5px; margin-right:4px;" title="Edit Data Ustadz">
+            ✏️ Edit
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="hapusDataUstadz('${u.id}')" style="padding:3px 8px; font-size:11.5px; color:#ef4444;" title="Hapus Ustadz">
+            🗑️
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function tampilkanFormTambahUstadz() {
+  const container = document.getElementById('formUstadzContainer');
+  if (!container) return;
+  container.style.display = 'block';
+  document.getElementById('formUstadzTitle').innerHTML = '➕ Tambah Ustadz Baru';
+  document.getElementById('formUstadzId').value = '';
+  document.getElementById('formUstadzNama').value = '';
+  document.getElementById('formUstadzPeran').value = 'Pengajar Binnadzor';
+  document.getElementById('formUstadzHalaqah').value = '';
+  document.getElementById('formUstadzNoHp').value = '';
+  document.getElementById('formUstadzStatus').value = 'Aktif';
+  document.getElementById('formUstadzNama').focus();
+}
+
+function sembunyikanFormUstadz() {
+  const container = document.getElementById('formUstadzContainer');
+  if (container) container.style.display = 'none';
+}
+
+function editDataUstadz(id) {
+  const u = (AppState.ustadz || []).find(x => x.id === id);
+  if (!u) {
+    showToast('Data Ustadz tidak ditemukan.', 'error');
+    return;
+  }
+
+  const container = document.getElementById('formUstadzContainer');
+  if (!container) return;
+  container.style.display = 'block';
+  document.getElementById('formUstadzTitle').innerHTML = `✏️ Edit Data: ${escapeHtml(u.nama)}`;
+  document.getElementById('formUstadzId').value = u.id;
+  document.getElementById('formUstadzNama').value = u.nama || '';
+  document.getElementById('formUstadzPeran').value = u.peran || 'Pengajar Binnadzor';
+  document.getElementById('formUstadzHalaqah').value = u.halaqah || '';
+  document.getElementById('formUstadzNoHp').value = u.noHp || '';
+  document.getElementById('formUstadzStatus').value = u.status || 'Aktif';
+  document.getElementById('formUstadzNama').focus();
+}
+
+function hapusDataUstadz(id) {
+  const u = (AppState.ustadz || []).find(x => x.id === id);
+  if (!u) return;
+
+  if (!confirm(`Hapus data ${u.nama} (${u.halaqah || u.peran}) dari daftar Dewan Asatidz?`)) {
+    return;
+  }
+
+  AppState.ustadz = AppState.ustadz.filter(x => x.id !== id);
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  renderTabelKelolaUstadz();
+  renderAbsensiUstadzTable();
+  renderRekapBulananUstadz();
+  showToast(`Data ${u.nama} berhasil dihapus dari Dewan Asatidz.`, 'info');
+}
+
+function simpanFormUstadz() {
+  const id = document.getElementById('formUstadzId')?.value?.trim();
+  const nama = document.getElementById('formUstadzNama')?.value?.trim();
+  const peran = document.getElementById('formUstadzPeran')?.value?.trim() || 'Pengajar Binnadzor';
+  const halaqah = document.getElementById('formUstadzHalaqah')?.value?.trim() || '';
+  const noHp = document.getElementById('formUstadzNoHp')?.value?.trim() || '';
+  const status = document.getElementById('formUstadzStatus')?.value?.trim() || 'Aktif';
+
+  if (!nama) {
+    alert('Mohon masukkan Nama Lengkap Ustadz!');
+    return;
+  }
+
+  if (!Array.isArray(AppState.ustadz)) AppState.ustadz = [];
+
+  if (id) {
+    // Mode Update
+    const idx = AppState.ustadz.findIndex(x => x.id === id);
+    if (idx !== -1) {
+      AppState.ustadz[idx].nama = nama;
+      AppState.ustadz[idx].peran = peran;
+      AppState.ustadz[idx].halaqah = halaqah;
+      AppState.ustadz[idx].noHp = noHp;
+      AppState.ustadz[idx].status = status;
+      showToast(`Data ${nama} berhasil diperbarui!`, 'success');
+    }
+  } else {
+    // Mode Tambah Baru
+    const nextNum = AppState.ustadz.length + 1;
+    const newId = 'UST-' + String(nextNum).padStart(3, '0');
+    AppState.ustadz.push({
+      id: newId,
+      nama: nama,
+      peran: peran,
+      halaqah: halaqah,
+      noHp: noHp,
+      status: status
+    });
+    showToast(`Ustadz baru (${nama}) berhasil ditambahkan!`, 'success');
+  }
+
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  sembunyikanFormUstadz();
+  renderTabelKelolaUstadz();
+  renderAbsensiUstadzTable();
+  renderRekapBulananUstadz();
+}
+
+function sinkronkanUstadzDariPengaturanManual() {
+  syncUstadzWithSettings();
+  renderTabelKelolaUstadz();
+  renderAbsensiUstadzTable();
+  renderRekapBulananUstadz();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  showToast('Alhamdulillah! Seluruh nama Asatidz berhasil disinkronkan dengan daftar kelas di Pengaturan Pondok.', 'success');
+}
+
+function syncUstadzWithSettings() {
+  if (!Array.isArray(AppState.ustadz)) AppState.ustadz = [];
+  
+  const binnadzorList = AppState.settings.daftarKelasBinnadzor || [];
+  const tahfidzList = AppState.settings.daftarHalaqahTahfidz || [];
+  const pascaList = AppState.settings.daftarHalaqahPascaTahfidz || [];
+
+  function extractUstadzInfo(str, peranDefault) {
+    let clean = (str || '').trim();
+    let nama = clean;
+    const matchKurung = clean.match(/^(.*?)\s*\((.*?)\)$/);
+    if (matchKurung) {
+      nama = matchKurung[2].trim();
+    } else if (clean.toLowerCase().startsWith('halaqah pasca tahfidz')) {
+      nama = clean.replace(/halaqah pasca tahfidz/i, '').trim();
+    } else if (clean.toLowerCase().startsWith('halaqah')) {
+      nama = clean.replace(/halaqah/i, '').trim();
+    }
+    return {
+      nama: nama || clean,
+      halaqah: clean,
+      peran: peranDefault
+    };
+  }
+
+  const desiredList = [
+    ...tahfidzList.map(h => extractUstadzInfo(h, 'Musyrif Tahfidz')),
+    ...pascaList.map(h => extractUstadzInfo(h, 'Pengasuh Pondok')),
+    ...binnadzorList.map(h => extractUstadzInfo(h, 'Pengajar Binnadzor'))
+  ];
+
+  desiredList.forEach(item => {
+    let existing = AppState.ustadz.find(u => u.halaqah && u.halaqah.toLowerCase() === item.halaqah.toLowerCase());
+    
+    if (!existing && item.halaqah.includes('(')) {
+      const prefix = item.halaqah.split('(')[0].trim().toLowerCase();
+      existing = AppState.ustadz.find(u => u.halaqah && u.halaqah.toLowerCase().startsWith(prefix));
+    }
+
+    if (existing) {
+      existing.nama = item.nama;
+      existing.halaqah = item.halaqah;
+      existing.peran = existing.peran || item.peran;
+      existing.status = 'Aktif';
+    } else {
+      const nextIdNum = AppState.ustadz.length + 1;
+      const newId = 'UST-' + String(nextIdNum).padStart(3, '0');
+      AppState.ustadz.push({
+        id: newId,
+        nama: item.nama,
+        peran: item.peran,
+        halaqah: item.halaqah,
+        noHp: '',
+        status: 'Aktif'
+      });
+    }
+  });
+
+  try {
+    localStorage.setItem(STORAGE_KEYS.USTADZ, JSON.stringify(AppState.ustadz));
+  } catch(e) {}
 }
 
 function cetakRekapBulananUstadz() {
@@ -8975,6 +9298,9 @@ function simpanPengaturan() {
     ...(AppState.settings.daftarHalaqahTahfidz || []),
     ...(AppState.settings.daftarHalaqahPascaTahfidz || [])
   ];
+
+  // Sinkronkan daftar asatidz otomatis dengan perubahan nama kelas / halaqah
+  syncUstadzWithSettings();
 
   // Bersihkan santri yang berada di halaqah yang sudah dihapus dari Pengaturan
   const validHalaqahSet = new Set(AppState.settings.daftarHalaqah.map(h => h.trim().toLowerCase()));

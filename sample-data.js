@@ -39,8 +39,8 @@ const DEFAULT_SETTINGS = {
     "Kelas D1 (Ust. Bayu)",
     "Kelas D2 (Ust. Arul)",
     "Kelas D3 (Ust. Muhith)",
-    "Kelas E1 (Ust. Rafqi)",
-    "Kelas E2 (Ust. Izud)"
+    "Kelas E1 (Ust. Adin)",
+    "Kelas E2 (Ust. Rizki)"
   ],
   // 2. Program Tahfidz: Sistem Halaqah Asatidz Tahfidz
   daftarHalaqahTahfidz: [
@@ -70,8 +70,8 @@ const DEFAULT_SETTINGS = {
     "Kelas D1 (Ust. Bayu)",
     "Kelas D2 (Ust. Arul)",
     "Kelas D3 (Ust. Muhith)",
-    "Kelas E1 (Ust. Rafqi)",
-    "Kelas E2 (Ust. Izud)",
+    "Kelas E1 (Ust. Adin)",
+    "Kelas E2 (Ust. Rizki)",
     "Halaqah Ust. Misbakhul Mujtahidin",
     "Halaqah Ust. Syafi'ul Kholid",
     "Halaqah Ust. Mudzakkir",
@@ -448,8 +448,8 @@ const SAMPLE_USTADZ = [
   { id: "UST-018", nama: "Ust. Bayu", peran: "Pengajar Binnadzor", halaqah: "Kelas D1 (Ust. Bayu)", noHp: "0812-1111-2018", status: "Aktif" },
   { id: "UST-019", nama: "Ust. Arul", peran: "Pengajar Binnadzor", halaqah: "Kelas D2 (Ust. Arul)", noHp: "0812-1111-2019", status: "Aktif" },
   { id: "UST-020", nama: "Ust. Muhith", peran: "Pengajar Binnadzor", halaqah: "Kelas D3 (Ust. Muhith)", noHp: "0812-1111-2020", status: "Aktif" },
-  { id: "UST-021", nama: "Ust. Rafqi", peran: "Pengajar Binnadzor", halaqah: "Kelas E1 (Ust. Rafqi)", noHp: "0812-1111-2021", status: "Aktif" },
-  { id: "UST-022", nama: "Ust. Izud", peran: "Pengajar Binnadzor", halaqah: "Kelas E2 (Ust. Izud)", noHp: "0812-1111-2022", status: "Aktif" }
+  { id: "UST-021", nama: "Ust. Adin", peran: "Pengajar Binnadzor", halaqah: "Kelas E1 (Ust. Adin)", noHp: "0812-1111-2021", status: "Aktif" },
+  { id: "UST-022", nama: "Ust. Rizki", peran: "Pengajar Binnadzor", halaqah: "Kelas E2 (Ust. Rizki)", noHp: "0812-1111-2022", status: "Aktif" }
 ];
 
 const SAMPLE_ABSENSI_USTADZ = [

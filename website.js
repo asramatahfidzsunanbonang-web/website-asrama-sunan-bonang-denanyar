@@ -414,27 +414,31 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initStorage() {
-  // Settings
+  // Settings (Utamakan dari LocalStorage atau DEFAULT_SETTINGS resmi Asrama Tahfidz Sunan Bonang)
   const s = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-  WebState.settings = s ? JSON.parse(s) : {
-    namaPondok: "Pondok Pesantren Tahfidz Al-Qur'an Al-Barokah",
-    alamatPondok: "Jl. Pesantren Luhur No. 45, Cirebon, Jawa Barat",
+  WebState.settings = (s && s !== '{}') ? JSON.parse(s) : {
+    ...(typeof DEFAULT_SETTINGS !== 'undefined' ? DEFAULT_SETTINGS : {}),
+    namaPondok: "Asrama Tahfidz Sunan Bonang",
+    yayasanPondok: "Yayasan PP. Mamba'ul Ma'arif",
+    lokasiPondok: "Denanyar Jombang",
+    alamatPondok: "Jl. KH. Bisri Syansuri, Denanyar, Jombang, Jawa Timur",
     noKontakPondok: "0812-3456-7890",
-    pengasuhPondok: "KH. Ahmad Dahlan Masykur, Al-Hafidz",
-    pengasuhIstri: "Nyai Hj. Siti Fatimah, S.Pd.I., Al-Hafidzah",
+    noKontakPutri: "0813-9876-5432",
+    pengasuhPondok: (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.pengasuhPondok) ? DEFAULT_SETTINGS.pengasuhPondok : "KH. Ahmad Dahlan Masykur, Al-Hafidz",
+    pengasuhIstri: (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.pengasuhIstri) ? DEFAULT_SETTINGS.pengasuhIstri : "Nyai Hj. Siti Fatimah, S.Pd.I., Al-Hafidzah",
     fotoPengasuh: "",
     fotoPengasuhIstri: "",
     heroFloatingPhoto: "foto-masyayikh.png",
     kepalaTahfidz: "Ust. Muhammad Ridwan, S.Pd.I., Al-Hafidz"
   };
   if (!WebState.settings.medsos) {
-    WebState.settings.medsos = {
-      igPutra: "@albarokah_putra",
-      igPutri: "@albarokah_putri",
-      tiktokPutra: "@tahfidz_putra",
-      tiktokPutri: "@tahfidz_putri",
-      youtube: "Pesantren Tahfidz Al-Barokah TV",
-      facebook: "Pondok Pesantren Tahfidz Al-Barokah"
+    WebState.settings.medsos = (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.medsos) ? { ...DEFAULT_SETTINGS.medsos } : {
+      igPutra: "@sunanbonang_putra",
+      igPutri: "@sunanbonang_putri",
+      tiktokPutra: "@tahfidz_sunanbonang",
+      tiktokPutri: "@tahfidz_sunanbonang_pi",
+      youtube: "Asrama Tahfidz Sunan Bonang TV",
+      facebook: "Asrama Tahfidz Sunan Bonang Denanyar"
     };
   }
 
@@ -669,7 +673,8 @@ function saveWebStorage() {
   localStorage.setItem(STORAGE_KEYS.ARTICLES, JSON.stringify(WebState.articles));
   localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(WebState.gallery));
   localStorage.setItem(STORAGE_KEYS.PSB, JSON.stringify(WebState.psbPendaftar));
-  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  // Catatan: saveWebStorage() hanya menyimpan cache tampilan website publik lokal.
+  // Tidak memicu pushLocalToCloud(true) agar halaman pengunjung umum tidak menimpa data pengurus di Cloud.
 }
 
 function initPondokIdentity() {

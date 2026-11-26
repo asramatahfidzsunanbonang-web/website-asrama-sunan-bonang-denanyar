@@ -52,6 +52,24 @@ function initStorage() {
   // Settings: merge default with saved
   const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
   AppState.settings = { ...DEFAULT_SETTINGS, ...(savedSettings ? JSON.parse(savedSettings) : {}) };
+
+  // Auto-upgrade ke data resmi Asrama Sunan Bonang jika masih berisi template lama
+  if (!AppState.settings.pengasuhPondok || AppState.settings.pengasuhPondok.includes('Ahmad Dahlan Masykur')) {
+    AppState.settings.pengasuhPondok = DEFAULT_SETTINGS.pengasuhPondok;
+  }
+  if (!AppState.settings.pengasuhIstri || AppState.settings.pengasuhIstri.includes('Siti Fatimah')) {
+    AppState.settings.pengasuhIstri = DEFAULT_SETTINGS.pengasuhIstri;
+  }
+  if (!AppState.settings.daftarHalaqahTahfidz || AppState.settings.daftarHalaqahTahfidz.length === 0 || AppState.settings.daftarHalaqahTahfidz.some(h => h.includes('Wildan, Al-Hafidz'))) {
+    AppState.settings.daftarHalaqahTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahTahfidz ];
+    AppState.settings.daftarKelasBinnadzor = [ ...DEFAULT_SETTINGS.daftarKelasBinnadzor ];
+    AppState.settings.daftarHalaqahPascaTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahPascaTahfidz ];
+    AppState.settings.daftarHalaqah = [ ...DEFAULT_SETTINGS.daftarHalaqah ];
+  }
+  if (!AppState.settings.kepalaTahfidz || AppState.settings.kepalaTahfidz.includes('Muhammad Ridwan')) {
+    AppState.settings.kepalaTahfidz = DEFAULT_SETTINGS.kepalaTahfidz;
+  }
+
   if (!AppState.settings.daftarHalaqahPascaTahfidz || AppState.settings.daftarHalaqahPascaTahfidz.length === 0) {
     AppState.settings.daftarHalaqahPascaTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahPascaTahfidz ];
   }
@@ -176,9 +194,16 @@ function initStorage() {
   const savedAbsensi = localStorage.getItem(STORAGE_KEYS.ABSENSI);
   AppState.absensi = (savedAbsensi ? JSON.parse(savedAbsensi) : []).filter(a => a && a.id && !isDummyAbsensiId(a.id) && !isDummySantriId(a.santriId));
 
-  // Data Asatidz
+  // Data Asatidz (Auto-upgrade ke data resmi jika masih template lama)
   const savedUstadz = localStorage.getItem(STORAGE_KEYS.USTADZ);
-  AppState.ustadz = savedUstadz ? JSON.parse(savedUstadz) : [ ...SAMPLE_USTADZ ];
+  let parsedUstadz = savedUstadz ? JSON.parse(savedUstadz) : [];
+  if (!Array.isArray(parsedUstadz) || parsedUstadz.length === 0 || parsedUstadz.some(u => u && u.nama && u.nama.includes('Muhammad Ridwan, S.Pd.I.'))) {
+    parsedUstadz = [ ...SAMPLE_USTADZ ];
+    try {
+      localStorage.setItem(STORAGE_KEYS.USTADZ, JSON.stringify(parsedUstadz));
+    } catch(e) {}
+  }
+  AppState.ustadz = parsedUstadz;
 
   // Absensi Asatidz (Guru Tahfidz)
   const savedAbsensiUstadz = localStorage.getItem(STORAGE_KEYS.ABSENSI_USTADZ);

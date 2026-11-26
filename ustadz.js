@@ -41,6 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
 function initUstadzStorage() {
   const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
   UstadzState.settings = { ...DEFAULT_SETTINGS, ...(savedSettings ? JSON.parse(savedSettings) : {}) };
+
+  // Auto-upgrade ke data resmi jika data lokal masih template lama
+  if (!UstadzState.settings.pengasuhPondok || UstadzState.settings.pengasuhPondok.includes('Ahmad Dahlan Masykur')) {
+    UstadzState.settings.pengasuhPondok = DEFAULT_SETTINGS.pengasuhPondok;
+  }
+  if (!UstadzState.settings.daftarHalaqahTahfidz || UstadzState.settings.daftarHalaqahTahfidz.length === 0 || UstadzState.settings.daftarHalaqahTahfidz.some(h => h.includes('Wildan, Al-Hafidz'))) {
+    UstadzState.settings.daftarHalaqahTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahTahfidz ];
+    UstadzState.settings.daftarKelasBinnadzor = [ ...DEFAULT_SETTINGS.daftarKelasBinnadzor ];
+    UstadzState.settings.daftarHalaqahPascaTahfidz = [ ...DEFAULT_SETTINGS.daftarHalaqahPascaTahfidz ];
+    UstadzState.settings.daftarHalaqah = [ ...DEFAULT_SETTINGS.daftarHalaqah ];
+  }
   if (!UstadzState.settings.accessPin) UstadzState.settings.accessPin = '123456';
   if (!UstadzState.settings.ustadzPin) UstadzState.settings.ustadzPin = '888888';
   if (!UstadzState.settings.hariAktifSetoran) {

@@ -424,13 +424,24 @@ function initStorage() {
     alamatPondok: "Jl. KH. Bisri Syansuri, Denanyar, Jombang, Jawa Timur",
     noKontakPondok: "0812-3456-7890",
     noKontakPutri: "0813-9876-5432",
-    pengasuhPondok: (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.pengasuhPondok) ? DEFAULT_SETTINGS.pengasuhPondok : "KH. Ahmad Dahlan Masykur, Al-Hafidz",
-    pengasuhIstri: (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.pengasuhIstri) ? DEFAULT_SETTINGS.pengasuhIstri : "Nyai Hj. Siti Fatimah, S.Pd.I., Al-Hafidzah",
+    pengasuhPondok: "H. M. Jauharul Afif, Lc., M.Ag., M.Pd.",
+    pengasuhIstri: "Hj. Mazidatul Faizah, M.Si.",
     fotoPengasuh: "",
     fotoPengasuhIstri: "",
     heroFloatingPhoto: "foto-masyayikh.png",
-    kepalaTahfidz: "Ust. Muhammad Ridwan, S.Pd.I., Al-Hafidz"
+    kepalaTahfidz: "Ust. Misbakhul Mujtahidin"
   };
+
+  // Auto-upgrade jika data lokal masih berisi nama contoh bawaan lama
+  if (!WebState.settings.pengasuhPondok || WebState.settings.pengasuhPondok.includes('Ahmad Dahlan Masykur')) {
+    WebState.settings.pengasuhPondok = "H. M. Jauharul Afif, Lc., M.Ag., M.Pd.";
+  }
+  if (!WebState.settings.pengasuhIstri || WebState.settings.pengasuhIstri.includes('Siti Fatimah')) {
+    WebState.settings.pengasuhIstri = "Hj. Mazidatul Faizah, M.Si.";
+  }
+  if (!WebState.settings.kepalaTahfidz || WebState.settings.kepalaTahfidz.includes('Muhammad Ridwan')) {
+    WebState.settings.kepalaTahfidz = "Ust. Misbakhul Mujtahidin";
+  }
   if (!WebState.settings.medsos) {
     WebState.settings.medsos = (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.medsos) ? { ...DEFAULT_SETTINGS.medsos } : {
       igPutra: "@sunanbonang_putra",
@@ -731,8 +742,8 @@ function initPondokIdentity() {
     btn.href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Assalamu'alaikum Admin PSB ${namaPondok}, saya butuh panduan / bantuan pengisian formulir pendaftaran santri baru...`)}`;
   });
 
-  const pengasuhSuami = WebState.settings.pengasuhPondok || "KH. Ahmad Dahlan Masykur, Al-Hafidz";
-  const pengasuhIstri = WebState.settings.pengasuhIstri || "";
+  const pengasuhSuami = WebState.settings.pengasuhPondok || "H. M. Jauharul Afif, Lc., M.Ag., M.Pd.";
+  const pengasuhIstri = WebState.settings.pengasuhIstri || "Hj. Mazidatul Faizah, M.Si.";
   const namaLengkapPengasuh = pengasuhIstri ? `${pengasuhSuami} & ${pengasuhIstri}` : pengasuhSuami;
 
   const pengasuhElements = document.querySelectorAll('.bind-pengasuh-pondok');
@@ -741,7 +752,7 @@ function initPondokIdentity() {
   renderWebPengasuhSection();
 
   const kepalaTahfidzElements = document.querySelectorAll('.bind-kepala-tahfidz');
-  kepalaTahfidzElements.forEach(el => el.textContent = WebState.settings.kepalaTahfidz || "Ust. Muhammad Ridwan, S.Pd.I., Al-Hafidz");
+  kepalaTahfidzElements.forEach(el => el.textContent = WebState.settings.kepalaTahfidz || "Ust. Misbakhul Mujtahidin");
 
   // Logo pondok (transparan murni tanpa background kotak hitam)
   if (WebState.settings.logoPondok) {
@@ -831,8 +842,8 @@ function renderHeroPengasuhCrest() {
 }
 
 function renderWebPengasuhSection() {
-  const pengasuhSuami = WebState.settings.pengasuhPondok || "KH. Ahmad Dahlan Masykur, Al-Hafidz";
-  const pengasuhIstri = WebState.settings.pengasuhIstri || "";
+  const pengasuhSuami = WebState.settings.pengasuhPondok || "H. M. Jauharul Afif, Lc., M.Ag., M.Pd.";
+  const pengasuhIstri = WebState.settings.pengasuhIstri || "Hj. Mazidatul Faizah, M.Si.";
   let fotoPengasuh = WebState.settings.fotoPengasuh || "";
   if (fotoPengasuh === 'foto-masyayikh.png' || fotoPengasuh === 'foto-masyayikh.jpg') {
     fotoPengasuh = "";

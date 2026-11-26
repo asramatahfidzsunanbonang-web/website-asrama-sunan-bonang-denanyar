@@ -4,12 +4,12 @@ const DEFAULT_SETTINGS = {
   yayasanPondok: "Yayasan PP. Mamba'ul Ma'arif",
   lokasiPondok: "Denanyar Jombang",
   alamatPondok: "Jl. KH. Bisri Syansuri, Denanyar, Jombang, Jawa Timur",
-  pengasuhPondok: "KH. Ahmad Dahlan Masykur, Al-Hafidz",
-  pengasuhIstri: "Nyai Hj. Siti Fatimah, S.Pd.I., Al-Hafidzah",
+  pengasuhPondok: "H. M. Jauharul Afif, Lc., M.Ag., M.Pd.",
+  pengasuhIstri: "Hj. Mazidatul Faizah, M.Si.",
   fotoPengasuh: "",
   fotoPengasuhIstri: "",
   heroBannerPhoto: "",
-  kepalaTahfidz: "Ust. Muhammad Ridwan, S.Pd.I., Al-Hafidz",
+  kepalaTahfidz: "Ust. Misbakhul Mujtahidin",
   noKontakPondok: "0812-3456-7890",
   noKontakPutri: "0813-9876-5432",
   tahunAjaran: "2025/2026",
@@ -27,46 +27,61 @@ const DEFAULT_SETTINGS = {
     "Ashar (16.00 - 17.15)",
     "Maghrib / Isya (18.30 - 20.00)"
   ],
-  // 1. Program Binnadzor: Berdasarkan Kelas (A, B, C, D, E dengan sub-kelas A1, A2, B1, B2... & Asatidz pengampu)
+  // 1. Program Binnadzor: Berdasarkan Kelas & Asatidz Pengampu
   daftarKelasBinnadzor: [
-    "Kelas A1 (Ust. Miftah Faridl)",
-    "Kelas A2 (Ust. Fikri Maulana)",
-    "Kelas B1 (Ust. Hasan Basri)",
-    "Kelas B2 (Ust. Ahmad Dahlan)",
-    "Kelas C1 (Ust. Salman Al-Farisi)",
-    "Kelas D1 (Ust. Zaid bin Tsabit)",
-    "Kelas E1 (Ust. Umar bin Khattab)",
-    "Kelas Putri A1 (Ustdzh. Maryam Ulfah)",
-    "Kelas Putri B1 (Ustdzh. Nurul Hidayah)"
+    "Kelas A (Ust. Yogi)",
+    "Kelas B1 (Ust. Kaffa)",
+    "Kelas B2 (Ust. Haqi)",
+    "Kelas B3 (Ust. Sholah)",
+    "Kelas C1 (Ust. Hafi)",
+    "Kelas C2 (Ust. Alfan)",
+    "Kelas C3 (Ust. Rosyid)",
+    "Kelas D1 (Ust. Bayu)",
+    "Kelas D2 (Ust. Arul)",
+    "Kelas D3 (Ust. Muhith)",
+    "Kelas E1 (Ust. Rafqi)",
+    "Kelas E2 (Ust. Izud)"
   ],
-  // 2. Program Tahfidz: Tanpa jenjang kelas, langsung dibagi per Ustadz Pembimbing (Halaqah Ustadz)
+  // 2. Program Tahfidz: Sistem Halaqah Asatidz Tahfidz
   daftarHalaqahTahfidz: [
-    "Halaqah Ust. Wildan, Al-Hafidz",
-    "Halaqah Ust. Muhammad Ridwan, Al-Hafidz",
-    "Halaqah Ust. Zainal Abidin, Al-Hafidz",
-    "Halaqah Ust. Abdullah Shodiq, Al-Hafidz",
-    "Halaqah Ustdzh. Nurul Hidayah, Al-Hafidzah",
-    "Halaqah Ustdzh. Fatimah Az-Zahra, Al-Hafidzah"
+    "Halaqah Ust. Misbakhul Mujtahidin",
+    "Halaqah Ust. Syafi'ul Kholid",
+    "Halaqah Ust. Mudzakkir",
+    "Halaqah Ust. Burhan",
+    "Halaqah Ust. M. Abdul Ghoffar Wijoyo",
+    "Halaqah Ust. Fatih Bagus Aslamudin",
+    "Halaqah Ust. Fahmi",
+    "Halaqah Ust. Izzul Walady",
+    "Halaqah Ust. Rosyid Ridho"
   ],
-  // 3. Program Pasca Tahfidz: Khusus santri yang telah khatam & wisuda 30 Juz, dibina per Ustadz Pengampu
+  // 3. Program Pasca Tahfidz: Khusus santri yang telah khatam & wisuda 30 Juz
   daftarHalaqahPascaTahfidz: [
-    "Halaqah Pasca Tahfidz KH. Ahmad Dahlan Masykur, Al-Hafidz",
-    "Halaqah Pasca Tahfidz Ust. Muhammad Ridwan, Al-Hafidz",
-    "Halaqah Pasca Tahfidz Ust. Zainal Abidin, Al-Hafidz",
-    "Halaqah Pasca Tahfidz Ustdzh. Nurul Hidayah, Al-Hafidzah"
+    "Halaqah Pasca Tahfidz H. M. Jauharul Afif, Lc., M.Ag., M.Pd."
   ],
   // Backward compatibility daftar halaqah
   daftarHalaqah: [
-    "Kelas A1 (Ust. Miftah Faridl)",
-    "Kelas A2 (Ust. Fikri Maulana)",
-    "Kelas B1 (Ust. Hasan Basri)",
-    "Kelas B2 (Ust. Ahmad Dahlan)",
-    "Kelas C1 (Ust. Salman Al-Farisi)",
-    "Halaqah Ust. Muhammad Ridwan, Al-Hafidz",
-    "Halaqah Ust. Zainal Abidin, Al-Hafidz",
-    "Halaqah Ust. Abdullah Shodiq, Al-Hafidz",
-    "Halaqah Ustdzh. Nurul Hidayah, Al-Hafidzah",
-    "Halaqah Ustdzh. Maryam Ulfah"
+    "Kelas A (Ust. Yogi)",
+    "Kelas B1 (Ust. Kaffa)",
+    "Kelas B2 (Ust. Haqi)",
+    "Kelas B3 (Ust. Sholah)",
+    "Kelas C1 (Ust. Hafi)",
+    "Kelas C2 (Ust. Alfan)",
+    "Kelas C3 (Ust. Rosyid)",
+    "Kelas D1 (Ust. Bayu)",
+    "Kelas D2 (Ust. Arul)",
+    "Kelas D3 (Ust. Muhith)",
+    "Kelas E1 (Ust. Rafqi)",
+    "Kelas E2 (Ust. Izud)",
+    "Halaqah Ust. Misbakhul Mujtahidin",
+    "Halaqah Ust. Syafi'ul Kholid",
+    "Halaqah Ust. Mudzakkir",
+    "Halaqah Ust. Burhan",
+    "Halaqah Ust. M. Abdul Ghoffar Wijoyo",
+    "Halaqah Ust. Fatih Bagus Aslamudin",
+    "Halaqah Ust. Fahmi",
+    "Halaqah Ust. Izzul Walady",
+    "Halaqah Ust. Rosyid Ridho",
+    "Halaqah Pasca Tahfidz H. M. Jauharul Afif, Lc., M.Ag., M.Pd."
   ],
   kamarList: [
     "Asrama Umar / Kamar 01",
@@ -413,18 +428,28 @@ const SAMPLE_ABSENSI = [];
 
 // ================= DATA ASATIDZ & PRESENSI GURU TAHFIDZ =================
 const SAMPLE_USTADZ = [
-  { id: "UST-001", nama: "Ust. Muhammad Ridwan, S.Pd.I., Al-Hafidz", peran: "Kepala Tahfidz", halaqah: "Halaqah Ust. Muhammad Ridwan, Al-Hafidz", noHp: "0812-1111-2222", status: "Aktif" },
-  { id: "UST-002", nama: "Ust. Zainal Abidin, Al-Hafidz", peran: "Musyrif Tahfidz Putra", halaqah: "Halaqah Ust. Zainal Abidin, Al-Hafidz", noHp: "0812-1111-2223", status: "Aktif" },
-  { id: "UST-003", nama: "Ust. Abdullah Shodiq, Al-Hafidz", peran: "Musyrif Tahfidz Putra", halaqah: "Halaqah Ust. Abdullah Shodiq, Al-Hafidz", noHp: "0812-1111-2224", status: "Aktif" },
-  { id: "UST-004", nama: "Ustdzh. Nurul Hidayah, Al-Hafidzah", peran: "Musyrifah Tahfidz Putri", halaqah: "Halaqah Ustdzh. Nurul Hidayah, Al-Hafidzah", noHp: "0812-1111-2225", status: "Aktif" },
-  { id: "UST-005", nama: "Ustdzh. Fatimah Az-Zahra, Al-Hafidzah", peran: "Musyrifah Tahfidz Putri", halaqah: "Halaqah Ustdzh. Fatimah Az-Zahra, Al-Hafidzah", noHp: "0812-1111-2226", status: "Aktif" },
-  { id: "UST-006", nama: "Ust. Miftah Faridl", peran: "Pengajar Binnadzor", halaqah: "Kelas A1 (Ust. Miftah Faridl)", noHp: "0812-1111-2227", status: "Aktif" },
-  { id: "UST-007", nama: "Ust. Hasan Basri", peran: "Pengajar Binnadzor", halaqah: "Kelas B1 (Ust. Hasan Basri)", noHp: "0812-1111-2228", status: "Aktif" },
-  { id: "UST-008", nama: "Ust. Fikri Maulana", peran: "Pengajar Binnadzor", halaqah: "Kelas A2 (Ust. Fikri Maulana)", noHp: "0812-1111-2229", status: "Aktif" },
-  { id: "UST-009", nama: "Ust. Salman Al-Farisi", peran: "Pengajar Binnadzor", halaqah: "Kelas C1 (Ust. Salman Al-Farisi)", noHp: "0812-1111-2230", status: "Aktif" },
-  { id: "UST-010", nama: "Ustdzh. Maryam Ulfah", peran: "Pengajar Binnadzor Putri", halaqah: "Kelas Putri A1 (Ustdzh. Maryam Ulfah)", noHp: "0812-1111-2231", status: "Aktif" },
-  { id: "UST-011", nama: "KH. Ahmad Dahlan Masykur, Al-Hafidz", peran: "Pengasuh Pondok", halaqah: "Halaqah Pasca Tahfidz KH. Ahmad Dahlan Masykur, Al-Hafidz", noHp: "0812-1111-2220", status: "Aktif" },
-  { id: "UST-012", nama: "Ust. Wildan, Al-Hafidz", peran: "Musyrif Tahfidz Putra", halaqah: "Halaqah Ust. Wildan, Al-Hafidz", noHp: "0812-1111-2235", status: "Aktif" }
+  { id: "UST-001", nama: "Ust. Misbakhul Mujtahidin", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. Misbakhul Mujtahidin", noHp: "0812-1111-2001", status: "Aktif" },
+  { id: "UST-002", nama: "Ust. Syafi'ul Kholid", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. Syafi'ul Kholid", noHp: "0812-1111-2002", status: "Aktif" },
+  { id: "UST-003", nama: "Ust. Mudzakkir", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. Mudzakkir", noHp: "0812-1111-2003", status: "Aktif" },
+  { id: "UST-004", nama: "Ust. Burhan", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. Burhan", noHp: "0812-1111-2004", status: "Aktif" },
+  { id: "UST-005", nama: "Ust. M. Abdul Ghoffar Wijoyo", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. M. Abdul Ghoffar Wijoyo", noHp: "0812-1111-2005", status: "Aktif" },
+  { id: "UST-006", nama: "Ust. Fatih Bagus Aslamudin", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. Fatih Bagus Aslamudin", noHp: "0812-1111-2006", status: "Aktif" },
+  { id: "UST-007", nama: "Ust. Fahmi", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. Fahmi", noHp: "0812-1111-2007", status: "Aktif" },
+  { id: "UST-008", nama: "Ust. Izzul Walady", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. Izzul Walady", noHp: "0812-1111-2008", status: "Aktif" },
+  { id: "UST-009", nama: "Ust. Rosyid Ridho", peran: "Musyrif Tahfidz", halaqah: "Halaqah Ust. Rosyid Ridho", noHp: "0812-1111-2009", status: "Aktif" },
+  { id: "UST-010", nama: "H. M. Jauharul Afif, Lc., M.Ag., M.Pd.", peran: "Pengasuh Pondok", halaqah: "Halaqah Pasca Tahfidz H. M. Jauharul Afif, Lc., M.Ag., M.Pd.", noHp: "0812-1111-2000", status: "Aktif" },
+  { id: "UST-011", nama: "Ust. Yogi", peran: "Pengajar Binnadzor", halaqah: "Kelas A (Ust. Yogi)", noHp: "0812-1111-2011", status: "Aktif" },
+  { id: "UST-012", nama: "Ust. Kaffa", peran: "Pengajar Binnadzor", halaqah: "Kelas B1 (Ust. Kaffa)", noHp: "0812-1111-2012", status: "Aktif" },
+  { id: "UST-013", nama: "Ust. Haqi", peran: "Pengajar Binnadzor", halaqah: "Kelas B2 (Ust. Haqi)", noHp: "0812-1111-2013", status: "Aktif" },
+  { id: "UST-014", nama: "Ust. Sholah", peran: "Pengajar Binnadzor", halaqah: "Kelas B3 (Ust. Sholah)", noHp: "0812-1111-2014", status: "Aktif" },
+  { id: "UST-015", nama: "Ust. Hafi", peran: "Pengajar Binnadzor", halaqah: "Kelas C1 (Ust. Hafi)", noHp: "0812-1111-2015", status: "Aktif" },
+  { id: "UST-016", nama: "Ust. Alfan", peran: "Pengajar Binnadzor", halaqah: "Kelas C2 (Ust. Alfan)", noHp: "0812-1111-2016", status: "Aktif" },
+  { id: "UST-017", nama: "Ust. Rosyid", peran: "Pengajar Binnadzor", halaqah: "Kelas C3 (Ust. Rosyid)", noHp: "0812-1111-2017", status: "Aktif" },
+  { id: "UST-018", nama: "Ust. Bayu", peran: "Pengajar Binnadzor", halaqah: "Kelas D1 (Ust. Bayu)", noHp: "0812-1111-2018", status: "Aktif" },
+  { id: "UST-019", nama: "Ust. Arul", peran: "Pengajar Binnadzor", halaqah: "Kelas D2 (Ust. Arul)", noHp: "0812-1111-2019", status: "Aktif" },
+  { id: "UST-020", nama: "Ust. Muhith", peran: "Pengajar Binnadzor", halaqah: "Kelas D3 (Ust. Muhith)", noHp: "0812-1111-2020", status: "Aktif" },
+  { id: "UST-021", nama: "Ust. Rafqi", peran: "Pengajar Binnadzor", halaqah: "Kelas E1 (Ust. Rafqi)", noHp: "0812-1111-2021", status: "Aktif" },
+  { id: "UST-022", nama: "Ust. Izud", peran: "Pengajar Binnadzor", halaqah: "Kelas E2 (Ust. Izud)", noHp: "0812-1111-2022", status: "Aktif" }
 ];
 
 const SAMPLE_ABSENSI_USTADZ = [

@@ -2200,9 +2200,10 @@ body::before {
 .psb-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   grid-template-areas:
     "brosur form"
+    "alur   form"
     "info   form";
   gap: 20px 32px;
   align-items: start;
@@ -2213,19 +2214,30 @@ body::before {
   width: 100%;
 }
 
+.psb-alur-syarat-card {
+  grid-area: alur;
+  background: var(--white);
+  border: 1px solid var(--light-200);
+  border-radius: var(--radius-xl);
+  padding: 26px 28px;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+}
+
 .psb-info-card {
   grid-area: info;
   background: var(--white);
   border: 1px solid var(--light-200);
   border-radius: var(--radius-xl);
-  padding: 30px;
+  padding: 28px;
   box-shadow: var(--shadow-sm);
+  width: 100%;
 }
 
 .psb-step-item {
   display: flex;
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .psb-step-no {
@@ -2249,6 +2261,7 @@ body::before {
   border-radius: var(--radius-xl);
   padding: 32px;
   box-shadow: var(--shadow-lg);
+  width: 100%;
 }
 
 .form-group {
@@ -2998,12 +3011,16 @@ body::before {
     order: 1 !important;
     width: 100% !important;
   }
-  .psb-form-card {
+  .psb-alur-syarat-card {
     order: 2 !important;
     width: 100% !important;
   }
-  .psb-info-card {
+  .psb-form-card {
     order: 3 !important;
+    width: 100% !important;
+  }
+  .psb-info-card {
+    order: 4 !important;
     width: 100% !important;
   }
   .footer-container {
@@ -4488,13 +4505,18 @@ body.portal-mode-simple .view-return-bar {
     order: 1 !important;
     width: 100% !important;
   }
-  .psb-form-card {
+  .psb-alur-syarat-card {
     order: 2 !important;
     width: 100% !important;
     padding: 20px 16px !important;
   }
-  .psb-info-card {
+  .psb-form-card {
     order: 3 !important;
+    width: 100% !important;
+    padding: 20px 16px !important;
+  }
+  .psb-info-card {
+    order: 4 !important;
     width: 100% !important;
     padding: 20px 16px !important;
   }

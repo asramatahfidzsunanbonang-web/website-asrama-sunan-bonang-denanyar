@@ -3026,7 +3026,7 @@ function initStatCounters() {
 
 // ================= INTERACTIVE CLICK PHYSICS FOR CARDS =================
 function initInteractiveCardClicks() {
-  const selectors = '.facility-card, .program-card, .school-card, .hero-feature-box, .hero-stat-item, .psb-info-card, .psb-step-item, .article-card, .social-badge-btn, .photo-card-tilt, .photo-showcase-widget, .about-bento-card, .pancajiwa-pill';
+  const selectors = '.facility-card, .program-card, .school-card, .hero-feature-box, .hero-stat-item, .psb-alur-syarat-card, .psb-info-card, .psb-step-item, .article-card, .social-badge-btn, .photo-card-tilt, .photo-showcase-widget, .about-bento-card, .pancajiwa-pill';
   document.querySelectorAll(selectors).forEach(card => {
     if (card.dataset.hasClickBounce) return;
     card.dataset.hasClickBounce = 'true';

@@ -2839,6 +2839,59 @@ function closeModalBuktiPSB() {
   document.getElementById('modalBuktiPSB').classList.remove('active');
 }
 
+// ================= PSB 2-PANEL SWITCHER =================
+function switchPsbPanel(panelName) {
+  const formPanel = document.getElementById('psbPanelForm');
+  const infoPanel = document.getElementById('psbPanelInfo');
+  const btnForm = document.getElementById('psbTabBtnForm');
+  const btnInfo = document.getElementById('psbTabBtnInfo');
+
+  if (panelName === 'info') {
+    if (formPanel) {
+      formPanel.classList.remove('active');
+      formPanel.style.display = 'none';
+    }
+    if (infoPanel) {
+      infoPanel.classList.add('active');
+      infoPanel.style.display = 'block';
+      infoPanel.querySelectorAll('.reveal-on-scroll:not(.is-revealed)').forEach(el => el.classList.add('is-revealed'));
+    }
+    if (btnForm) btnForm.classList.remove('active');
+    if (btnInfo) btnInfo.classList.add('active');
+  } else {
+    // Default to 'form'
+    if (infoPanel) {
+      infoPanel.classList.remove('active');
+      infoPanel.style.display = 'none';
+    }
+    if (formPanel) {
+      formPanel.classList.add('active');
+      formPanel.style.display = 'block';
+      formPanel.querySelectorAll('.reveal-on-scroll:not(.is-revealed)').forEach(el => el.classList.add('is-revealed'));
+    }
+    if (btnInfo) btnInfo.classList.remove('active');
+    if (btnForm) btnForm.classList.add('active');
+  }
+
+  // Smooth scroll to top of PSB section if clicked from lower section
+  const psbSection = document.getElementById('psb');
+  if (psbSection) {
+    const yOffset = -70;
+    const y = psbSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+
+function navigateToPsb(panelName = 'form') {
+  if (typeof navigateToView === 'function') {
+    navigateToView('psb');
+  }
+  switchPsbPanel(panelName);
+}
+
+window.switchPsbPanel = switchPsbPanel;
+window.navigateToPsb = navigateToPsb;
+
 // Search Santri from Home (Portal Quick Check by NIS or Name)
 function handleCekSantriHome(e) {
   e.preventDefault();

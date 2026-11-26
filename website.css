@@ -2197,16 +2197,123 @@ body::before {
   border-bottom: 1px solid #bbf7d0;
 }
 
+/* ================= PSB 2-PANEL SWITCHER & TABS ================= */
+.psb-panel-switcher {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  max-width: 620px;
+  margin: 0 auto 30px auto;
+  background: #e2e8f0;
+  padding: 6px;
+  border-radius: 16px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.psb-tab-btn {
+  flex: 1;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  color: #475569;
+}
+
+.psb-tab-btn:hover {
+  color: var(--primary-dark, #064e3b);
+}
+
+.psb-tab-btn.active {
+  background: #065f46 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(6, 95, 70, 0.28) !important;
+}
+
+.psb-panel {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  animation: psbFadeIn 0.3s ease-out;
+}
+
+.psb-panel:not(.active) {
+  display: none !important;
+}
+
+.psb-panel.active {
+  display: block !important;
+}
+
+@keyframes psbFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.psb-quick-info-banner {
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06);
+}
+
+.psb-quick-info-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e40af;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.psb-cta-switch-card {
+  background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+  border-radius: 16px;
+  padding: 26px 24px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(6, 78, 59, 0.22);
+  margin-top: 24px;
+  border: 2px solid #f59e0b;
+}
+
+.psb-cta-switch-card h4 {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: #fef08a;
+}
+
+.psb-cta-switch-card p {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 18px 0;
+}
+
 .psb-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  grid-template-rows: auto auto auto;
-  grid-template-areas:
-    "brosur form"
-    "alur   form"
-    "info   form";
-  gap: 20px 32px;
-  align-items: start;
+  display: block;
+  width: 100%;
 }
 
 .psb-brosur-banner-card {
@@ -4493,6 +4600,39 @@ body.portal-mode-simple .view-return-bar {
   .gallery-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
+  }
+
+  /* PSB 2-Panel Switcher Mobile */
+  .psb-panel-switcher {
+    flex-direction: column !important;
+    gap: 6px !important;
+    padding: 6px !important;
+    margin-bottom: 20px !important;
+    width: 100% !important;
+  }
+  .psb-tab-btn {
+    width: 100% !important;
+    padding: 11px 16px !important;
+    font-size: 13.5px !important;
+  }
+  .psb-quick-info-banner {
+    padding: 12px 14px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .psb-quick-info-banner .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .psb-cta-switch-card {
+    padding: 20px 16px !important;
+  }
+  .psb-cta-switch-card h4 {
+    font-size: 16px !important;
+  }
+  .psb-cta-switch-card .btn {
+    width: 100% !important;
+    justify-content: center !important;
   }
 
   /* PSB Form Rows Stack & Mobile Ordering */

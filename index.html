@@ -7,7 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Asrama Tahfidz Sunan Bonang - Yayasan PP. Mamba'ul Ma'arif Denanyar Jombang</title>
-  <link rel="stylesheet" href="website.css?v=20261126-v4">
+  <link rel="stylesheet" href="website.css?v=20261126-v5">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
   <script>
     // Global standalone SVG Fallbacks (Offline & Instant Error Safe)
@@ -974,75 +974,26 @@
         <p class="section-desc">Mari bergabung bersama keluarga besar penghafal Al-Qur'an. Daftarkan putra-putri Anda melalui formulir online di bawah ini.</p>
       </div>
 
-      <div class="psb-grid">
-        <!-- 1. BROSUR RESMI & BIAYA PENDIDIKAN (Mobile: Paling Atas, PC: Kiri Atas) -->
-        <div class="psb-brosur-banner-card reveal-on-scroll reveal-up">
-          <div style="background:linear-gradient(135deg, #064e3b 0%, #022c22 100%); color:#fff; border-radius:14px; padding:18px 20px; border:2px solid #f59e0b; box-shadow:0 6px 20px rgba(6,78,59,0.22);">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-              <div>
-                <span style="background:#fef08a; color:#78350f; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; display:inline-block; margin-bottom:4px;">
-                  📄 BROSUR RESMI &amp; BIAYA PENDIDIKAN
-                </span>
-                <h4 style="font-size:16px; font-weight:800; color:#fff; margin:0 0 2px 0;">Brosur PSB &amp; Rincian Biaya</h4>
-                <p style="font-size:12px; color:rgba(255,255,255,0.85); margin:0;">Buka brosur digital siap cetak atau cek rincian biaya pondok.</p>
-              </div>
-              <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <button type="button" class="btn btn-gold btn-sm" onclick="openModalBrosurPSB()" style="font-weight:800; padding:8px 14px; box-shadow:0 4px 14px rgba(245,158,11,0.4); display:flex; align-items:center; gap:6px;">
-                  <span>📥</span> Lihat &amp; Unduh Brosur
-                </button>
-              </div>
-            </div>
+            <!-- PSB 2-Panel Switcher Segmented Tabs -->
+      <div class="psb-panel-switcher">
+        <button type="button" id="psbTabBtnForm" class="psb-tab-btn active" onclick="switchPsbPanel('form')">
+          <span>📝</span> Formulir Pendaftaran Online
+        </button>
+        <button type="button" id="psbTabBtnInfo" class="psb-tab-btn" onclick="switchPsbPanel('info')">
+          <span>📄</span> Info Brosur, Alur, Syarat &amp; Biaya
+        </button>
+      </div>
+
+      <!-- ================= PANEL 1: FORMULIR PENDAFTARAN ONLINE ================= -->
+      <div id="psbPanelForm" class="psb-panel active">
+        <!-- Quick Switcher Banner ke Panel Info -->
+        <div class="psb-quick-info-banner">
+          <div class="psb-quick-info-text">
+            <span>ℹ️</span> Butuh informasi brosur resmi, alur pendaftaran, syarat berkas &amp; rincian biaya?
           </div>
-        </div>
-
-        <!-- 2. ALUR & SYARAT PENDAFTARAN (Mobile: Di Bawah Brosur, Di Atas Form; PC: Kiri Tengah) -->
-        <div class="psb-alur-syarat-card reveal-on-scroll reveal-left">
-          <h3 style="font-size:18.5px; font-weight:800; color:var(--dark-900); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-            <span>📋</span> Alur &amp; Ketentuan Pendaftaran
-          </h3>
-
-          <div class="psb-step-item">
-            <div class="psb-step-no">1</div>
-            <div>
-              <h4 style="font-size:14px; font-weight:700;">Isi Formulir Online</h4>
-              <p style="font-size:12.5px; color:var(--dark-600);">Lengkapi data calon santri dan orang tua pada formulir pendaftaran.</p>
-            </div>
-          </div>
-
-          <div class="psb-step-item">
-            <div class="psb-step-no">2</div>
-            <div>
-              <h4 style="font-size:14px; font-weight:700;">Konfirmasi via WhatsApp Panitia</h4>
-              <p style="font-size:12.5px; color:var(--dark-600);">Setelah mengisi form, nomor registrasi akan keluar dan langsung terhubung ke WhatsApp panitia.</p>
-            </div>
-          </div>
-
-          <div class="psb-step-item">
-            <div class="psb-step-no">3</div>
-            <div>
-              <h4 style="font-size:14px; font-weight:700;">Daftar Ulang</h4>
-              <p style="font-size:12.5px; color:var(--dark-600);">Selama kuota memenuhi, santri yang telah mendaftar otomatis diterima, dan langsung bisa melakukan pembayaran daftar ulang.</p>
-            </div>
-          </div>
-
-          <div class="psb-step-item">
-            <div class="psb-step-no">4</div>
-            <div>
-              <h4 style="font-size:14px; font-weight:700;">Tes Bacaan Qur'an</h4>
-              <p style="font-size:12.5px; color:var(--dark-600);">Tes bacaan Qur'an dilakukan ketika santri telah resmi masuk pondok, guna membagi kelas sesuai kemampuan.</p>
-            </div>
-          </div>
-
-          <hr style="border:none; border-top:1px solid var(--light-200); margin:18px 0;">
-
-          <h4 style="font-size:13.5px; font-weight:700; color:var(--dark-800); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-            <span>📌</span> Syarat Pendaftaran:
-          </h4>
-          <ul style="font-size:12.5px; color:var(--dark-600); margin-left:18px; line-height:1.7;">
-            <li>Lulus SD/MI atau SMP/MTs (Usia 12 - 18 tahun).</li>
-            <li>Memiliki niat tulus dan kesiapan tinggal di asrama pondok.</li>
-            <li>Fotokopi Akta Kelahiran, Kartu Keluarga, dan Ijazah terakhir.</li>
-          </ul>
+          <button type="button" class="btn btn-sm btn-primary" onclick="switchPsbPanel('info')">
+            <span>📄</span> Lihat Brosur, Syarat &amp; Biaya →
+          </button>
         </div>
 
         <!-- 3. FORMULIR PENDAFTARAN ONLINE (Mobile: Ketiga, PC: Kolom Kanan) -->
@@ -1313,8 +1264,86 @@
             </div>
           </form>
         </div>
+      </div>
 
-        <!-- 4. INFORMASI BIAYA & KONTAK PANITIA PSB (Mobile: Keempat, PC: Kiri Bawah) -->
+      <!-- ================= PANEL 2: INFO BROSUR, ALUR, SYARAT & BIAYA ================= -->
+      <div id="psbPanelInfo" class="psb-panel" style="display:none;">
+        <div style="margin-bottom:20px;">
+          <!-- 1. BROSUR RESMI & BIAYA PENDIDIKAN (Mobile: Paling Atas, PC: Kiri Atas) -->
+        <div class="psb-brosur-banner-card reveal-on-scroll reveal-up">
+          <div style="background:linear-gradient(135deg, #064e3b 0%, #022c22 100%); color:#fff; border-radius:14px; padding:18px 20px; border:2px solid #f59e0b; box-shadow:0 6px 20px rgba(6,78,59,0.22);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div>
+                <span style="background:#fef08a; color:#78350f; font-size:10.5px; font-weight:800; padding:3px 9px; border-radius:999px; display:inline-block; margin-bottom:4px;">
+                  📄 BROSUR RESMI &amp; BIAYA PENDIDIKAN
+                </span>
+                <h4 style="font-size:16px; font-weight:800; color:#fff; margin:0 0 2px 0;">Brosur PSB &amp; Rincian Biaya</h4>
+                <p style="font-size:12px; color:rgba(255,255,255,0.85); margin:0;">Buka brosur digital siap cetak atau cek rincian biaya pondok.</p>
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-gold btn-sm" onclick="openModalBrosurPSB()" style="font-weight:800; padding:8px 14px; box-shadow:0 4px 14px rgba(245,158,11,0.4); display:flex; align-items:center; gap:6px;">
+                  <span>📥</span> Lihat &amp; Unduh Brosur
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <!-- 2. ALUR & SYARAT PENDAFTARAN (Mobile: Di Bawah Brosur, Di Atas Form; PC: Kiri Tengah) -->
+        <div class="psb-alur-syarat-card reveal-on-scroll reveal-left">
+          <h3 style="font-size:18.5px; font-weight:800; color:var(--dark-900); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+            <span>📋</span> Alur &amp; Ketentuan Pendaftaran
+          </h3>
+
+          <div class="psb-step-item">
+            <div class="psb-step-no">1</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Isi Formulir Online</h4>
+              <p style="font-size:12.5px; color:var(--dark-600);">Lengkapi data calon santri dan orang tua pada formulir pendaftaran.</p>
+            </div>
+          </div>
+
+          <div class="psb-step-item">
+            <div class="psb-step-no">2</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Konfirmasi via WhatsApp Panitia</h4>
+              <p style="font-size:12.5px; color:var(--dark-600);">Setelah mengisi form, nomor registrasi akan keluar dan langsung terhubung ke WhatsApp panitia.</p>
+            </div>
+          </div>
+
+          <div class="psb-step-item">
+            <div class="psb-step-no">3</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Daftar Ulang</h4>
+              <p style="font-size:12.5px; color:var(--dark-600);">Selama kuota memenuhi, santri yang telah mendaftar otomatis diterima, dan langsung bisa melakukan pembayaran daftar ulang.</p>
+            </div>
+          </div>
+
+          <div class="psb-step-item">
+            <div class="psb-step-no">4</div>
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Tes Bacaan Qur'an</h4>
+              <p style="font-size:12.5px; color:var(--dark-600);">Tes bacaan Qur'an dilakukan ketika santri telah resmi masuk pondok, guna membagi kelas sesuai kemampuan.</p>
+            </div>
+          </div>
+
+          <hr style="border:none; border-top:1px solid var(--light-200); margin:18px 0;">
+
+          <h4 style="font-size:13.5px; font-weight:700; color:var(--dark-800); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <span>📌</span> Syarat Pendaftaran:
+          </h4>
+          <ul style="font-size:12.5px; color:var(--dark-600); margin-left:18px; line-height:1.7;">
+            <li>Lulus SD/MI atau SMP/MTs (Usia 12 - 18 tahun).</li>
+            <li>Memiliki niat tulus dan kesiapan tinggal di asrama pondok.</li>
+            <li>Fotokopi Akta Kelahiran, Kartu Keluarga, dan Ijazah terakhir.</li>
+          </ul>
+        </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <!-- 4. INFORMASI BIAYA & KONTAK PANITIA PSB (Mobile: Keempat, PC: Kiri Bawah) -->
         <div class="psb-info-card reveal-on-scroll reveal-left">
           <!-- KARTU KONTAK PANITIA / CP WHATSAPP PSB -->
           <div style="background:linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border:2px solid #10b981; border-radius:14px; padding:18px 20px; margin-bottom:22px; box-shadow:0 4px 16px rgba(16,185,129,0.12);">
@@ -1497,6 +1526,16 @@
               📋 Data Pendaftar Masuk (<span id="countPendaftarBadge">0</span>)
             </button>
           </div>
+        </div>
+        </div>
+
+        <!-- CTA Beralih ke Formulir Pendaftaran di Bawah Info -->
+        <div class="psb-cta-switch-card">
+          <h4>Sudah Memahami Brosur, Alur &amp; Rincian Biaya?</h4>
+          <p>Segera daftarkan calon santri baru dengan mengisi formulir pendaftaran online di panel pendaftaran.</p>
+          <button type="button" class="btn btn-gold btn-lg" onclick="switchPsbPanel('form')">
+            <span>📝</span> Buka Formulir Pendaftaran Online Sekarang →
+          </button>
         </div>
       </div>
     </div>
@@ -2400,6 +2439,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="firebase-sync.js"></script>
   <script src="image-cropper.js"></script>
-  <script src="website.js?v=20261126-v4"></script>
+  <script src="website.js?v=20261126-v5"></script>
 </body>
 </html>

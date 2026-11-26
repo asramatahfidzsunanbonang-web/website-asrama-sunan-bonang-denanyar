@@ -453,40 +453,18 @@ function initStorage() {
     WebState.gallery = [ ...DEFAULT_GALLERY ];
   }
 
-  // PSB
-  const psb = localStorage.getItem(STORAGE_KEYS.PSB);
-  WebState.psbPendaftar = psb ? JSON.parse(psb) : [
-    {
-      noRegistrasi: "PSB-2025-1024",
-      nama: "Muhammad Ilham Pratama",
-      noKk: "3517010101900001",
-      nik: "3517010101080001",
-      nisn: "0098765432",
-      jenisKelamin: "L",
-      programPilihan: "Program Binnadzor",
-      asalSekolah: "SDIT Al-Hikmah",
-      namaWali: "H. Joko Susilo",
-      noWaWali: "081234567888",
-      alamat: "Kec. Sumber, Kab. Cirebon",
-      tanggalDaftar: "2024-11-20",
-      status: "Menunggu Seleksi"
-    },
-    {
-      noRegistrasi: "PSB-2025-1025",
-      nama: "Aisyah Zahira Khairunnisa",
-      noKk: "3517010101900002",
-      nik: "3517010101080002",
-      nisn: "0098765433",
-      jenisKelamin: "P",
-      programPilihan: "Program Tahfidz 30 Juz",
-      asalSekolah: "MI Salafiyah Huda",
-      namaWali: "Drs. H. Mulyadi",
-      noWaWali: "081234567889",
-      alamat: "Kec. Harjamukti, Kota Cirebon",
-      tanggalDaftar: "2024-11-21",
-      status: "Menunggu Seleksi"
-    }
-  ];
+  // PSB - Inisialisasi daftar calon santri pendaftar
+  let loadedPsb = [];
+  try {
+    const psb = localStorage.getItem(STORAGE_KEYS.PSB);
+    loadedPsb = psb ? JSON.parse(psb) : [];
+  } catch (e) {
+    loadedPsb = [];
+  }
+  // Bersihkan data contoh bawaan jika masih ada
+  WebState.psbPendaftar = Array.isArray(loadedPsb)
+    ? loadedPsb.filter(p => p.noRegistrasi !== 'PSB-2025-1024' && p.noRegistrasi !== 'PSB-2025-1025' && p.nama !== 'Muhammad Ilham Pratama' && p.nama !== 'Aisyah Zahira Khairunnisa')
+    : [];
 
   saveWebStorage();
   updatePendaftarCount();
@@ -2699,14 +2677,29 @@ function renderTabelPendaftar() {
         ${p.namaIbu ? `<span style="font-size:11.5px;"><strong>Ibu:</strong> ${escapeHtml(p.namaIbu)}</span><br>` : ''}
         <div style="font-size:11px; color:#059669; font-weight:600;">WA: ${escapeHtml(p.noWaWali)}</div>
       </td>
-      <td>
-        <a href="https://api.whatsapp.com/send?phone=${p.noWaWali.replace(/\D/g, '').replace(/^0/, '62')}" target="_blank" class="btn btn-whatsapp btn-sm" style="padding:4px 8px; font-size:11px; display:inline-block; margin-bottom:4px;">
-          💬 WA Wali
+      <td style="white-space:nowrap;">
+        <a href="https://api.whatsapp.com/send?phone=${p.noWaWali ? p.noWaWali.replace(/\D/g, '').replace(/^0/, '62') : ''}" target="_blank" class="btn btn-whatsapp btn-sm" style="padding:4px 8px; font-size:11px; display:inline-block; margin-bottom:4px;">
+          💬 WA
         </a>
+        <button type="button" class="btn btn-outline-danger btn-sm" onclick="hapusPendaftar(${idx})" title="Hapus Data Pendaftar" style="padding:4px 7px; font-size:11px; margin-left:3px; color:#dc2626; border-color:#fca5a5; background:#fff; border-radius:6px; cursor:pointer;">
+          🗑️
+        </button>
       </td>
     `;
     tbody.appendChild(tr);
   });
+}
+
+function hapusPendaftar(idx) {
+  if (idx < 0 || idx >= WebState.psbPendaftar.length) return;
+  const p = WebState.psbPendaftar[idx];
+  if (confirm(`Apakah Anda yakin ingin menghapus data pendaftaran ananda ${p.nama || ''} (${p.noRegistrasi || ''})?`)) {
+    WebState.psbPendaftar.splice(idx, 1);
+    saveWebStorage();
+    updatePendaftarCount();
+    renderTabelPendaftar();
+    showToast(`Data pendaftar ${p.nama || ''} berhasil dihapus.`, 'info');
+  }
 }
 
 function eksporPendaftarExcel() {

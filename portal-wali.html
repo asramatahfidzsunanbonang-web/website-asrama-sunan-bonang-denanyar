@@ -304,7 +304,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="firebase-sync.js"></script>
   <script>
-    let portalSettings, portalSantri, portalSetoran, portalAbsensi, portalPelanggaran, portalPerizinan, portalJamaah, portalEkskul;
+    let portalSettings, portalSantri, portalSetoran, portalAbsensi, portalPelanggaran, portalPerizinan, portalJamaah, portalEkskul, portalUstadz;
 
     function initPortalSettings() {
       portalSettings = JSON.parse(localStorage.getItem('sitahfidz_settings') || 'null') || DEFAULT_SETTINGS;
@@ -320,6 +320,7 @@
       portalPerizinan = JSON.parse(localStorage.getItem('sitahfidz_perizinan') || 'null') || (typeof SAMPLE_PERIZINAN !== 'undefined' ? SAMPLE_PERIZINAN : []);
       portalJamaah = JSON.parse(localStorage.getItem('sitahfidz_ubudiyah_jamaah') || 'null') || (typeof SAMPLE_UBUDIYAH_JAMAAH !== 'undefined' ? SAMPLE_UBUDIYAH_JAMAAH : []);
       portalEkskul = JSON.parse(localStorage.getItem('sitahfidz_ubudiyah_ekskul') || 'null') || (typeof SAMPLE_UBUDIYAH_EKSKUL !== 'undefined' ? SAMPLE_UBUDIYAH_EKSKUL : []);
+      portalUstadz = JSON.parse(localStorage.getItem('sitahfidz_ustadz') || 'null') || (typeof SAMPLE_USTADZ !== 'undefined' ? SAMPLE_USTADZ : []);
 
       const nameEl = document.getElementById('portalPondokName');
       if (nameEl) nameEl.textContent = portalSettings.namaPondok || DEFAULT_SETTINGS.namaPondok;
@@ -328,6 +329,52 @@
     }
 
     initPortalSettings();
+
+    // Helper pencarian ustadz pembimbing berdasarkan halaqah santri
+    function findUstadzForSantri(halaqah) {
+      if (!halaqah) return null;
+      if (!Array.isArray(portalUstadz) || portalUstadz.length === 0) {
+        portalUstadz = JSON.parse(localStorage.getItem('sitahfidz_ustadz') || 'null') || (typeof SAMPLE_USTADZ !== 'undefined' ? SAMPLE_USTADZ : []);
+      }
+      const raw = halaqah.trim().toLowerCase();
+
+      // 1. Pencocokan langsung (exact match) nama / halaqah
+      let found = portalUstadz.find(u => {
+        const uh = (u.halaqah || '').toLowerCase();
+        const un = (u.nama || '').toLowerCase();
+        return uh === raw || un === raw;
+      });
+      if (found) return found;
+
+      // 2. Pencocokan kode kelas: "Kelas A", "Kelas B1", "Kelas C2", dsb.
+      const classMatch = raw.match(/Kelas\s*([A-E][1-3]?)\b/i);
+      if (classMatch) {
+        const code = classMatch[1].toUpperCase();
+        found = portalUstadz.find(u => {
+          const uh = (u.halaqah || '').toUpperCase();
+          const cm = uh.match(/Kelas\s*([A-E][1-3]?)\b/i);
+          return cm && cm[1].toUpperCase() === code;
+        });
+        if (found) return found;
+      }
+
+      // 3. Pencocokan kata kunci nama asatidz
+      found = portalUstadz.find(u => {
+        const un = (u.nama || '').toLowerCase().replace(/ustad[hz]?\.?\s*/g, '').trim();
+        const uh = (u.halaqah || '').toLowerCase();
+        if (un && (raw.includes(un) || un.includes(raw))) return true;
+        if (uh && (raw.includes(uh) || uh.includes(raw))) return true;
+        return false;
+      });
+      if (found) return found;
+
+      // 4. Kasus khusus Pasca Tahfidz (Pengasuh KH. Jauharul Afif)
+      if (raw.includes('pasca') || raw.includes('afif')) {
+        return portalUstadz.find(u => (u.nama || '').toLowerCase().includes('afif'));
+      }
+
+      return null;
+    }
 
     let currentSantri = null;
     const nowInit = new Date();
@@ -776,6 +823,9 @@
         yearOpts += `<option value="${y}" ${sel}>${y}</option>`;
       }
 
+      const ustadzPembimbing = findUstadzForSantri(s.halaqah);
+      const labelNamaUstadz = ustadzPembimbing && ustadzPembimbing.nama ? ` (${escapeHtml(ustadzPembimbing.nama)})` : '';
+
       card.innerHTML = `
         <!-- Header Informasi -->
         <div style="text-align:center; border-bottom:2px dashed #cbd5e1; padding-bottom:16px; margin-bottom:20px;">
@@ -913,8 +963,8 @@
 
         <!-- Tombol Aksi Hubungi Ustadz -->
         <div style="margin-top:28px; text-align:center; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-          <button class="btn btn-primary btn-md" onclick="hubungiUstadz('${s.nama}', '${s.halaqah}')" style="padding:10px 24px; font-size:14px;">
-            💬 Hubungi Ustadz Pembimbing
+          <button class="btn btn-primary btn-md" onclick="hubungiUstadz('${escapeHtml(s.nama)}', '${escapeHtml(s.halaqah || '')}')" style="padding:11px 26px; font-size:14px; font-weight:700; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(16,185,129,0.25);">
+            <span>💬</span> <span>Hubungi Ustadz Pembimbing${labelNamaUstadz}</span>
           </button>
         </div>
       `;
@@ -1466,12 +1516,14 @@
     }
 
     function hubungiUstadz(santriNama, halaqah) {
-      const kontak = portalSettings.noKontakPondok || '081234567890';
-      let clean = kontak.replace(/\D/g, '');
+      const ustadz = findUstadzForSantri(halaqah);
+      const rawNumber = (ustadz && ustadz.noHp && ustadz.noHp.trim()) ? ustadz.noHp : (portalSettings.noKontakPondok || '081234567890');
+      let clean = rawNumber.replace(/\D/g, '');
       if (clean.startsWith('0')) clean = '62' + clean.substring(1);
 
       const periode = `${NAMA_BULAN[currentMonth]} ${currentYear}`;
-      const msg = `Assalamu'alaikum Warahmatullahi Wabarakatuh,\nUstadz/Ustdzh Pengurus Pondok,\n\nSaya orang tua/wali dari ananda *${santriNama}* (${halaqah}).\nIngin menanyakan perihal perkembangan tahfidz, hasil setoran, serta presensi kehadiran ananda untuk periode *${periode}*.\n\nJazakumullahu Khairan Katsiran.`;
+      const sapaanTujuan = (ustadz && ustadz.nama) ? ustadz.nama : 'Ustadz Pembimbing Pondok';
+      const msg = `Assalamu'alaikum Warahmatullahi Wabarakatuh,\n${sapaanTujuan},\n\nSaya orang tua/wali dari ananda *${santriNama}* (${halaqah || '-'}).\nIngin menanyakan perihal perkembangan tahfidz, hasil setoran, serta presensi kehadiran ananda untuk periode *${periode}*.\n\nJazakumullahu Khairan Katsiran.`;
       window.open(`https://api.whatsapp.com/send?phone=${clean}&text=${encodeURIComponent(msg)}`, '_blank');
     }
 

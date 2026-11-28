@@ -428,6 +428,13 @@ function getDaftarUstadzHalaqah() {
         counts[matched.toLowerCase()]++;
       }
     }
+    // Santri Pasca Tahfidz: tetap di ustadz asal untuk setoran reguler, dan JUGA dihitung di Pengasuh H.M. Jauharul Afif untuk murojaah
+    if (s.program === 'Pasca Tahfidz') {
+      const pascaHalaqah = uniqueOfficial.find(off => off.toLowerCase().includes('afif') || off.toLowerCase().includes('pasca'));
+      if (pascaHalaqah && pascaHalaqah.toLowerCase() !== normH) {
+        counts[pascaHalaqah.toLowerCase()] = (counts[pascaHalaqah.toLowerCase()] || 0) + 1;
+      }
+    }
   });
 
   return uniqueOfficial.map(name => ({
@@ -438,10 +445,12 @@ function getDaftarUstadzHalaqah() {
 
 // ================= TAB 1: PRESENSI HARIAN =================
 function renderAbsensiUstadzChips() {
-  const container = document.getElementById('absensiUstadzChips');
+  const containerBnz = document.getElementById('chipsUstadzBinnadzor');
+  const containerThf = document.getElementById('chipsUstadzTahfidz');
+  const legacyContainer = document.getElementById('absensiUstadzChips');
   const notice = document.getElementById('absensiActiveUstadzNotice');
   const btnSetHadir = document.getElementById('btnSetSemuaHadir');
-  if (!container) return;
+  const btnSemua = document.getElementById('btnSemuaSantriChip');
 
   const list = getDaftarUstadzHalaqah();
   if (UstadzState.selectedUstadz && !list.some(l => l.name === UstadzState.selectedUstadz)) {
@@ -451,15 +460,20 @@ function renderAbsensiUstadzChips() {
   const current = UstadzState.selectedUstadz || '';
   const totalSantri = UstadzState.santri.length;
 
+  if (btnSemua) {
+    btnSemua.className = `btn btn-sm ${!current ? 'btn-primary' : 'btn-secondary'}`;
+    btnSemua.innerHTML = `👥 Tampilkan Semua Santri (${totalSantri})`;
+  }
+
   if (notice) {
     if (current) {
       const match = list.find(l => l.name === current);
       const count = match ? match.count : 0;
       notice.style.display = 'inline-flex';
-      notice.innerHTML = `<span>👳‍♂️ Ustadz Aktif: <strong>${escapeHtml(current)}</strong> (${count} Santri Bimbingan)</span> <button type="button" onclick="pilihMyUstadz('')" style="margin-left:8px; background:none; border:none; color:#047857; text-decoration:underline; cursor:pointer; font-size:11px; font-weight:700;">Tampilkan Semua</button>`;
+      notice.innerHTML = `<span>👳‍♂️ Ustadz Aktif: <strong>${escapeHtml(current)}</strong> (${count} Santri Murid)</span> <button type="button" onclick="pilihMyUstadz('')" style="margin-left:8px; background:none; border:none; color:#047857; text-decoration:underline; cursor:pointer; font-size:11px; font-weight:700;">Tampilkan Semua</button>`;
     } else {
       notice.style.display = 'inline-flex';
-      notice.innerHTML = `<span>👥 Menampilkan seluruh santri pondok. Klik nama Ustadz Anda untuk memfilter:</span>`;
+      notice.innerHTML = `<span>👥 Menampilkan seluruh santri (${totalSantri} Santri). Silakan klik nama Ustadz Anda:</span>`;
     }
   }
 
@@ -474,32 +488,56 @@ function renderAbsensiUstadzChips() {
     }
   }
 
-  let chipsHtml = `
-    <button type="button" 
-      class="ustadz-chip ${!current ? 'active' : ''}" 
-      onclick="pilihMyUstadz('')"
-      title="Tampilkan semua santri">
-      👥 <strong>Semua Santri</strong> <span class="chip-count">${totalSantri}</span>
-    </button>
-  `;
+  // Pisahkan Asatidz Binnadzor & Asatidz Tahfidz
+  const binnadzorItems = [];
+  const tahfidzItems = [];
 
-  // Tampilkan seluruh chip: halaqah yang memiliki santri + seluruh halaqah resmi dari Pengaturan
-  const activeChips = list;
-  activeChips.forEach(item => {
-    const isActive = item.name === current;
-    const isPutri = item.name.toLowerCase().includes('putri') || item.name.toLowerCase().includes('ustdzh');
-    const icon = isPutri ? '🧕' : '👳‍♂️';
-    chipsHtml += `
-      <button type="button" 
-        class="ustadz-chip ${isActive ? 'active' : ''}" 
-        onclick="pilihMyUstadz('${escapeHtml(item.name)}')"
-        title="Klik untuk langsung mengabsen santri bimbingan ${escapeHtml(item.name)}">
-        ${icon} <strong>${escapeHtml(item.name)}</strong> <span class="chip-count">${item.count}</span>
-      </button>
-    `;
+  list.forEach(item => {
+    const low = item.name.toLowerCase();
+    if (low.startsWith('kelas') || low.includes('binnadzor')) {
+      binnadzorItems.push(item);
+    } else {
+      tahfidzItems.push(item);
+    }
   });
 
-  container.innerHTML = chipsHtml;
+  const renderChipButtons = (items) => {
+    let html = '';
+    items.forEach(item => {
+      const isActive = item.name === current;
+      const isPutri = item.name.toLowerCase().includes('putri') || item.name.toLowerCase().includes('ustdzh');
+      const icon = isPutri ? '🧕' : '👳‍♂️';
+      html += `
+        <button type="button" 
+          class="ustadz-chip ${isActive ? 'active' : ''}" 
+          onclick="pilihMyUstadz('${escapeHtml(item.name)}')"
+          title="Klik untuk langsung mengabsen santri murid ${escapeHtml(item.name)}">
+          ${icon} <strong>${escapeHtml(item.name)}</strong> <span class="chip-count">${item.count}</span>
+        </button>
+      `;
+    });
+    return html;
+  };
+
+  if (containerBnz && containerThf) {
+    containerBnz.innerHTML = renderChipButtons(binnadzorItems);
+    containerThf.innerHTML = renderChipButtons(tahfidzItems);
+    const badgeBnz = document.getElementById('badgeCountBinnadzor');
+    if (badgeBnz) badgeBnz.textContent = `${binnadzorItems.length} Ustadz`;
+    const badgeThf = document.getElementById('badgeCountTahfidz');
+    if (badgeThf) badgeThf.textContent = `${tahfidzItems.length} Ustadz`;
+  } else if (legacyContainer) {
+    let chipsHtml = `
+      <button type="button" 
+        class="ustadz-chip ${!current ? 'active' : ''}" 
+        onclick="pilihMyUstadz('')"
+        title="Tampilkan semua santri">
+        👥 <strong>Semua Santri</strong> <span class="chip-count">${totalSantri}</span>
+      </button>
+    `;
+    chipsHtml += renderChipButtons(list);
+    legacyContainer.innerHTML = chipsHtml;
+  }
 }
 
 function pilihMyUstadz(halaqah) {
@@ -521,9 +559,19 @@ function getFilteredAbsensiSantri() {
   const selectedUstadz = UstadzState.selectedUstadz || '';
 
   if (!search) {
-    // KONDISI DEFAULT (Cari Kosong): 100% hanya menampilkan santri halaqah binaan beliau sendiri
+    // KONDISI DEFAULT (Cari Kosong): hanya menampilkan santri halaqah binaan beliau sendiri
     return UstadzState.santri
-      .filter(s => !selectedUstadz || isSameHalaqah(s.halaqah, selectedUstadz))
+      .filter(s => {
+        if (!selectedUstadz) return true;
+        // 1. Santri terdaftar di halaqah tersebut
+        if (isSameHalaqah(s.halaqah, selectedUstadz)) return true;
+        // 2. Santri Pasca Tahfidz: tetap di ustadz asal untuk setoran reguler, dan JUGA masuk ke Halaqah H. M. Jauharul Afif untuk murojaah
+        if (s.program === 'Pasca Tahfidz') {
+          const isTargetPascaAfif = selectedUstadz.toLowerCase().includes('afif') || selectedUstadz.toLowerCase().includes('pasca');
+          if (isTargetPascaAfif) return true;
+        }
+        return false;
+      })
       .map(s => ({ ...s, isBadal: false }));
   }
 

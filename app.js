@@ -311,9 +311,22 @@ function initStorage() {
   AppState.ustadz = parsedUstadz;
   syncUstadzWithSettings();
 
-  // Absensi Asatidz (Guru Tahfidz)
+  // Absensi Asatidz (Guru Tahfidz) - Bersihkan data simulasi / dummy lama
+  const isDummyAbsensiUstadzRecord = a => {
+    if (!a) return true;
+    if (a.id && (a.id.startsWith('ABSUST-00') || a.id.startsWith('ABSUST-01'))) return true;
+    if (a.ustadzNama && (
+      a.ustadzNama.includes('Muhammad Ridwan') ||
+      a.ustadzNama.includes('Zainal Abidin') ||
+      a.ustadzNama.includes('Miftah Faridl') ||
+      a.ustadzNama.includes('Maryam Ulfah') ||
+      a.ustadzNama.includes('Wildan') ||
+      a.ustadzNama.includes('Nurul Hidayah')
+    )) return true;
+    return false;
+  };
   const savedAbsensiUstadz = localStorage.getItem(STORAGE_KEYS.ABSENSI_USTADZ);
-  AppState.absensiUstadz = savedAbsensiUstadz ? JSON.parse(savedAbsensiUstadz) : [ ...SAMPLE_ABSENSI_USTADZ ];
+  AppState.absensiUstadz = (savedAbsensiUstadz ? JSON.parse(savedAbsensiUstadz) : []).filter(a => a && a.id && !isDummyAbsensiUstadzRecord(a));
 
   // Ujian Semester & Evaluasi Perombakan Kelas
   const savedUjianSemester = localStorage.getItem(STORAGE_KEYS.UJIAN_SEMESTER);
@@ -554,9 +567,12 @@ function updateNavPills() {
   if (pillAbsensi) pillAbsensi.textContent = absensiHariIniCount;
 
   // Absensi Asatidz Hari Ini
-  const absensiUstadzHariIniCount = (AppState.absensiUstadz || []).filter(a => a.tanggal === todayStr && a.status === 'Hadir').length;
+  const recordsHariIniUst = (AppState.absensiUstadz || []).filter(a => a.tanggal === todayStr);
+  const absensiUstadzHariIniCount = recordsHariIniUst.filter(a => a.status === 'Hadir').length;
   const pillAbsensiUstadz = document.getElementById('pillAbsensiUstadzHariIni');
-  if (pillAbsensiUstadz) pillAbsensiUstadz.textContent = `${absensiUstadzHariIniCount} Hadir`;
+  if (pillAbsensiUstadz) {
+    pillAbsensiUstadz.textContent = recordsHariIniUst.length > 0 ? `${absensiUstadzHariIniCount} Hadir` : `Belum Absen`;
+  }
 
   // Nilai Ujian Semester
   const pillUjian = document.getElementById('pillUjianSemester');
@@ -817,6 +833,13 @@ function getDaftarUstadzHalaqah() {
         counts[matched.toLowerCase()]++;
       }
     }
+    // Santri Pasca Tahfidz: tetap di ustadz asal untuk setoran reguler, dan JUGA dihitung di Pengasuh H.M. Jauharul Afif untuk murojaah
+    if (s.program === 'Pasca Tahfidz') {
+      const pascaHalaqah = uniqueOfficial.find(off => off.toLowerCase().includes('afif') || off.toLowerCase().includes('pasca'));
+      if (pascaHalaqah && pascaHalaqah.toLowerCase() !== normH) {
+        counts[pascaHalaqah.toLowerCase()] = (counts[pascaHalaqah.toLowerCase()] || 0) + 1;
+      }
+    }
   });
 
   return uniqueOfficial.map(name => ({
@@ -826,11 +849,13 @@ function getDaftarUstadzHalaqah() {
 }
 
 function renderAbsensiUstadzChips() {
-  const container = document.getElementById('absensiUstadzChips');
+  const containerBnz = document.getElementById('chipsUstadzBinnadzorAdmin');
+  const containerThf = document.getElementById('chipsUstadzTahfidzAdmin');
+  const legacyContainer = document.getElementById('absensiUstadzChips');
   const selectFilter = document.getElementById('absensiFilterUstadz');
   const notice = document.getElementById('absensiActiveUstadzNotice');
   const btnSetHadir = document.getElementById('btnSetSemuaHadir');
-  if (!container) return;
+  const btnSemua = document.getElementById('btnSemuaSantriAdmin');
 
   const list = getDaftarUstadzHalaqah();
   if (AppState.selectedAbsensiUstadz && !list.some(l => l.name === AppState.selectedAbsensiUstadz)) {
@@ -849,13 +874,18 @@ function renderAbsensiUstadzChips() {
     selectFilter.innerHTML = htmlOpts;
   }
 
-  // 2. Active notice & Button label
+  // 2. Button & Notice
+  if (btnSemua) {
+    btnSemua.className = `btn btn-sm ${!current ? 'btn-primary' : 'btn-secondary'}`;
+    btnSemua.innerHTML = `👥 Tampilkan Semua Santri (${totalSantri})`;
+  }
+
   if (notice) {
     if (current) {
       const match = list.find(l => l.name === current);
       const count = match ? match.count : 0;
       notice.style.display = 'inline-flex';
-      notice.innerHTML = `<span>👳‍♂️ Ustadz Aktif: <strong>${escapeHtml(current)}</strong> (${count} Santri)</span> <button type="button" onclick="pilihAbsensiUstadz('')" style="margin-left:8px; background:none; border:none; color:#047857; text-decoration:underline; cursor:pointer; font-size:11px; font-weight:700;">Reset / Tampilkan Semua</button>`;
+      notice.innerHTML = `<span>👳‍♂️ Ustadz Aktif: <strong>${escapeHtml(current)}</strong> (${count} Santri Murid)</span> <button type="button" onclick="pilihAbsensiUstadz('')" style="margin-left:8px; background:none; border:none; color:#047857; text-decoration:underline; cursor:pointer; font-size:11px; font-weight:700;">Tampilkan Semua</button>`;
     } else {
       notice.style.display = 'none';
       notice.innerHTML = '';
@@ -873,33 +903,56 @@ function renderAbsensiUstadzChips() {
     }
   }
 
-  // 3. Render clickable chips
-  let chipsHtml = `
-    <button type="button" 
-      class="ustadz-chip ${!current ? 'active' : ''}" 
-      onclick="pilihAbsensiUstadz('')"
-      title="Tampilkan semua santri pondok">
-      👥 <strong>Semua Santri</strong> <span class="chip-count">${totalSantri}</span>
-    </button>
-  `;
+  // 3. Pisahkan ke 2 Kolom: Asatidz Binnadzor & Asatidz Tahfidz
+  const binnadzorItems = [];
+  const tahfidzItems = [];
 
-  // Tampilkan seluruh chip: halaqah yang memiliki santri + seluruh halaqah resmi dari Pengaturan
-  const activeChipsList = list;
-  activeChipsList.forEach(item => {
-    const isActive = item.name === current;
-    const isPutri = item.name.toLowerCase().includes('putri') || item.name.toLowerCase().includes('ustdzh');
-    const icon = isPutri ? '🧕' : '👳‍♂️';
-    chipsHtml += `
-      <button type="button" 
-        class="ustadz-chip ${isActive ? 'active' : ''}" 
-        onclick="pilihAbsensiUstadz('${escapeHtml(item.name)}')"
-        title="Klik untuk langsung mengabsen santri bimbingan ${escapeHtml(item.name)}">
-        ${icon} <strong>${escapeHtml(item.name)}</strong> <span class="chip-count">${item.count}</span>
-      </button>
-    `;
+  list.forEach(item => {
+    const low = item.name.toLowerCase();
+    if (low.startsWith('kelas') || low.includes('binnadzor')) {
+      binnadzorItems.push(item);
+    } else {
+      tahfidzItems.push(item);
+    }
   });
 
-  container.innerHTML = chipsHtml;
+  const renderChipButtons = (items) => {
+    let html = '';
+    items.forEach(item => {
+      const isActive = item.name === current;
+      const isPutri = item.name.toLowerCase().includes('putri') || item.name.toLowerCase().includes('ustdzh');
+      const icon = isPutri ? '🧕' : '👳‍♂️';
+      html += `
+        <button type="button" 
+          class="ustadz-chip ${isActive ? 'active' : ''}" 
+          onclick="pilihAbsensiUstadz('${escapeHtml(item.name)}')"
+          title="Klik untuk langsung mengabsen santri murid ${escapeHtml(item.name)}">
+          ${icon} <strong>${escapeHtml(item.name)}</strong> <span class="chip-count">${item.count}</span>
+        </button>
+      `;
+    });
+    return html;
+  };
+
+  if (containerBnz && containerThf) {
+    containerBnz.innerHTML = renderChipButtons(binnadzorItems);
+    containerThf.innerHTML = renderChipButtons(tahfidzItems);
+    const badgeBnz = document.getElementById('badgeCountBinnadzorAdmin');
+    if (badgeBnz) badgeBnz.textContent = `${binnadzorItems.length} Ustadz`;
+    const badgeThf = document.getElementById('badgeCountTahfidzAdmin');
+    if (badgeThf) badgeThf.textContent = `${tahfidzItems.length} Ustadz`;
+  } else if (legacyContainer) {
+    let chipsHtml = `
+      <button type="button" 
+        class="ustadz-chip ${!current ? 'active' : ''}" 
+        onclick="pilihAbsensiUstadz('')"
+        title="Tampilkan semua santri pondok">
+        👥 <strong>Semua Santri</strong> <span class="chip-count">${totalSantri}</span>
+      </button>
+    `;
+    chipsHtml += renderChipButtons(list);
+    legacyContainer.innerHTML = chipsHtml;
+  }
 }
 
 function pilihAbsensiUstadz(halaqah) {
@@ -914,8 +967,14 @@ function getFilteredAbsensiSantri() {
   const selectedUstadz = AppState.selectedAbsensiUstadz || '';
 
   return AppState.santri.filter(s => {
-    if (selectedUstadz && !isSameHalaqah(s.halaqah, selectedUstadz)) {
-      return false;
+    if (selectedUstadz) {
+      let isMatch = isSameHalaqah(s.halaqah, selectedUstadz);
+      // Santri Pasca Tahfidz: tetap di ustadz asal untuk setoran reguler, dan JUGA tampil saat H.M. Jauharul Afif dipilih untuk murojaah
+      if (!isMatch && s.program === 'Pasca Tahfidz') {
+        const isTargetPascaAfif = selectedUstadz.toLowerCase().includes('afif') || selectedUstadz.toLowerCase().includes('pasca');
+        if (isTargetPascaAfif) isMatch = true;
+      }
+      if (!isMatch) return false;
     }
     if (progFilter && s.program !== progFilter) {
       return false;
@@ -1357,6 +1416,7 @@ function renderAbsensiUstadzTable() {
     return true;
   });
 
+  let countBelum = 0;
   let countHadir = 0;
   let countIzin = 0;
   let countSakit = 0;
@@ -1368,7 +1428,7 @@ function renderAbsensiUstadzTable() {
       <div style="font-size:26px; margin-bottom:8px;">👳‍♂️</div>
       <div style="font-weight:700; color:#334155;">Tidak ada Ustadz yang sesuai filter.</div>
     </td></tr>`;
-    updateAbsensiUstadzStats(0, 0, 0, 0, 0);
+    updateAbsensiUstadzStats(0, 0, 0, 0, 0, 0);
     return;
   }
 
@@ -1379,7 +1439,7 @@ function renderAbsensiUstadzTable() {
       a.ustadzId === ustadz.id
     );
 
-    const currentStatus = record ? record.status : 'Hadir';
+    const currentStatus = record ? record.status : 'Belum Absen';
     const currentBadal = record ? (record.badal || '') : '';
     const currentKet = record ? (record.keterangan || '') : '';
 
@@ -1387,7 +1447,8 @@ function renderAbsensiUstadzTable() {
     else if (currentStatus === 'Izin') countIzin++;
     else if (currentStatus === 'Sakit') countSakit++;
     else if (currentStatus === 'Badal') countBadal++;
-    else countAlpa++;
+    else if (currentStatus === 'Alpa') countAlpa++;
+    else countBelum++;
 
     const isPutri = (ustadz.nama || '').toLowerCase().includes('ustdzh') || (ustadz.nama || '').toLowerCase().includes('putri');
     const icon = isPutri ? '🧕' : '👳‍♂️';
@@ -1418,6 +1479,7 @@ function renderAbsensiUstadzTable() {
         <select class="form-control" style="font-size:12px; padding:3px 6px; font-weight:600; height:28px;" 
           id="selectAbsenUst_${ustadz.id}"
           onchange="updateSingleAbsensiUstadzStatus('${ustadz.id}', this.value); renderAbsensiUstadzTable();">
+          <option value="Belum Absen" ${currentStatus === 'Belum Absen' ? 'selected' : ''}>⏳ Belum Diabsen</option>
           <option value="Hadir" ${currentStatus === 'Hadir' ? 'selected' : ''}>✓ Hadir Tepat Waktu</option>
           <option value="Izin" ${currentStatus === 'Izin' ? 'selected' : ''}>✉️ Izin (Ada Keperluan)</option>
           <option value="Sakit" ${currentStatus === 'Sakit' ? 'selected' : ''}>🏥 Sakit</option>
@@ -1443,16 +1505,18 @@ function renderAbsensiUstadzTable() {
     tbody.appendChild(tr);
   });
 
-  updateAbsensiUstadzStats(countHadir, countIzin, countSakit, countAlpa, countBadal);
+  updateAbsensiUstadzStats(countBelum, countHadir, countIzin, countSakit, countAlpa, countBadal);
 }
 
-function updateAbsensiUstadzStats(hadir, izin, sakit, alpa, badal) {
+function updateAbsensiUstadzStats(belum, hadir, izin, sakit, alpa, badal) {
+  const elBelum = document.getElementById('countUstadzBelum');
   const elHadir = document.getElementById('countUstadzHadir');
   const elIzin = document.getElementById('countUstadzIzin');
   const elSakit = document.getElementById('countUstadzSakit');
   const elAlpa = document.getElementById('countUstadzAlpa');
   const elBadal = document.getElementById('countUstadzBadal');
 
+  if (elBelum) elBelum.textContent = `⏳ Belum Diabsen: ${belum}`;
   if (elHadir) elHadir.textContent = `Hadir: ${hadir}`;
   if (elIzin) elIzin.textContent = `Izin: ${izin}`;
   if (elSakit) elSakit.textContent = `Sakit: ${sakit}`;
@@ -1484,23 +1548,29 @@ function updateSingleAbsensiUstadzStatus(ustadzId, status) {
 
   let record = AppState.absensiUstadz.find(a => a.tanggal === tanggal && a.sesi === sesi && a.ustadzId === ustadzId);
 
-  if (record) {
-    record.status = status;
+  if (status === 'Belum Absen') {
+    if (record) {
+      AppState.absensiUstadz = AppState.absensiUstadz.filter(a => !(a.tanggal === tanggal && a.sesi === sesi && a.ustadzId === ustadzId));
+    }
   } else {
-    record = {
-      id: "ABSUST-" + Date.now() + "-" + Math.floor(Math.random() * 100),
-      tanggal: tanggal,
-      sesi: sesi,
-      ustadzId: ustadz.id,
-      ustadzNama: ustadz.nama,
-      peran: ustadz.peran || "Musyrif",
-      halaqah: ustadz.halaqah || ustadz.tugasHalaqah || "-",
-      status: status,
-      badal: "",
-      keterangan: "",
-      dicatatOleh: AppState.settings.kepalaTahfidz || "Admin Pondok"
-    };
-    AppState.absensiUstadz.push(record);
+    if (record) {
+      record.status = status;
+    } else {
+      record = {
+        id: "ABSUST-" + Date.now() + "-" + Math.floor(Math.random() * 100),
+        tanggal: tanggal,
+        sesi: sesi,
+        ustadzId: ustadz.id,
+        ustadzNama: ustadz.nama,
+        peran: ustadz.peran || "Musyrif",
+        halaqah: ustadz.halaqah || ustadz.tugasHalaqah || "-",
+        status: status,
+        badal: "",
+        keterangan: "",
+        dicatatOleh: AppState.settings.kepalaTahfidz || "Admin Pondok"
+      };
+      AppState.absensiUstadz.push(record);
+    }
   }
 
   saveToStorage();
@@ -1663,11 +1733,13 @@ function renderRekapBulananUstadz() {
     totalHadirAll += hadir;
     totalIzinSakitBadalAll += (izin + sakit + badal);
 
-    const pct = totalSesi > 0 ? Math.round((hadir / totalSesi) * 100) : 100;
-    if (pct >= 90) topCount++;
+    const pct = totalSesi > 0 ? Math.round((hadir / totalSesi) * 100) : 0;
+    if (totalSesi > 0 && pct >= 90) topCount++;
 
     let evaluasiBadge = '';
-    if (pct >= 90) {
+    if (totalSesi === 0) {
+      evaluasiBadge = `<span class="badge" style="background:#f1f5f9; color:#64748b; font-weight:600; border:1px solid #cbd5e1;">- Belum Ada Sesi -</span>`;
+    } else if (pct >= 90) {
       evaluasiBadge = `<span class="badge" style="background:#ecfdf5; color:#047857; font-weight:700; border:1px solid #a7f3d0;">🌟 Sangat Disiplin</span>`;
     } else if (pct >= 75) {
       evaluasiBadge = `<span class="badge" style="background:#eff6ff; color:#1d4ed8; font-weight:700; border:1px solid #bfdbfe;">✓ Disiplin</span>`;
@@ -1707,7 +1779,7 @@ function renderRekapBulananUstadz() {
   }
 
   // Update Summary Stats Cards
-  const avgPct = totalSesiAll > 0 ? Math.round((totalHadirAll / totalSesiAll) * 100) : (filteredUstadz.length > 0 ? 100 : 0);
+  const avgPct = totalSesiAll > 0 ? Math.round((totalHadirAll / totalSesiAll) * 100) : 0;
   const elAvg = document.getElementById('rekapUstAvgHadir');
   const elSesi = document.getElementById('rekapUstTotalSesi');
   const elTop = document.getElementById('rekapUstTopCount');

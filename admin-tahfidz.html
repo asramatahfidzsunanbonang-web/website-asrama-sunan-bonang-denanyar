@@ -393,21 +393,53 @@
             </div>
           </div>
           <div class="panel-body">
-            <!-- PILIH NAMA USTADZ PENGAMPU (LANGSUNG MUNCUL MURIDNYA SAJA) -->
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px 18px; margin-bottom:16px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+            <!-- PILIH NAMA USTADZ PENGAMPU (DIBAGI 2 KOLOM: BINNADZOR & TAHFIDZ) -->
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:16px 18px; margin-bottom:18px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
                 <div style="font-size:13.5px; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:8px;">
-                  <span style="font-size:18px;">👳‍♂️</span> <strong>Pilih Nama Ustadz / Pembimbing untuk Presensi:</strong>
+                  <span style="font-size:20px;">👳‍♂️</span> <strong>Pilih Kelompok &amp; Nama Asatidz Pembimbing:</strong>
                 </div>
                 <div id="absensiActiveUstadzNotice" style="display:none; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:12px; font-weight:700; padding:4px 12px; border-radius:999px;">
                   <!-- Dynamic notice -->
                 </div>
               </div>
-              <p style="font-size:12px; color:#64748b; margin-bottom:10px;">
-                Ustadz cukup klik nama sendiri di bawah ini, otomatis hanya santri bimbingan Anda yang muncul untuk diabsen (tidak perlu search satu persatu):
+              <p style="font-size:12px; color:#64748b; margin-bottom:12px;">
+                Klik nama Ustadz di bawah ini, otomatis hanya santri bimbingan Ustadz tersebut yang muncul untuk diabsen (tidak perlu search satu persatu):
               </p>
-              <div id="absensiUstadzChips" style="display:flex; gap:8px; flex-wrap:wrap;">
-                <!-- Generated dynamically by renderAbsensiUstadzChips() -->
+
+              <!-- 2 Kolom Pilihan: Binnadzor & Tahfidz -->
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px; margin-bottom:12px;">
+                <!-- Kolom 1: Asatidz Binnadzor -->
+                <div style="background:#fff; border:1.5px solid #bfdbfe; border-radius:10px; padding:12px 14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #dbeafe; padding-bottom:6px;">
+                    <strong style="color:#1e40af; font-size:13px; display:flex; align-items:center; gap:6px;">
+                      <span>📖</span> Kelompok Asatidz Binnadzor
+                    </strong>
+                    <span id="badgeCountBinnadzorAdmin" class="badge" style="background:#dbeafe; color:#1e40af; font-weight:700; font-size:11px;">12 Ustadz</span>
+                  </div>
+                  <div id="chipsUstadzBinnadzorAdmin" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+                </div>
+
+                <!-- Kolom 2: Asatidz Tahfidz -->
+                <div style="background:#fff; border:1.5px solid #bbf7d0; border-radius:10px; padding:12px 14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #dcfce7; padding-bottom:6px;">
+                    <strong style="color:#166534; font-size:13px; display:flex; align-items:center; gap:6px;">
+                      <span>🕌</span> Kelompok Asatidz Tahfidz
+                    </strong>
+                    <span id="badgeCountTahfidzAdmin" class="badge" style="background:#dcfce7; color:#166534; font-weight:700; font-size:11px;">10 Ustadz</span>
+                  </div>
+                  <div id="chipsUstadzTahfidzAdmin" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+                </div>
+              </div>
+
+              <!-- Tombol Semua Santri -->
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-top:1px solid #e2e8f0; padding-top:10px;">
+                <button type="button" class="btn btn-secondary btn-sm" id="btnSemuaSantriAdmin" onclick="pilihAbsensiUstadz('')" style="font-weight:700;">
+                  👥 Tampilkan Semua Santri Pondok
+                </button>
+                <span style="font-size:11.5px; color:#64748b;">
+                  💡 <em>Klik nama Ustadz di atas untuk memfilter muridnya saja</em>
+                </span>
               </div>
             </div>
 
@@ -670,6 +702,7 @@
 
               <!-- Attendance Stats Bar for Ustadz -->
               <div style="display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; font-size:12.5px;">
+                <span class="badge" style="background:#f1f5f9; color:#475569; font-weight:700; border:1px solid #cbd5e1;" id="countUstadzBelum">⏳ Belum Diabsen: 0</span>
                 <span class="badge badge-status-hadir-setor" id="countUstadzHadir">Hadir: 0</span>
                 <span class="badge badge-status-izin" id="countUstadzIzin">Izin: 0</span>
                 <span class="badge badge-status-sakit" id="countUstadzSakit">Sakit: 0</span>

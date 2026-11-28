@@ -363,6 +363,24 @@ function applyCloudDataToLocal(cloudData) {
           }
         }
 
+        // Jika data absensi ustadz, filter keluar data simulasi / dummy lama
+        if (cloudKey === 'absensiUstadz' && Array.isArray(incomingData)) {
+          const isDummyAbsRecord = r => {
+            if (!r) return true;
+            if (r.id && (r.id.startsWith('ABSUST-00') || r.id.startsWith('ABSUST-01'))) return true;
+            if (r.ustadzNama && (
+              r.ustadzNama.includes('Muhammad Ridwan') ||
+              r.ustadzNama.includes('Zainal Abidin') ||
+              r.ustadzNama.includes('Miftah Faridl') ||
+              r.ustadzNama.includes('Maryam Ulfah') ||
+              r.ustadzNama.includes('Wildan') ||
+              r.ustadzNama.includes('Nurul Hidayah')
+            )) return true;
+            return false;
+          };
+          incomingData = incomingData.filter(r => r && r.id && !isDummyAbsRecord(r));
+        }
+
         // Pertahankan foto/logo lokal jika di incoming cloud kosong (karena tersimpan di doc media)
         if (cloudKey === 'settings' && incomingData && typeof incomingData === 'object') {
           try {
@@ -558,6 +576,21 @@ function pushLocalToCloud(force = false) {
     const currentDeletedSantriIds = getDeletedSantriIds();
     const cleanSantriList = parseOr('sitahfidz_santri', []).filter(s => s && s.id && !currentDeletedSantriIds.includes(s.id));
 
+    const isDummyAbsRecord = r => {
+      if (!r) return true;
+      if (r.id && (r.id.startsWith('ABSUST-00') || r.id.startsWith('ABSUST-01'))) return true;
+      if (r.ustadzNama && (
+        r.ustadzNama.includes('Muhammad Ridwan') ||
+        r.ustadzNama.includes('Zainal Abidin') ||
+        r.ustadzNama.includes('Miftah Faridl') ||
+        r.ustadzNama.includes('Maryam Ulfah') ||
+        r.ustadzNama.includes('Wildan') ||
+        r.ustadzNama.includes('Nurul Hidayah')
+      )) return true;
+      return false;
+    };
+    const cleanAbsensiUstadz = parseOr('sitahfidz_absensi_ustadz', []).filter(r => r && r.id && !isDummyAbsRecord(r));
+
     const payload = {
       settings: lightSettings,
       santri: cleanSantriList,
@@ -565,7 +598,7 @@ function pushLocalToCloud(force = false) {
       setoran: parseOr('sitahfidz_setoran', []),
       absensi: parseOr('sitahfidz_absensi', []),
       ustadz: parseOr('sitahfidz_ustadz', []),
-      absensiUstadz: parseOr('sitahfidz_absensi_ustadz', []),
+      absensiUstadz: cleanAbsensiUstadz,
       ujianSemester: parseOr('sitahfidz_ujian_semester', []),
       pelanggaran: parseOr('sitahfidz_pelanggaran', []),
       perizinan: parseOr('sitahfidz_perizinan', []),

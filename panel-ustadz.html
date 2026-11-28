@@ -195,22 +195,69 @@
   <main class="ustadz-container">
     <div class="ustadz-panel-box">
 
-      <!-- 1. BAR PILIH NAMA USTADZ PENGAMPU -->
-      <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:14px 18px; margin-bottom:18px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
-          <div style="font-size:13.5px; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:8px;">
-            <span style="font-size:20px;">👳‍♂️</span>
-            <span>Pilih Nama Anda (Ustadz / Pembimbing):</span>
+      <!-- 1. BAR PILIH NAMA USTADZ PENGAMPU (DIBAGI 2 KOLOM: BINNADZOR & TAHFIDZ) -->
+      <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:16px 20px; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+          <div style="font-size:14px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:22px;">👳‍♂️</span>
+            <span>Pilih Kelompok &amp; Asatidz Pembimbing:</span>
           </div>
-          <div id="absensiActiveUstadzNotice" style="background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:12px; font-weight:700; padding:4px 12px; border-radius:999px;">
+          <div id="absensiActiveUstadzNotice" style="display:inline-flex; align-items:center; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px;">
             <!-- Dynamic Notice -->
           </div>
         </div>
-        <p style="font-size:12px; color:#64748b; margin:0 0 10px 0;">
-          Cukup klik nama Anda di bawah ini, otomatis hanya santri bimbingan Anda yang muncul untuk diabsen & dicatat setorannya:
+
+        <p style="font-size:12px; color:#64748b; margin:0 0 14px 0;">
+          Silakan pilih kelompok di bawah ini. Klik nama Ustadz Anda untuk langsung menampilkan daftar santri murid binaan Anda:
         </p>
-        <div id="absensiUstadzChips" style="display:flex; gap:8px; flex-wrap:wrap;">
-          <!-- Generated dynamically -->
+
+        <!-- 2 Kolom Pilihan: Binnadzor & Tahfidz -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px; margin-bottom:14px;">
+          
+          <!-- Kolom 1: Asatidz Binnadzor -->
+          <div style="background:#fff; border:2px solid #bfdbfe; border-radius:12px; padding:14px 16px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1.5px solid #dbeafe; padding-bottom:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:24px;">📖</span>
+                <div>
+                  <h4 style="margin:0; font-size:14px; font-weight:800; color:#1e40af;">Kelompok Asatidz Binnadzor</h4>
+                  <div style="font-size:11px; color:#64748b;">Kelas A s.d. Kelas E2 (12 Kelas)</div>
+                </div>
+              </div>
+              <span id="badgeCountBinnadzor" class="badge" style="background:#dbeafe; color:#1e40af; font-weight:800; font-size:11.5px;">12 Ustadz</span>
+            </div>
+            <div id="chipsUstadzBinnadzor" style="display:flex; gap:8px; flex-wrap:wrap;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- Kolom 2: Asatidz Tahfidz -->
+          <div style="background:#fff; border:2px solid #bbf7d0; border-radius:12px; padding:14px 16px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1.5px solid #dcfce7; padding-bottom:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:24px;">🕌</span>
+                <div>
+                  <h4 style="margin:0; font-size:14px; font-weight:800; color:#166534;">Kelompok Asatidz Tahfidz</h4>
+                  <div style="font-size:11px; color:#64748b;">Halaqah Tahfidz &amp; Pasca (10 Asatidz)</div>
+                </div>
+              </div>
+              <span id="badgeCountTahfidz" class="badge" style="background:#dcfce7; color:#166534; font-weight:800; font-size:11.5px;">10 Ustadz</span>
+            </div>
+            <div id="chipsUstadzTahfidz" style="display:flex; gap:8px; flex-wrap:wrap;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tombol Tampilkan Semua Santri Pondok -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-top:1px solid #e2e8f0; padding-top:10px;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btnSemuaSantriChip" onclick="pilihMyUstadz('')" style="font-weight:700;">
+            👥 Tampilkan Semua Santri Pondok
+          </button>
+          <span style="font-size:11.5px; color:#64748b;">
+            💡 <em>Klik nama Ustadz di atas untuk langsung menyaring santri muridnya saja</em>
+          </span>
         </div>
       </div>
 

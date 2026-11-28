@@ -3100,10 +3100,74 @@ function initScrollReveal() {
   }
 }
 
+// ================= REAL-TIME HERO STATS (SANTRI & ALUMNI) =================
+function getRealSantriCount() {
+  try {
+    const raw = localStorage.getItem('sitahfidz_santri');
+    if (raw) {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list) && list.length > 0) {
+        const deleted = (typeof getDeletedSantriIds === 'function') ? getDeletedSantriIds() : [];
+        const valid = list.filter(s => s && s.id && !deleted.includes(s.id));
+        if (valid.length > 0) return valid.length;
+      }
+    }
+  } catch (e) {}
+  if (typeof SAMPLE_SANTRI !== 'undefined' && Array.isArray(SAMPLE_SANTRI) && SAMPLE_SANTRI.length > 0) {
+    return SAMPLE_SANTRI.length;
+  }
+  return 200; // Baseline total santri riil di pondok
+}
+
+function getRealAlumniCount() {
+  try {
+    if (Array.isArray(WebState.alumni) && WebState.alumni.length > 0) {
+      return WebState.alumni.length;
+    }
+    const raw = localStorage.getItem(STORAGE_KEYS.ALUMNI);
+    if (raw) {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list)) {
+        const valid = list.filter(a => a && a.id && !String(a.id).startsWith('alm-00'));
+        return valid.length;
+      }
+    }
+  } catch (e) {}
+  return 0;
+}
+
+function updateHeroStats() {
+  const santriCount = getRealSantriCount();
+  const alumniCount = getRealAlumniCount();
+
+  const elSantri = document.getElementById('heroStatSantri');
+  if (elSantri) {
+    elSantri.textContent = `${santriCount}+`;
+    elSantri.setAttribute('data-target', santriCount);
+    elSantri.setAttribute('data-suffix', '+');
+  }
+
+  const itemAlumni = document.getElementById('heroStatItemAlumni');
+  const elAlumni = document.getElementById('heroStatAlumni');
+  if (itemAlumni) {
+    if (alumniCount > 0) {
+      itemAlumni.style.display = '';
+      if (elAlumni) {
+        elAlumni.textContent = `${alumniCount}+`;
+        elAlumni.setAttribute('data-target', alumniCount);
+        elAlumni.setAttribute('data-suffix', '+');
+      }
+    } else {
+      // Jika data alumni belum ada (0), jangan tampilkan dulu
+      itemAlumni.style.display = 'none';
+    }
+  }
+}
+window.updateHeroStats = updateHeroStats;
+
 // ================= ANIMATED STAT COUNTERS =================
 function initStatCounters() {
-  const statNumbers = document.querySelectorAll('.hero-stat-item h3');
-  if (!statNumbers || statNumbers.length === 0) return;
+  updateHeroStats();
 
   const countUp = (el, target, suffix = '') => {
     const duration = 1200;
@@ -3124,20 +3188,33 @@ function initStatCounters() {
     requestAnimationFrame(update);
   };
 
-  const targets = [
-    { target: 300, suffix: '+' },
-    { target: 30, suffix: ' Juz' },
-    { target: 6, suffix: ' Sekolah' },
-    { target: 15, suffix: '+' }
-  ];
-
   let animated = false;
   const triggerCounter = () => {
     if (animated) return;
     animated = true;
-    statNumbers.forEach((el, idx) => {
-      const data = targets[idx];
-      if (data) countUp(el, data.target, data.suffix);
+
+    const statItems = document.querySelectorAll('.hero-stat-item');
+    statItems.forEach(item => {
+      // Lewati jika item disembunyikan (misal data alumni jika masih 0)
+      if (item.style.display === 'none' || window.getComputedStyle(item).display === 'none') {
+        return;
+      }
+      const h3 = item.querySelector('h3');
+      if (!h3) return;
+
+      if (h3.hasAttribute('data-target')) {
+        const target = parseInt(h3.getAttribute('data-target'), 10) || 0;
+        const suffix = h3.getAttribute('data-suffix') || '';
+        countUp(h3, target, suffix);
+      } else {
+        const text = h3.textContent.trim();
+        const match = text.match(/^(\d+)(.*)$/);
+        if (match) {
+          const target = parseInt(match[1], 10);
+          const suffix = match[2];
+          countUp(h3, target, suffix);
+        }
+      }
     });
   };
 
@@ -4360,6 +4437,11 @@ function updateAlumniStats() {
   const kampusSet = new Set(all.map(a => a.lanjutanStudi ? a.lanjutanStudi.trim() : '').filter(Boolean));
   const elKampus = document.getElementById('alumniStatKampus');
   if (elKampus) elKampus.textContent = kampusSet.size > 0 ? `${kampusSet.size}+` : '0';
+
+  // Perbarui juga statistik hero depan (akan muncul jika alumni > 0)
+  if (typeof updateHeroStats === 'function') {
+    updateHeroStats();
+  }
 }
 
 function switchAlumniFilterPill(category, btnEl) {

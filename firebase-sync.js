@@ -491,6 +491,7 @@ function applyCloudDataToLocal(cloudData) {
         if (typeof renderDynamicWebContent === 'function') renderDynamicWebContent();
         if (typeof renderWebsitePembayaran === 'function') renderWebsitePembayaran();
         if (typeof renderArticles === 'function') renderArticles();
+        if (typeof updateHeroStats === 'function') updateHeroStats();
       }
     }
   } catch (err) {

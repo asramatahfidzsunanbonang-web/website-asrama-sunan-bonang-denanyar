@@ -394,12 +394,12 @@
           </div>
           <div class="panel-body">
             <!-- PILIH NAMA USTADZ PENGAMPU (DIBAGI 2 KOLOM: BINNADZOR & TAHFIDZ) -->
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:16px 18px; margin-bottom:18px;">
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px 14px; margin-bottom:18px; width:100%; max-width:100%; box-sizing:border-box; overflow:hidden;">
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
                 <div style="font-size:13.5px; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:8px;">
                   <span style="font-size:20px;">👳‍♂️</span> <strong>Pilih Kelompok &amp; Nama Asatidz Pembimbing:</strong>
                 </div>
-                <div id="absensiActiveUstadzNotice" style="display:none; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:12px; font-weight:700; padding:4px 12px; border-radius:999px;">
+                <div id="absensiActiveUstadzNotice" style="display:none; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:12px; font-weight:700; padding:4px 12px; border-radius:999px; max-width:100%; flex-wrap:wrap; word-break:break-word;">
                   <!-- Dynamic notice -->
                 </div>
               </div>
@@ -407,38 +407,44 @@
                 Klik kelompok Asatidz di bawah ini untuk <strong>membuka daftar Ustadz</strong>, lalu klik nama Ustadz untuk langsung memfilter santri bimbingan beliau (tidak perlu search satu persatu):
               </p>
 
-              <!-- 2 Kolom Pilihan: Binnadzor & Tahfidz -->
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px; margin-bottom:12px;">
+              <!-- 2 Kolom Pilihan: Binnadzor & Tahfidz (Atas Bawah di Layar HP) -->
+              <div class="panel-asatidz-grid">
                 <!-- Kolom 1: Asatidz Binnadzor -->
-                <div id="cardGroupBinnadzorAdmin" style="background:#fff; border:1.5px solid #bfdbfe; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04); transition:all 0.2s ease;">
-                  <div onclick="toggleGroupUstadzAdmin('binnadzor')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGroupUstadzAdmin('binnadzor');}" role="button" tabindex="0" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#f0f7ff; user-select:none; transition:background 0.2s;" onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f7ff'">
-                    <strong style="color:#1e40af; font-size:13px; display:flex; align-items:center; gap:6px;">
-                      <span>📖</span> Kelompok Asatidz Binnadzor
-                    </strong>
-                    <div style="display:flex; align-items:center; gap:8px;">
+                <div id="cardGroupBinnadzorAdmin" class="card-group-asatidz" style="background:#fff; border:1.5px solid #bfdbfe; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04); transition:all 0.2s ease;">
+                  <div onclick="toggleGroupUstadzAdmin('binnadzor')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGroupUstadzAdmin('binnadzor');}" role="button" tabindex="0" class="card-group-header" style="background:#f0f7ff;" onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f7ff'">
+                    <div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1 1 auto;">
+                      <span style="font-size:20px; flex-shrink:0;">📖</span>
+                      <strong style="color:#1e40af; font-size:13px; word-break:break-word;">
+                        Kelompok Asatidz Binnadzor
+                      </strong>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
                       <span id="badgeCountBinnadzorAdmin" class="badge" style="background:#dbeafe; color:#1e40af; font-weight:700; font-size:11px;">12 Ustadz</span>
-                      <span id="btnToggleBinnadzorAdmin" style="font-size:11px; font-weight:700; color:#1d4ed8; background:#fff; border:1px solid #bfdbfe; padding:3px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:3px; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                      <span id="btnToggleBinnadzorAdmin" style="font-size:11px; font-weight:700; color:#1d4ed8; background:#fff; border:1px solid #bfdbfe; padding:3px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:3px; box-shadow:0 1px 2px rgba(0,0,0,0.04); white-space:nowrap;">
                         <span id="iconToggleBinnadzorAdmin">▶</span> <span id="textToggleBinnadzorAdmin">Buka</span>
                       </span>
                     </div>
                   </div>
-                  <div id="chipsUstadzBinnadzorAdmin" style="display:none; padding:10px 12px; border-top:1px solid #dbeafe; background:#fff; gap:6px; flex-wrap:wrap;"></div>
+                  <div id="chipsUstadzBinnadzorAdmin" style="display:none; padding:10px 12px; border-top:1px solid #dbeafe; background:#fff; gap:6px; flex-wrap:wrap; box-sizing:border-box; max-width:100%;"></div>
                 </div>
 
                 <!-- Kolom 2: Asatidz Tahfidz -->
-                <div id="cardGroupTahfidzAdmin" style="background:#fff; border:1.5px solid #bbf7d0; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04); transition:all 0.2s ease;">
-                  <div onclick="toggleGroupUstadzAdmin('tahfidz')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGroupUstadzAdmin('tahfidz');}" role="button" tabindex="0" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#f0fdf4; user-select:none; transition:background 0.2s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
-                    <strong style="color:#166534; font-size:13px; display:flex; align-items:center; gap:6px;">
-                      <span>🕌</span> Kelompok Asatidz Tahfidz
-                    </strong>
-                    <div style="display:flex; align-items:center; gap:8px;">
+                <div id="cardGroupTahfidzAdmin" class="card-group-asatidz" style="background:#fff; border:1.5px solid #bbf7d0; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04); transition:all 0.2s ease;">
+                  <div onclick="toggleGroupUstadzAdmin('tahfidz')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGroupUstadzAdmin('tahfidz');}" role="button" tabindex="0" class="card-group-header" style="background:#f0fdf4;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
+                    <div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1 1 auto;">
+                      <span style="font-size:20px; flex-shrink:0;">🕌</span>
+                      <strong style="color:#166534; font-size:13px; word-break:break-word;">
+                        Kelompok Asatidz Tahfidz
+                      </strong>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
                       <span id="badgeCountTahfidzAdmin" class="badge" style="background:#dcfce7; color:#166534; font-weight:700; font-size:11px;">10 Ustadz</span>
-                      <span id="btnToggleTahfidzAdmin" style="font-size:11px; font-weight:700; color:#15803d; background:#fff; border:1px solid #bbf7d0; padding:3px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:3px; box-shadow:0 1px 2px rgba(0,0,0,0.04);">
+                      <span id="btnToggleTahfidzAdmin" style="font-size:11px; font-weight:700; color:#15803d; background:#fff; border:1px solid #bbf7d0; padding:3px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:3px; box-shadow:0 1px 2px rgba(0,0,0,0.04); white-space:nowrap;">
                         <span id="iconToggleTahfidzAdmin">▶</span> <span id="textToggleTahfidzAdmin">Buka</span>
                       </span>
                     </div>
                   </div>
-                  <div id="chipsUstadzTahfidzAdmin" style="display:none; padding:10px 12px; border-top:1px solid #dcfce7; background:#fff; gap:6px; flex-wrap:wrap;"></div>
+                  <div id="chipsUstadzTahfidzAdmin" style="display:none; padding:10px 12px; border-top:1px solid #dcfce7; background:#fff; gap:6px; flex-wrap:wrap; box-sizing:border-box; max-width:100%;"></div>
                 </div>
               </div>
 

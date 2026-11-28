@@ -122,10 +122,17 @@
       margin-bottom: -2px;
       box-shadow: 0 -2px 8px rgba(4, 120, 87, 0.08);
     }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
     .ustadz-container {
       max-width: 1200px;
+      width: 100%;
       margin: 0 auto 40px auto;
       padding: 0 16px;
+      box-sizing: border-box;
+      min-width: 0;
     }
     .ustadz-panel-box {
       background: #ffffff;
@@ -133,12 +140,46 @@
       border-radius: 0 0 16px 16px;
       padding: 22px 24px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-x: hidden;
     }
     @media (max-width: 768px) {
       .ustadz-topbar { padding: 12px 14px; }
       .ustadz-brand-title { font-size: 15px; }
-      .ustadz-panel-box { padding: 16px 12px; }
+      .ustadz-panel-box { padding: 14px 10px !important; overflow-x: hidden !important; }
+      .ustadz-container { padding: 0 10px !important; overflow-x: hidden !important; }
       .ustadz-nav-tab-btn { font-size: 12.5px; padding: 10px 8px; }
+      .ustadz-chip {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 8px !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        text-align: left !important;
+        font-size: 12px !important;
+        padding: 8px 12px !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+        min-width: 0 !important;
+      }
+      .ustadz-chip strong {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        text-align: left !important;
+      }
+      .ustadz-chip .chip-count {
+        flex-shrink: 0 !important;
+      }
     }
   </style>
 </head>
@@ -179,7 +220,7 @@
   </header>
 
   <!-- ================= UNIFIED WORKSPACE HEADER BANNER ================= -->
-  <div style="max-width:1200px; margin:16px auto 0 auto; padding:0 16px;">
+  <div style="max-width:1200px; width:100%; margin:16px auto 0 auto; padding:0 16px; box-sizing:border-box;">
     <div style="background:#047857; color:#fff; border-radius:12px 12px 0 0; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
       <div style="font-size:14px; font-weight:800; display:flex; align-items:center; gap:8px;">
         <span style="font-size:18px;">📋</span>
@@ -196,13 +237,13 @@
     <div class="ustadz-panel-box">
 
       <!-- 1. BAR PILIH NAMA USTADZ PENGAMPU (DIBAGI 2 KOLOM: BINNADZOR & TAHFIDZ) -->
-      <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:16px 20px; margin-bottom:20px;">
+      <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:14px 14px; margin-bottom:18px; width:100%; max-width:100%; box-sizing:border-box; overflow:hidden;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
           <div style="font-size:14px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px;">
             <span style="font-size:22px;">👳‍♂️</span>
             <span>Pilih Kelompok &amp; Asatidz Pembimbing:</span>
           </div>
-          <div id="absensiActiveUstadzNotice" style="display:inline-flex; align-items:center; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px;">
+          <div id="absensiActiveUstadzNotice" style="display:inline-flex; align-items:center; background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px; max-width:100%; flex-wrap:wrap; word-break:break-word;">
             <!-- Dynamic Notice -->
           </div>
         </div>
@@ -211,49 +252,49 @@
           Silakan pilih kelompok di bawah ini (<strong>klik kelompok untuk membuka daftar nama Ustadz</strong>). Klik nama Ustadz Anda untuk langsung menampilkan daftar santri murid binaan Anda:
         </p>
 
-        <!-- 2 Kolom Pilihan: Binnadzor & Tahfidz -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px; margin-bottom:14px;">
+        <!-- 2 Kolom Pilihan: Binnadzor & Tahfidz (Atas Bawah di Layar HP) -->
+        <div class="panel-asatidz-grid">
           
           <!-- Kolom 1: Asatidz Binnadzor -->
-          <div id="cardGroupBinnadzor" style="background:#fff; border:2px solid #bfdbfe; border-radius:12px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.03); transition:all 0.2s ease;">
-            <div onclick="toggleGroupUstadz('binnadzor')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGroupUstadz('binnadzor');}" role="button" tabindex="0" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#f0f7ff; user-select:none; transition:background 0.2s;" onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f7ff'">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-size:24px;">📖</span>
-                <div>
-                  <h4 style="margin:0; font-size:14px; font-weight:800; color:#1e40af;">Kelompok Asatidz Binnadzor</h4>
+          <div id="cardGroupBinnadzor" class="card-group-asatidz" style="background:#fff; border:2px solid #bfdbfe; border-radius:12px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.03); transition:all 0.2s ease;">
+            <div onclick="toggleGroupUstadz('binnadzor')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGroupUstadz('binnadzor');}" role="button" tabindex="0" class="card-group-header" style="background:#f0f7ff;" onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f7ff'">
+              <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1 1 auto;">
+                <span style="font-size:24px; flex-shrink:0;">📖</span>
+                <div style="min-width:0;">
+                  <h4 style="margin:0; font-size:14px; font-weight:800; color:#1e40af; word-break:break-word;">Kelompok Asatidz Binnadzor</h4>
                   <div style="font-size:11px; color:#64748b;">Kelas A s.d. Kelas E2 (12 Kelas)</div>
                 </div>
               </div>
-              <div style="display:flex; align-items:center; gap:8px;">
+              <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
                 <span id="badgeCountBinnadzor" class="badge" style="background:#dbeafe; color:#1e40af; font-weight:800; font-size:11.5px;">12 Ustadz</span>
-                <span id="btnToggleBinnadzor" style="font-size:11.5px; font-weight:700; color:#1d4ed8; background:#fff; border:1px solid #bfdbfe; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:4px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <span id="btnToggleBinnadzor" style="font-size:11.5px; font-weight:700; color:#1d4ed8; background:#fff; border:1px solid #bfdbfe; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:4px; box-shadow:0 1px 2px rgba(0,0,0,0.05); white-space:nowrap;">
                   <span id="iconToggleBinnadzor">▶</span> <span id="textToggleBinnadzor">Klik untuk Buka</span>
                 </span>
               </div>
             </div>
-            <div id="chipsUstadzBinnadzor" style="display:none; padding:14px 16px; border-top:1.5px solid #dbeafe; background:#fff; gap:8px; flex-wrap:wrap;">
+            <div id="chipsUstadzBinnadzor" style="display:none; padding:12px 14px; border-top:1.5px solid #dbeafe; background:#fff; gap:8px; flex-wrap:wrap; box-sizing:border-box; max-width:100%;">
               <!-- Injected dynamically -->
             </div>
           </div>
 
           <!-- Kolom 2: Asatidz Tahfidz -->
-          <div id="cardGroupTahfidz" style="background:#fff; border:2px solid #bbf7d0; border-radius:12px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.03); transition:all 0.2s ease;">
-            <div onclick="toggleGroupUstadz('tahfidz')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGroupUstadz('tahfidz');}" role="button" tabindex="0" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#f0fdf4; user-select:none; transition:background 0.2s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-size:24px;">🕌</span>
-                <div>
-                  <h4 style="margin:0; font-size:14px; font-weight:800; color:#166534;">Kelompok Asatidz Tahfidz</h4>
+          <div id="cardGroupTahfidz" class="card-group-asatidz" style="background:#fff; border:2px solid #bbf7d0; border-radius:12px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.03); transition:all 0.2s ease;">
+            <div onclick="toggleGroupUstadz('tahfidz')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleGroupUstadz('tahfidz');}" role="button" tabindex="0" class="card-group-header" style="background:#f0fdf4;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
+              <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1 1 auto;">
+                <span style="font-size:24px; flex-shrink:0;">🕌</span>
+                <div style="min-width:0;">
+                  <h4 style="margin:0; font-size:14px; font-weight:800; color:#166534; word-break:break-word;">Kelompok Asatidz Tahfidz</h4>
                   <div style="font-size:11px; color:#64748b;">Halaqah Tahfidz &amp; Pasca (10 Asatidz)</div>
                 </div>
               </div>
-              <div style="display:flex; align-items:center; gap:8px;">
+              <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
                 <span id="badgeCountTahfidz" class="badge" style="background:#dcfce7; color:#166534; font-weight:800; font-size:11.5px;">10 Ustadz</span>
-                <span id="btnToggleTahfidz" style="font-size:11.5px; font-weight:700; color:#15803d; background:#fff; border:1px solid #bbf7d0; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:4px; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <span id="btnToggleTahfidz" style="font-size:11.5px; font-weight:700; color:#15803d; background:#fff; border:1px solid #bbf7d0; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:4px; box-shadow:0 1px 2px rgba(0,0,0,0.05); white-space:nowrap;">
                   <span id="iconToggleTahfidz">▶</span> <span id="textToggleTahfidz">Klik untuk Buka</span>
                 </span>
               </div>
             </div>
-            <div id="chipsUstadzTahfidz" style="display:none; padding:14px 16px; border-top:1.5px solid #dcfce7; background:#fff; gap:8px; flex-wrap:wrap;">
+            <div id="chipsUstadzTahfidz" style="display:none; padding:12px 14px; border-top:1.5px solid #dcfce7; background:#fff; gap:8px; flex-wrap:wrap; box-sizing:border-box; max-width:100%;">
               <!-- Injected dynamically -->
             </div>
           </div>

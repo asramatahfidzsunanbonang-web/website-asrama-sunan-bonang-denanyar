@@ -11173,12 +11173,48 @@ function getFacilityFallbackSvg(index) {
 function getStoredWebFacilities() {
   try {
     const raw = localStorage.getItem('sitahfidz_web_facilities');
-    if (raw) {
+    if (raw !== null) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed;
     }
   } catch (e) {}
   return JSON.parse(JSON.stringify(DEFAULT_WEB_FACILITIES));
+}
+
+function saveStoredWebFacilities(list) {
+  localStorage.setItem('sitahfidz_web_facilities', JSON.stringify(list));
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+}
+
+function kumpulkanWebFacilitiesDariForm(facilities) {
+  if (!Array.isArray(facilities)) return;
+  for (let idx = 0; idx < facilities.length; idx++) {
+    const getVal = (prefix) => {
+      const el = document.getElementById(`${prefix}_${idx}`);
+      return el ? el.value.trim() : null;
+    };
+    const title = getVal('fac_title');
+    if (title !== null) facilities[idx].title = title;
+    const icon = getVal('fac_icon');
+    if (icon !== null) facilities[idx].icon = icon;
+    const badge = getVal('fac_badge');
+    if (badge !== null) facilities[idx].badge = badge;
+    const capacity = getVal('fac_capacity');
+    if (capacity !== null) facilities[idx].capacity = capacity;
+    const image = getVal('fac_img');
+    if (image !== null) facilities[idx].image = image;
+    const snippet = getVal('fac_snippet');
+    if (snippet !== null) facilities[idx].snippet = snippet;
+    const fullDesc = getVal('fac_fulldesc');
+    if (fullDesc !== null) facilities[idx].fullDesc = fullDesc;
+    const schedule = getVal('fac_schedule');
+    if (schedule !== null) facilities[idx].schedule = schedule;
+
+    const specsRaw = getVal('fac_specs');
+    if (specsRaw !== null) {
+      facilities[idx].specs = specsRaw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    }
+  }
 }
 
 function renderWebFacilitiesAdmin() {
@@ -11186,10 +11222,24 @@ function renderWebFacilitiesAdmin() {
   if (!container) return;
 
   const facilities = getStoredWebFacilities();
+  if (!facilities || facilities.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:36px 20px; background:#f8fafc; border:2px dashed #cbd5e1; border-radius:12px;">
+        <div style="font-size:38px; margin-bottom:8px;">🏢</div>
+        <p style="font-size:14px; font-weight:700; color:#334155; margin-bottom:4px;">Belum ada sarana &amp; fasilitas pondok yang terdaftar.</p>
+        <p style="font-size:12px; color:#64748b; margin-bottom:16px;">Klik tombol di bawah ini untuk menambahkan sarana atau fasilitas baru.</p>
+        <button type="button" class="btn btn-gold btn-sm" onclick="tambahWebFacilityAdmin()" style="font-weight:700; padding:8px 18px;">
+          ➕ Tambah Fasilitas Baru
+        </button>
+      </div>
+    `;
+    return;
+  }
+
   container.innerHTML = facilities.map((fac, idx) => {
     const specsText = Array.isArray(fac.specs) ? fac.specs.join('\n') : (fac.specs || '');
     return `
-      <div class="facility-editor-card" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:12px; padding:18px; box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+      <div class="facility-editor-card" id="fac_card_${idx}" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:12px; padding:18px; box-shadow:0 1px 4px rgba(0,0,0,0.04); transition:all 0.2s ease;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #e2e8f0; flex-wrap:wrap; gap:8px;">
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:24px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:8px; width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;">${fac.icon || '🏢'}</span>
@@ -11198,9 +11248,14 @@ function renderWebFacilitiesAdmin() {
               <div style="font-size:11.5px; color:#64748b;">${escapeHtml(fac.badge || '')} &bull; Kapasitas: ${escapeHtml(fac.capacity || '-')}</div>
             </div>
           </div>
-          <span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700; font-size:11.5px; padding:4px 10px;">
-            Fasilitas #${idx+1}
-          </span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700; font-size:11.5px; padding:4px 10px;">
+              Fasilitas #${idx+1}
+            </span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="hapusWebFacilityAdmin(${idx})" style="color:#dc2626; border-color:#fca5a5; background:#fff; font-size:11px; font-weight:700; padding:3px 9px; display:inline-flex; align-items:center; gap:4px; cursor:pointer;" title="Hapus fasilitas ini">
+              🗑️ Hapus
+            </button>
+          </div>
         </div>
 
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:12px;">
@@ -11273,6 +11328,59 @@ function renderWebFacilitiesAdmin() {
   }).join('');
 }
 
+function tambahWebFacilityAdmin() {
+  const facilities = getStoredWebFacilities();
+  kumpulkanWebFacilitiesDariForm(facilities);
+
+  const newNum = facilities.length + 1;
+  const newFacility = {
+    id: `FAC-${String(newNum).padStart(2, '0')}`,
+    title: `Fasilitas Baru #${newNum}`,
+    icon: '🏢',
+    badge: 'Sarana Santri',
+    capacity: '-',
+    image: '',
+    snippet: 'Deskripsi ringkas sarana atau fasilitas pondok untuk menunjang kegiatan santri.',
+    fullDesc: 'Fasilitas ini disediakan oleh pesantren untuk menunjang kenyamanan, kebersihan, dan kelancaran kegiatan santri sehari-hari baik dalam ibadah maupun aktivitas harian.',
+    specs: [
+      'Kondisi bersih, terawat, dan terjaga',
+      'Mendukung operasional harian santri',
+      'Pengawasan dan pemeliharaan berkala'
+    ],
+    schedule: 'Digunakan setiap hari sesuai jadwal kegiatan santri'
+  };
+
+  facilities.push(newFacility);
+  saveStoredWebFacilities(facilities);
+  renderWebFacilitiesAdmin();
+
+  showToast(`✓ Fasilitas baru (#${newNum}) berhasil ditambahkan! Silakan lengkapi detailnya.`, "success");
+
+  setTimeout(() => {
+    const el = document.getElementById(`fac_card_${facilities.length - 1}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+function hapusWebFacilityAdmin(index) {
+  const facilities = getStoredWebFacilities();
+  kumpulkanWebFacilitiesDariForm(facilities);
+
+  const fac = facilities[index];
+  if (!fac) return;
+
+  const title = fac.title || `Fasilitas #${index + 1}`;
+  if (!confirm(`Apakah Anda yakin ingin menghapus fasilitas "${title}"?\n\nTindakan ini akan menghapus fasilitas dari website utama.`)) {
+    return;
+  }
+
+  facilities.splice(index, 1);
+  saveStoredWebFacilities(facilities);
+  renderWebFacilitiesAdmin();
+
+  showToast(`Fasilitas "${title}" berhasil dihapus.`, "info");
+}
+
 function handleUploadFacilityPhoto(index, event) {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
@@ -11294,8 +11402,7 @@ function handleUploadFacilityPhoto(index, event) {
         maxHeight: 540,
         onSave: (croppedDataUrl) => {
           facilities[index].image = croppedDataUrl;
-          localStorage.setItem('sitahfidz_web_facilities', JSON.stringify(facilities));
-          if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+          saveStoredWebFacilities(facilities);
           renderWebFacilitiesAdmin();
           showToast(`✓ Foto untuk ${facTitle} berhasil diunggah!`, "success");
         }
@@ -11303,8 +11410,7 @@ function handleUploadFacilityPhoto(index, event) {
     } else {
       compressImageFile(file, 960, 540, 0.75, (compressedBase64) => {
         facilities[index].image = compressedBase64;
-        localStorage.setItem('sitahfidz_web_facilities', JSON.stringify(facilities));
-        if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+        saveStoredWebFacilities(facilities);
         renderWebFacilitiesAdmin();
         showToast(`✓ Foto untuk ${facTitle} berhasil diunggah!`, "success");
       });
@@ -11320,8 +11426,7 @@ function hapusFotoFasilitas(index) {
   if (!confirm(`Hapus foto fasilitas ${facilities[index].title}? Tampilan akan kembali ke ilustrasi grafis standar.`)) return;
 
   facilities[index].image = '';
-  localStorage.setItem('sitahfidz_web_facilities', JSON.stringify(facilities));
-  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  saveStoredWebFacilities(facilities);
   renderWebFacilitiesAdmin();
   showToast(`Foto fasilitas ${facilities[index].title} telah dihapus.`, "info");
 }
@@ -11336,35 +11441,25 @@ function updateFacThumbnailPreview(idx) {
 
 function simpanWebFacilitiesAdmin() {
   const facilities = getStoredWebFacilities();
-  for (let idx = 0; idx < facilities.length; idx++) {
-    const getVal = (prefix) => document.getElementById(`${prefix}_${idx}`)?.value?.trim() || '';
-    facilities[idx].title = getVal('fac_title') || facilities[idx].title;
-    facilities[idx].icon = getVal('fac_icon') || facilities[idx].icon;
-    facilities[idx].badge = getVal('fac_badge') || facilities[idx].badge;
-    facilities[idx].capacity = getVal('fac_capacity') || facilities[idx].capacity;
-    facilities[idx].image = getVal('fac_img') || facilities[idx].image;
-    facilities[idx].snippet = getVal('fac_snippet') || facilities[idx].snippet;
-    facilities[idx].fullDesc = getVal('fac_fulldesc') || facilities[idx].fullDesc;
-    facilities[idx].schedule = getVal('fac_schedule') || facilities[idx].schedule;
+  kumpulkanWebFacilitiesDariForm(facilities);
 
-    const specsRaw = getVal('fac_specs');
-    if (specsRaw) {
-      facilities[idx].specs = specsRaw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-    }
-  }
-
-  localStorage.setItem('sitahfidz_web_facilities', JSON.stringify(facilities));
-  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
-  showToast("Seluruh 6 data fasilitas pondok berhasil disimpan dan tayang di website!", "success");
+  saveStoredWebFacilities(facilities);
+  renderWebFacilitiesAdmin();
+  showToast(`✓ Seluruh data (${facilities.length}) fasilitas pondok berhasil disimpan dan tayang di website!`, "success");
 }
 
 function resetWebFacilitiesAdmin() {
-  if (!confirm("Kembalikan seluruh data 6 sarana & fasilitas pondok ke standar awal?")) return;
-  localStorage.setItem('sitahfidz_web_facilities', JSON.stringify(DEFAULT_WEB_FACILITIES));
-  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  if (!confirm("Kembalikan seluruh data sarana & fasilitas pondok ke 6 standar awal?")) return;
+  saveStoredWebFacilities(DEFAULT_WEB_FACILITIES);
   renderWebFacilitiesAdmin();
   showToast("Sarana & fasilitas pondok dikembalikan ke standar awal.", "info");
 }
+
+window.tambahWebFacilityAdmin = tambahWebFacilityAdmin;
+window.hapusWebFacilityAdmin = hapusWebFacilityAdmin;
+window.renderWebFacilitiesAdmin = renderWebFacilitiesAdmin;
+window.simpanWebFacilitiesAdmin = simpanWebFacilitiesAdmin;
+window.resetWebFacilitiesAdmin = resetWebFacilitiesAdmin;
 
 // ========================================================
 // 9D. KELOLA PILIHAN SEKOLAH FORMAL & UPLOAD BROSUR

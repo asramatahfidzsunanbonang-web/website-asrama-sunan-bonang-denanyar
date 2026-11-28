@@ -848,6 +848,46 @@ function getDaftarUstadzHalaqah() {
   }));
 }
 
+const adminUstadzGroupExpanded = {
+  binnadzor: false,
+  tahfidz: false
+};
+
+function toggleGroupUstadzAdmin(group) {
+  if (group === 'binnadzor') {
+    adminUstadzGroupExpanded.binnadzor = !adminUstadzGroupExpanded.binnadzor;
+  } else if (group === 'tahfidz') {
+    adminUstadzGroupExpanded.tahfidz = !adminUstadzGroupExpanded.tahfidz;
+  }
+  syncGroupUstadzAdminUI();
+}
+window.toggleGroupUstadzAdmin = toggleGroupUstadzAdmin;
+
+function syncGroupUstadzAdminUI() {
+  const containerBnz = document.getElementById('chipsUstadzBinnadzorAdmin');
+  const iconBnz = document.getElementById('iconToggleBinnadzorAdmin');
+  const textBnz = document.getElementById('textToggleBinnadzorAdmin');
+
+  const containerThf = document.getElementById('chipsUstadzTahfidzAdmin');
+  const iconThf = document.getElementById('iconToggleTahfidzAdmin');
+  const textThf = document.getElementById('textToggleTahfidzAdmin');
+
+  if (containerBnz) {
+    const isBnzOpen = !!adminUstadzGroupExpanded.binnadzor;
+    containerBnz.style.display = isBnzOpen ? 'flex' : 'none';
+    if (iconBnz) iconBnz.textContent = isBnzOpen ? '▼' : '▶';
+    if (textBnz) textBnz.textContent = isBnzOpen ? 'Tutup' : 'Buka';
+  }
+
+  if (containerThf) {
+    const isThfOpen = !!adminUstadzGroupExpanded.tahfidz;
+    containerThf.style.display = isThfOpen ? 'flex' : 'none';
+    if (iconThf) iconThf.textContent = isThfOpen ? '▼' : '▶';
+    if (textThf) textThf.textContent = isThfOpen ? 'Tutup' : 'Buka';
+  }
+}
+window.syncGroupUstadzAdminUI = syncGroupUstadzAdminUI;
+
 function renderAbsensiUstadzChips() {
   const containerBnz = document.getElementById('chipsUstadzBinnadzorAdmin');
   const containerThf = document.getElementById('chipsUstadzTahfidzAdmin');
@@ -941,6 +981,17 @@ function renderAbsensiUstadzChips() {
     if (badgeBnz) badgeBnz.textContent = `${binnadzorItems.length} Ustadz`;
     const badgeThf = document.getElementById('badgeCountTahfidzAdmin');
     if (badgeThf) badgeThf.textContent = `${tahfidzItems.length} Ustadz`;
+
+    // Jika ada ustadz terpilih aktif, otomatis buka panel kelompoknya
+    if (current) {
+      const isCurrentBnz = binnadzorItems.some(i => i.name === current);
+      if (isCurrentBnz) {
+        adminUstadzGroupExpanded.binnadzor = true;
+      } else {
+        adminUstadzGroupExpanded.tahfidz = true;
+      }
+    }
+    syncGroupUstadzAdminUI();
   } else if (legacyContainer) {
     let chipsHtml = `
       <button type="button" 
@@ -957,6 +1008,14 @@ function renderAbsensiUstadzChips() {
 
 function pilihAbsensiUstadz(halaqah) {
   AppState.selectedAbsensiUstadz = halaqah || '';
+  if (halaqah) {
+    const low = halaqah.toLowerCase();
+    if (low.startsWith('kelas') || low.includes('binnadzor')) {
+      adminUstadzGroupExpanded.binnadzor = true;
+    } else {
+      adminUstadzGroupExpanded.tahfidz = true;
+    }
+  }
   renderAbsensiUstadzChips();
   renderPresensiTable();
 }

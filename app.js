@@ -194,16 +194,8 @@ function initStorage() {
     AppState.settings.ustadzPin = DEFAULT_SETTINGS.ustadzPin || '888888';
   }
   const defaultAccounts = (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.pengurusAccounts) ? DEFAULT_SETTINGS.pengurusAccounts : [];
-  if (!AppState.settings.pengurusAccounts || !AppState.settings.pengurusAccounts.length) {
+  if (!AppState.settings.pengurusAccounts || !Array.isArray(AppState.settings.pengurusAccounts)) {
     AppState.settings.pengurusAccounts = JSON.parse(JSON.stringify(defaultAccounts));
-  } else {
-    // Sinkronkan akun default jika ada yang belum terdaftar (misal update ke 20 akun)
-    defaultAccounts.forEach(defAcc => {
-      const exists = AppState.settings.pengurusAccounts.some(a => a.email.toLowerCase() === defAcc.email.toLowerCase());
-      if (!exists) {
-        AppState.settings.pengurusAccounts.push(JSON.parse(JSON.stringify(defAcc)));
-      }
-    });
   }
   if (!AppState.settings.hariAktifSetoran) {
     AppState.settings.hariAktifSetoran = [...(DEFAULT_SETTINGS.hariAktifSetoran || ["Sabtu", "Ahad", "Senin", "Selasa", "Rabu"])];
@@ -451,15 +443,39 @@ function autoSelectInitialSesi() {
   }
 }
 
-// ================= TAB NAVIGATION =================
+// ================= TAB NAVIGATION & ROLE PERMISSIONS =================
+const DEFAULT_ROLE_PERMISSIONS = {
+  ADMIN: [
+    'dashboard', 'santri', 'absensi', 'setoran', 'absensi-ustadz', 'ujian', 'wisuda',
+    'mutabaah', 'laporan', 'keamanan-pelanggaran', 'keamanan-perizinan', 'keamanan-rekap',
+    'ubudiyah-jamaah', 'ubudiyah-ekskul', 'ubudiyah-rekap', 'pengaturan', 'website'
+  ],
+  PENDIDIKAN: [
+    'dashboard', 'santri', 'absensi', 'setoran', 'absensi-ustadz', 'ujian', 'wisuda', 'mutabaah', 'laporan'
+  ],
+  KEAMANAN: [
+    'keamanan-pelanggaran', 'keamanan-perizinan', 'keamanan-rekap'
+  ],
+  UBUDIYAH: [
+    'ubudiyah-jamaah', 'ubudiyah-ekskul', 'ubudiyah-rekap'
+  ]
+};
+
+function getRolePermissions() {
+  if (AppState.settings && AppState.settings.rolePermissions && typeof AppState.settings.rolePermissions === 'object') {
+    return {
+      ADMIN: DEFAULT_ROLE_PERMISSIONS.ADMIN,
+      PENDIDIKAN: Array.isArray(AppState.settings.rolePermissions.PENDIDIKAN) ? AppState.settings.rolePermissions.PENDIDIKAN : DEFAULT_ROLE_PERMISSIONS.PENDIDIKAN,
+      KEAMANAN: Array.isArray(AppState.settings.rolePermissions.KEAMANAN) ? AppState.settings.rolePermissions.KEAMANAN : DEFAULT_ROLE_PERMISSIONS.KEAMANAN,
+      UBUDIYAH: Array.isArray(AppState.settings.rolePermissions.UBUDIYAH) ? AppState.settings.rolePermissions.UBUDIYAH : DEFAULT_ROLE_PERMISSIONS.UBUDIYAH
+    };
+  }
+  return DEFAULT_ROLE_PERMISSIONS;
+}
+
 function switchTab(tabId) {
   const role = sessionStorage.getItem('sitahfidz_active_role') || 'ADMIN';
-  const ROLE_PERMISSIONS = {
-    ADMIN: ['dashboard', 'santri', 'absensi', 'setoran', 'absensi-ustadz', 'ujian', 'wisuda', 'mutabaah', 'laporan', 'keamanan-pelanggaran', 'keamanan-perizinan', 'keamanan-rekap', 'ubudiyah-jamaah', 'ubudiyah-ekskul', 'ubudiyah-rekap', 'pengaturan', 'website'],
-    PENDIDIKAN: ['dashboard', 'santri', 'absensi', 'setoran', 'absensi-ustadz', 'ujian', 'wisuda', 'mutabaah', 'laporan'],
-    KEAMANAN: ['keamanan-pelanggaran', 'keamanan-perizinan', 'keamanan-rekap'],
-    UBUDIYAH: ['ubudiyah-jamaah', 'ubudiyah-ekskul', 'ubudiyah-rekap']
-  };
+  const ROLE_PERMISSIONS = getRolePermissions();
 
   const allowed = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.ADMIN;
   if (!allowed.includes(tabId)) {
@@ -7515,6 +7531,7 @@ function checkPinProtection() {
     if (isProtected && !isUnlocked) {
       overlay.style.display = 'flex';
       overlay.classList.add('active');
+      if (typeof updateQuickLoginAccountsList === 'function') updateQuickLoginAccountsList();
     } else {
       overlay.style.display = 'none';
       overlay.classList.remove('active');
@@ -7556,16 +7573,8 @@ function handleLoginPengurus(e) {
 
   // Pastikan akun pengurus terinisialisasi
   const defaultAccounts = (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.pengurusAccounts) ? DEFAULT_SETTINGS.pengurusAccounts : [];
-  if (!AppState.settings.pengurusAccounts || !AppState.settings.pengurusAccounts.length) {
+  if (!AppState.settings.pengurusAccounts || !Array.isArray(AppState.settings.pengurusAccounts)) {
     AppState.settings.pengurusAccounts = JSON.parse(JSON.stringify(defaultAccounts));
-  } else {
-    // Sinkronkan akun default jika ada yang belum terdaftar (misal update ke 20 akun)
-    defaultAccounts.forEach(defAcc => {
-      const exists = AppState.settings.pengurusAccounts.some(a => a.email.toLowerCase() === defAcc.email.toLowerCase());
-      if (!exists) {
-        AppState.settings.pengurusAccounts.push(JSON.parse(JSON.stringify(defAcc)));
-      }
-    });
   }
 
   // 1. Cek kecocokan Email & Password pada Daftar Akun Pengurus Terdaftar
@@ -7697,21 +7706,13 @@ function renderPengurusAccountsTable() {
   tbody.innerHTML = '';
 
   const defaultAccounts = (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.pengurusAccounts) ? DEFAULT_SETTINGS.pengurusAccounts : [];
-  if (!AppState.settings.pengurusAccounts || !AppState.settings.pengurusAccounts.length) {
+  if (!AppState.settings.pengurusAccounts || !Array.isArray(AppState.settings.pengurusAccounts)) {
     AppState.settings.pengurusAccounts = JSON.parse(JSON.stringify(defaultAccounts));
-  } else {
-    // Sinkronkan akun default jika ada yang belum terdaftar (misal update ke 20 akun)
-    defaultAccounts.forEach(defAcc => {
-      const exists = AppState.settings.pengurusAccounts.some(a => a.email.toLowerCase() === defAcc.email.toLowerCase());
-      if (!exists) {
-        AppState.settings.pengurusAccounts.push(JSON.parse(JSON.stringify(defAcc)));
-      }
-    });
   }
 
   const list = AppState.settings.pengurusAccounts;
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#64748b;">Belum ada akun pengurus terdaftar.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:#64748b;">Belum ada akun pengurus terdaftar. Klik <strong>"➕ Tambah Akun Pengurus"</strong> untuk mendaftarkan akun baru.</td></tr>`;
     return;
   }
 
@@ -7737,16 +7738,19 @@ function renderPengurusAccountsTable() {
       <td>${idx + 1}</td>
       <td><strong>${escapeHtml(acc.nama)}</strong></td>
       <td><code style="font-size:12px; color:#047857; font-weight:700;">${escapeHtml(acc.email)}</code></td>
-      <td>${roleBadge}</td>
+      <td>
+        ${roleBadge}
+        ${acc.divisi ? `<div style="font-size:11px; color:#64748b; margin-top:3px;">${escapeHtml(acc.divisi)}</div>` : ''}
+      </td>
       <td>${statusBadge}</td>
       <td style="text-align:center;">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="openModalAkunPengurus('${acc.id}')" title="Edit Akun" style="padding:3px 8px; font-size:11px;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="openModalAkunPengurus('${acc.id}')" title="Edit Akun & Peran" style="padding:3px 8px; font-size:11px;">
           ✏️ Edit
         </button>
         <button type="button" class="btn btn-secondary btn-sm" onclick="toggleStatusAkunPengurus('${acc.id}')" title="Ubah Status Aktif/Nonaktif" style="padding:3px 8px; font-size:11px;">
           ${isAktif ? '⏸️ Nonaktifkan' : '▶️ Aktifkan'}
         </button>
-        <button type="button" class="btn btn-danger btn-sm" onclick="hapusAkunPengurus('${acc.id}')" title="Hapus Akun" style="padding:3px 8px; font-size:11px;">
+        <button type="button" class="btn btn-danger btn-sm" onclick="hapusAkunPengurus('${acc.id}')" title="Hapus Akun Pengurus" style="padding:3px 8px; font-size:11px;">
           🗑️
         </button>
       </td>
@@ -7769,6 +7773,8 @@ function openModalAkunPengurus(accId = null) {
     document.getElementById('formPengurusEmail').value = acc.email;
     document.getElementById('formPengurusPassword').value = acc.password;
     document.getElementById('formPengurusRole').value = acc.role;
+    const divInput = document.getElementById('formPengurusDivisi');
+    if (divInput) divInput.value = acc.divisi || '';
     document.getElementById('formPengurusStatus').value = acc.status;
   } else {
     if (title) title.textContent = '👤 Tambah Akun Pengurus Baru';
@@ -7777,6 +7783,8 @@ function openModalAkunPengurus(accId = null) {
     document.getElementById('formPengurusEmail').value = '';
     document.getElementById('formPengurusPassword').value = '';
     document.getElementById('formPengurusRole').value = 'PENDIDIKAN';
+    const divInput = document.getElementById('formPengurusDivisi');
+    if (divInput) divInput.value = '';
     document.getElementById('formPengurusStatus').value = 'Aktif';
   }
 
@@ -7796,6 +7804,7 @@ function simpanAkunPengurus(e) {
   const email = document.getElementById('formPengurusEmail')?.value.trim().toLowerCase();
   const password = document.getElementById('formPengurusPassword')?.value.trim();
   const role = document.getElementById('formPengurusRole')?.value;
+  const divisi = document.getElementById('formPengurusDivisi')?.value.trim();
   const status = document.getElementById('formPengurusStatus')?.value;
 
   if (!nama || !email || !password || !role) {
@@ -7821,6 +7830,7 @@ function simpanAkunPengurus(e) {
       acc.email = email;
       acc.password = password;
       acc.role = role;
+      acc.divisi = divisi || getRoleTitleName(role);
       acc.status = status;
       showToast(`Akun pengurus '${nama}' berhasil diperbarui!`, "success");
     }
@@ -7833,7 +7843,7 @@ function simpanAkunPengurus(e) {
       password,
       role,
       status: status || 'Aktif',
-      divisi: getRoleTitleName(role)
+      divisi: divisi || getRoleTitleName(role)
     });
     showToast(`Akun pengurus '${nama}' berhasil didaftarkan!`, "success");
   }
@@ -7841,6 +7851,7 @@ function simpanAkunPengurus(e) {
   saveToStorage();
   if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
   renderPengurusAccountsTable();
+  updateQuickLoginAccountsList();
   closeModalAkunPengurus();
 }
 
@@ -7851,6 +7862,7 @@ function toggleStatusAkunPengurus(accId) {
   saveToStorage();
   if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
   renderPengurusAccountsTable();
+  updateQuickLoginAccountsList();
   showToast(`Status akun '${acc.nama}' diubah menjadi ${acc.status}`, "info");
 }
 
@@ -7865,23 +7877,183 @@ function hapusAkunPengurus(accId) {
     return;
   }
 
-  if (confirm(`Yakin ingin menghapus akun pengurus '${acc.nama}' (${acc.email})?`)) {
+  if (confirm(`Yakin ingin menghapus akun pengurus '${acc.nama}' (${acc.email})?\n\nAkun ini tidak akan dapat login lagi ke sistem.`)) {
     AppState.settings.pengurusAccounts = AppState.settings.pengurusAccounts.filter(a => a.id !== accId);
     saveToStorage();
     if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
     renderPengurusAccountsTable();
+    updateQuickLoginAccountsList();
     showToast("Akun pengurus berhasil dihapus.", "success");
   }
 }
 
 function resetDefaultPengurusAccounts() {
-  if (!confirm("Muat ulang 20 akun pengurus standar (5 akun per divisi: Admin, Pendidikan, Keamanan, Ubudiyah)? Akun kustom yang dibuat sendiri akan disetel ulang ke standar.")) return;
+  if (!confirm("Muat ulang 20 akun pengurus standar (5 akun per divisi: Admin, Pendidikan, Keamanan, Ubudiyah)?\n\nPerhatian: Akun kustom yang dibuat sendiri akan disetel ulang ke standar.")) return;
   const defaultAccounts = (typeof DEFAULT_SETTINGS !== 'undefined' && DEFAULT_SETTINGS.pengurusAccounts) ? DEFAULT_SETTINGS.pengurusAccounts : [];
   AppState.settings.pengurusAccounts = JSON.parse(JSON.stringify(defaultAccounts));
   saveToStorage();
   if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
   renderPengurusAccountsTable();
+  updateQuickLoginAccountsList();
   showToast("✓ 20 akun pengurus standar (4 Divisi × 5 Akun) berhasil dimuat ulang!", "success");
+}
+
+// ================= MODAL ATUR HAK AKSES PER DIVISI =================
+const ALL_SYSTEM_MODULES = [
+  { id: 'dashboard', label: '📊 Dashboard Ringkasan', desc: 'Statistik umum & grafik progres santri' },
+  { id: 'santri', label: '👥 Master Data Santri', desc: 'Daftar, edit, tambah, & cetak data santri' },
+  { id: 'absensi', label: '📅 Presensi Halaqah Santri', desc: 'Kehadiran harian sesi shubuh & maghrib' },
+  { id: 'setoran', label: '📖 Setoran Hafalan Harian', desc: 'Input & mutabaah ayat, surat, juz santri' },
+  { id: 'absensi-ustadz', label: '👳 Presensi Asatidz', desc: 'Absensi musyrif & asatidz pembimbing' },
+  { id: 'ujian', label: '📝 Ujian Semester & MHQ', desc: 'Penilaian fashahah, tajwid, tahfidz' },
+  { id: 'wisuda', label: '🎓 Wisuda & Kelulusan', desc: 'Pendaftaran & kelulusan 30 juz / binnadzor' },
+  { id: 'mutabaah', label: '📜 Rapor Mutaba\'ah Santri', desc: 'Cetak buku kendali hafalan santri' },
+  { id: 'laporan', label: '📈 Laporan & Statistik', desc: 'Rekapitulasi berkala & ekspor Excel' },
+  { id: 'keamanan-pelanggaran', label: '⚠️ Catatan Pelanggaran & Takzir', desc: 'Poin disiplin & tindak lanjut santri' },
+  { id: 'keamanan-perizinan', label: '🚪 Perizinan Pulang & Sambangan', desc: 'Surat izin keluar/pulang santri' },
+  { id: 'keamanan-rekap', label: '📋 Rekapitulasi Keamanan', desc: 'Statistik kedisiplinan santri' },
+  { id: 'ubudiyah-jamaah', label: '🕌 Shalat Jamaah 5 Waktu', desc: 'Presensi jamaah masjid santri' },
+  { id: 'ubudiyah-ekskul', label: '⚽ Kegiatan Ekstrakurikuler', desc: 'Presensi ekskul santri sore/ahad' },
+  { id: 'ubudiyah-rekap', label: '📑 Rekapitulasi Ubudiyah', desc: 'Laporan ibadah & pembiasaan santri' },
+  { id: 'website', label: '🌐 Kelola Website Publik & Berita', desc: 'Edit artikel, brosur, & profil pesantren' },
+  { id: 'pengaturan', label: '⚙️ Pengaturan Pesantren & Master', desc: 'Konfigurasi identitas, ustadz, & sistem' }
+];
+
+function openModalHakAksesDivisi() {
+  renderHakAksesEditor();
+  const modal = document.getElementById('modalHakAksesDivisi');
+  if (modal) modal.classList.add('active');
+}
+
+function closeModalHakAksesDivisi() {
+  const modal = document.getElementById('modalHakAksesDivisi');
+  if (modal) modal.classList.remove('active');
+}
+
+function renderHakAksesEditor() {
+  const container = document.getElementById('hakAksesContainer');
+  if (!container) return;
+
+  const currentPerms = getRolePermissions();
+  const roles = [
+    { key: 'PENDIDIKAN', name: '📚 Divisi Pendidikan & Tahfidz', badgeColor: '#065f46', bg: '#ecfdf5', border: '#a7f3d0' },
+    { key: 'KEAMANAN', name: '🛡️ Divisi Keamanan & Ketertiban', badgeColor: '#991b1b', bg: '#fef2f2', border: '#fecaca' },
+    { key: 'UBUDIYAH', name: '🕌 Divisi Ubudiyah & Ibadah', badgeColor: '#075985', bg: '#f0f9ff', border: '#bae6fd' }
+  ];
+
+  container.innerHTML = roles.map(r => {
+    const allowedTabs = currentPerms[r.key] || [];
+    const checkboxesHtml = ALL_SYSTEM_MODULES.map(m => {
+      const isChecked = allowedTabs.includes(m.id);
+      return `
+        <label style="display:flex; align-items:flex-start; gap:8px; padding:7px 10px; background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; font-size:12px; cursor:pointer; user-select:none; transition:all 0.15s;">
+          <input type="checkbox" name="perm_${r.key}" value="${m.id}" ${isChecked ? 'checked' : ''} style="margin-top:2px; accent-color:#059669; cursor:pointer;">
+          <div>
+            <div style="font-weight:700; color:#1e293b;">${m.label}</div>
+            <div style="font-size:10.5px; color:#64748b;">${m.desc}</div>
+          </div>
+        </label>
+      `;
+    }).join('');
+
+    return `
+      <div style="background:${r.bg}; border:1.5px solid ${r.border}; border-radius:12px; padding:14px 16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+          <div style="font-weight:800; font-size:14px; color:${r.badgeColor}; display:flex; align-items:center; gap:6px;">
+            <span>${r.name}</span>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSelectAllPermissions('${r.key}', true)" style="font-size:10.5px; padding:3px 8px; background:#fff;">
+              ✓ Pilih Semua
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSelectAllPermissions('${r.key}', false)" style="font-size:10.5px; padding:3px 8px; background:#fff;">
+              ✕ Kosongkan
+            </button>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:8px;">
+          ${checkboxesHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleSelectAllPermissions(roleKey, checked) {
+  const cbs = document.querySelectorAll(`input[name="perm_${roleKey}"]`);
+  cbs.forEach(cb => { cb.checked = checked; });
+}
+
+function simpanHakAksesDivisi() {
+  if (!AppState.settings) AppState.settings = {};
+  if (!AppState.settings.rolePermissions) AppState.settings.rolePermissions = {};
+
+  ['PENDIDIKAN', 'KEAMANAN', 'UBUDIYAH'].forEach(roleKey => {
+    const cbs = document.querySelectorAll(`input[name="perm_${roleKey}"]:checked`);
+    const selected = Array.from(cbs).map(cb => cb.value);
+    if (selected.length === 0) {
+      selected.push('dashboard');
+    }
+    AppState.settings.rolePermissions[roleKey] = selected;
+  });
+
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  applyRolePermissions();
+  closeModalHakAksesDivisi();
+  showToast("✓ Hak akses menu per divisi berhasil disimpan & disesuaikan!", "success");
+}
+
+function resetHakAksesDivisiStandar() {
+  if (!confirm("Kembalikan seluruh hak akses menu divisi (Pendidikan, Keamanan, Ubudiyah) ke standar bawaan sistem?")) return;
+  if (!AppState.settings) AppState.settings = {};
+  AppState.settings.rolePermissions = JSON.parse(JSON.stringify(DEFAULT_ROLE_PERMISSIONS));
+  saveToStorage();
+  if (typeof pushLocalToCloud === 'function') pushLocalToCloud(true);
+  renderHakAksesEditor();
+  applyRolePermissions();
+  showToast("Hak akses menu tiap divisi telah dikembalikan ke standar awal.", "info");
+}
+
+function updateQuickLoginAccountsList() {
+  const select = document.getElementById('quickLoginAccountSelect');
+  if (!select) return;
+
+  const accounts = (AppState.settings && AppState.settings.pengurusAccounts) ? AppState.settings.pengurusAccounts : [];
+  if (accounts.length === 0) {
+    select.innerHTML = '<option value="">-- Belum ada akun pengurus terdaftar --</option>';
+    return;
+  }
+
+  const roleLabels = {
+    ADMIN: '👑 DIVISI ADMINISTRATOR UTAMA',
+    PENDIDIKAN: '📚 DIVISI PENDIDIKAN & TAHFIDZ',
+    KEAMANAN: '🛡️ DIVISI KEAMANAN & KETERTIBAN',
+    UBUDIYAH: '🕌 DIVISI UBUDIYAH & IBADAH'
+  };
+
+  const groups = { ADMIN: [], PENDIDIKAN: [], KEAMANAN: [], UBUDIYAH: [] };
+  accounts.forEach(acc => {
+    const r = acc.role || 'ADMIN';
+    if (!groups[r]) groups[r] = [];
+    groups[r].push(acc);
+  });
+
+  let html = '<option value="">-- Klik untuk memilih salah satu akun divisi --</option>';
+  ['ADMIN', 'PENDIDIKAN', 'KEAMANAN', 'UBUDIYAH'].forEach(roleKey => {
+    const list = groups[roleKey];
+    if (list && list.length > 0) {
+      html += `<optgroup label="${roleLabels[roleKey] || roleKey} (${list.length} Akun)">`;
+      list.forEach((acc, i) => {
+        const isNonaktif = acc.status !== 'Aktif';
+        const label = `${i + 1}. ${escapeHtml(acc.email)} (${escapeHtml(acc.nama)}${acc.divisi ? ' • ' + escapeHtml(acc.divisi) : ''})${isNonaktif ? ' [NONAKTIF]' : ''}`;
+        html += `<option value="${escapeHtml(acc.email)}|${escapeHtml(acc.password)}">${label}</option>`;
+      });
+      html += `</optgroup>`;
+    }
+  });
+
+  select.innerHTML = html;
 }
 
 function applyRolePermissions() {
@@ -7966,62 +8138,53 @@ function applyRolePermissions() {
   const navFilterBar = document.querySelector('.nav-module-filter-bar');
   const allNavElements = document.querySelectorAll('.nav-tab-btn, .nav-category-header, .nav-divider');
 
+  const ROLE_PERMISSIONS = getRolePermissions();
+  const allowed = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.ADMIN;
+
   if (role === 'ADMIN') {
     if (navFilterBar) navFilterBar.style.display = 'flex';
     allNavElements.forEach(el => el.style.display = '');
-  } else if (role === 'PENDIDIKAN') {
+  } else {
     if (navFilterBar) navFilterBar.style.display = 'none';
     allNavElements.forEach(el => {
-      const cat = el.dataset.category;
-      if (cat === 'pendidikan' || cat === 'all' || el.getAttribute('onclick')?.includes("'dashboard'")) {
-        el.style.display = '';
-      } else {
-        el.style.display = 'none';
+      if (el.classList.contains('nav-tab-btn')) {
+        const onclickAttr = el.getAttribute('onclick') || '';
+        const match = onclickAttr.match(/switchTab\('([^']+)'\)/);
+        if (match && match[1]) {
+          const tabId = match[1];
+          el.style.display = allowed.includes(tabId) ? '' : 'none';
+        }
       }
     });
-  } else if (role === 'KEAMANAN') {
-    if (navFilterBar) navFilterBar.style.display = 'none';
-    allNavElements.forEach(el => {
-      const cat = el.dataset.category;
-      if (cat === 'keamanan') {
-        el.style.display = '';
-      } else {
-        el.style.display = 'none';
-      }
-    });
-  } else if (role === 'UBUDIYAH') {
-    if (navFilterBar) navFilterBar.style.display = 'none';
-    allNavElements.forEach(el => {
-      const cat = el.dataset.category;
-      if (cat === 'ubudiyah') {
-        el.style.display = '';
-      } else {
-        el.style.display = 'none';
-      }
+
+    // Check category headers
+    document.querySelectorAll('.nav-category-block').forEach(cat => {
+      const visibleTabs = cat.querySelectorAll('.nav-tab-btn:not([style*="display: none"])');
+      cat.style.display = visibleTabs.length > 0 ? '' : 'none';
     });
   }
 
-  // 4. Ensure current active tab is allowed for current role, otherwise redirect to default
-  const ROLE_PERMISSIONS = {
-    ADMIN: ['dashboard', 'santri', 'absensi', 'setoran', 'absensi-ustadz', 'ujian', 'wisuda', 'mutabaah', 'laporan', 'keamanan-pelanggaran', 'keamanan-perizinan', 'keamanan-rekap', 'ubudiyah-jamaah', 'ubudiyah-ekskul', 'ubudiyah-rekap', 'pengaturan', 'website'],
-    PENDIDIKAN: ['dashboard', 'santri', 'absensi', 'setoran', 'absensi-ustadz', 'ujian', 'wisuda', 'mutabaah', 'laporan'],
-    KEAMANAN: ['keamanan-pelanggaran', 'keamanan-perizinan', 'keamanan-rekap'],
-    UBUDIYAH: ['ubudiyah-jamaah', 'ubudiyah-ekskul', 'ubudiyah-rekap']
-  };
-
-  const allowed = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.ADMIN;
+  // 4. Ensure current active tab is allowed for current role, otherwise redirect to first allowed
   if (!allowed.includes(AppState.currentTab)) {
-    if (role === 'KEAMANAN') {
-      switchTab('keamanan-pelanggaran');
-    } else if (role === 'UBUDIYAH') {
-      switchTab('ubudiyah-jamaah');
-    } else if (role === 'PENDIDIKAN') {
-      switchTab('santri');
-    } else {
-      switchTab('dashboard');
-    }
+    const firstAllowed = allowed[0] || 'dashboard';
+    switchTab(firstAllowed);
   }
 }
+
+window.renderPengurusAccountsTable = renderPengurusAccountsTable;
+window.openModalAkunPengurus = openModalAkunPengurus;
+window.closeModalAkunPengurus = closeModalAkunPengurus;
+window.simpanAkunPengurus = simpanAkunPengurus;
+window.toggleStatusAkunPengurus = toggleStatusAkunPengurus;
+window.hapusAkunPengurus = hapusAkunPengurus;
+window.resetDefaultPengurusAccounts = resetDefaultPengurusAccounts;
+window.openModalHakAksesDivisi = openModalHakAksesDivisi;
+window.closeModalHakAksesDivisi = closeModalHakAksesDivisi;
+window.renderHakAksesEditor = renderHakAksesEditor;
+window.toggleSelectAllPermissions = toggleSelectAllPermissions;
+window.simpanHakAksesDivisi = simpanHakAksesDivisi;
+window.resetHakAksesDivisiStandar = resetHakAksesDivisiStandar;
+window.updateQuickLoginAccountsList = updateQuickLoginAccountsList;
 
 function handleLogoutRole() {
   if (confirm("Kunci dan keluar dari sesi pengurus saat ini?")) {
